@@ -16,6 +16,19 @@
 		4DD4631816B97FE20038FA89 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD4631716B97FE20038FA89 /* Default.png */; };
 		4DD4631A16B97FE20038FA89 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD4631916B97FE20038FA89 /* Default@2x.png */; };
 		4DD4631C16B97FE20038FA89 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD4631B16B97FE20038FA89 /* Default-568h@2x.png */; };
+		4DD4632416B981A10038FA89 /* SVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4632316B981A10038FA89 /* SVRootViewController.m */; };
+		4DD4632716B981B00038FA89 /* SVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4632616B981B00038FA89 /* SVSettingsViewController.m */; };
+		4DD4632A16B981BD0038FA89 /* SVMoviesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4632916B981BD0038FA89 /* SVMoviesViewController.m */; };
+		4DD4632D16B981D70038FA89 /* SVDatabaseWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4632C16B981D70038FA89 /* SVDatabaseWrapper.m */; };
+		4DD4633016B981E40038FA89 /* SVMoviesSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4632F16B981E40038FA89 /* SVMoviesSyncManager.m */; };
+		4DD4634016B983000038FA89 /* SVTmdbWatchListRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4633F16B983000038FA89 /* SVTmdbWatchListRequest.m */; };
+		4DD4634316B983470038FA89 /* SVRTDvdReleaseDateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4634216B983470038FA89 /* SVRTDvdReleaseDateRequest.m */; };
+		4DD4634616B983560038FA89 /* SVJsonRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4634516B983560038FA89 /* SVJsonRequest.m */; };
+		4DD4634916B983610038FA89 /* SVFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4634816B983610038FA89 /* SVFileManager.m */; };
+		4DD4634C16B9836E0038FA89 /* SVMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4634B16B9836E0038FA89 /* SVMovie.m */; };
+		4DD4635516B9839F0038FA89 /* SVMoviesLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635416B9839F0038FA89 /* SVMoviesLoadingView.m */; };
+		4DD4635816B983AA0038FA89 /* SVMoviesTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */; };
+		4DD4635B16B983C90038FA89 /* SVMovieTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +45,34 @@
 		4DD4631716B97FE20038FA89 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		4DD4631916B97FE20038FA89 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		4DD4631B16B97FE20038FA89 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		4DD4632216B981A10038FA89 /* SVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVRootViewController.h; sourceTree = "<group>"; };
+		4DD4632316B981A10038FA89 /* SVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVRootViewController.m; sourceTree = "<group>"; };
+		4DD4632516B981B00038FA89 /* SVSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsViewController.h; sourceTree = "<group>"; };
+		4DD4632616B981B00038FA89 /* SVSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsViewController.m; sourceTree = "<group>"; };
+		4DD4632816B981BD0038FA89 /* SVMoviesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesViewController.h; sourceTree = "<group>"; };
+		4DD4632916B981BD0038FA89 /* SVMoviesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesViewController.m; sourceTree = "<group>"; };
+		4DD4632B16B981D70038FA89 /* SVDatabaseWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVDatabaseWrapper.h; sourceTree = "<group>"; };
+		4DD4632C16B981D70038FA89 /* SVDatabaseWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVDatabaseWrapper.m; sourceTree = "<group>"; };
+		4DD4632E16B981E40038FA89 /* SVMoviesSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesSyncManager.h; sourceTree = "<group>"; };
+		4DD4632F16B981E40038FA89 /* SVMoviesSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesSyncManager.m; sourceTree = "<group>"; };
+		4DD4633C16B982BF0038FA89 /* SVWatchListServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SVWatchListServiceProtocol.h; path = ../SVWatchListServiceProtocol.h; sourceTree = "<group>"; };
+		4DD4633D16B982E20038FA89 /* SVDvdReleaseDateServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVDvdReleaseDateServiceProtocol.h; sourceTree = "<group>"; };
+		4DD4633E16B983000038FA89 /* SVTmdbWatchListRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVTmdbWatchListRequest.h; sourceTree = "<group>"; };
+		4DD4633F16B983000038FA89 /* SVTmdbWatchListRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVTmdbWatchListRequest.m; sourceTree = "<group>"; };
+		4DD4634116B983470038FA89 /* SVRTDvdReleaseDateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVRTDvdReleaseDateRequest.h; sourceTree = "<group>"; };
+		4DD4634216B983470038FA89 /* SVRTDvdReleaseDateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVRTDvdReleaseDateRequest.m; sourceTree = "<group>"; };
+		4DD4634416B983560038FA89 /* SVJsonRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVJsonRequest.h; sourceTree = "<group>"; };
+		4DD4634516B983560038FA89 /* SVJsonRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVJsonRequest.m; sourceTree = "<group>"; };
+		4DD4634716B983610038FA89 /* SVFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVFileManager.h; sourceTree = "<group>"; };
+		4DD4634816B983610038FA89 /* SVFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVFileManager.m; sourceTree = "<group>"; };
+		4DD4634A16B9836E0038FA89 /* SVMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMovie.h; sourceTree = "<group>"; };
+		4DD4634B16B9836E0038FA89 /* SVMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMovie.m; sourceTree = "<group>"; };
+		4DD4635316B9839F0038FA89 /* SVMoviesLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesLoadingView.h; sourceTree = "<group>"; };
+		4DD4635416B9839F0038FA89 /* SVMoviesLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesLoadingView.m; sourceTree = "<group>"; };
+		4DD4635616B983AA0038FA89 /* SVMoviesTopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesTopView.h; sourceTree = "<group>"; };
+		4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesTopView.m; sourceTree = "<group>"; };
+		4DD4635916B983C80038FA89 /* SVMovieTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMovieTableViewCell.h; sourceTree = "<group>"; };
+		4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMovieTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +121,10 @@
 			children = (
 				4DD4631416B97FE10038FA89 /* SVAppDelegate.h */,
 				4DD4631516B97FE10038FA89 /* SVAppDelegate.m */,
+				4DD4635C16B983D90038FA89 /* Models */,
+				4DD4635D16B983EE0038FA89 /* Controllers */,
+				4DD4635E16B984090038FA89 /* Views */,
+				4DD4636016B9842C0038FA89 /* Helpers */,
 				4DD4630C16B97FE10038FA89 /* Supporting Files */,
 			);
 			path = Movies;
@@ -97,6 +142,86 @@
 				4DD4631B16B97FE20038FA89 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4DD4635C16B983D90038FA89 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4DD4634A16B9836E0038FA89 /* SVMovie.h */,
+				4DD4634B16B9836E0038FA89 /* SVMovie.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		4DD4635D16B983EE0038FA89 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				4DD4632216B981A10038FA89 /* SVRootViewController.h */,
+				4DD4632316B981A10038FA89 /* SVRootViewController.m */,
+				4DD4632516B981B00038FA89 /* SVSettingsViewController.h */,
+				4DD4632616B981B00038FA89 /* SVSettingsViewController.m */,
+				4DD4632816B981BD0038FA89 /* SVMoviesViewController.h */,
+				4DD4632916B981BD0038FA89 /* SVMoviesViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		4DD4635E16B984090038FA89 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4DD4635316B9839F0038FA89 /* SVMoviesLoadingView.h */,
+				4DD4635416B9839F0038FA89 /* SVMoviesLoadingView.m */,
+				4DD4635616B983AA0038FA89 /* SVMoviesTopView.h */,
+				4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */,
+				4DD4635916B983C80038FA89 /* SVMovieTableViewCell.h */,
+				4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		4DD4635F16B984150038FA89 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				4DD4633C16B982BF0038FA89 /* SVWatchListServiceProtocol.h */,
+				4DD4633D16B982E20038FA89 /* SVDvdReleaseDateServiceProtocol.h */,
+				4DD4633E16B983000038FA89 /* SVTmdbWatchListRequest.h */,
+				4DD4633F16B983000038FA89 /* SVTmdbWatchListRequest.m */,
+				4DD4634116B983470038FA89 /* SVRTDvdReleaseDateRequest.h */,
+				4DD4634216B983470038FA89 /* SVRTDvdReleaseDateRequest.m */,
+				4DD4634416B983560038FA89 /* SVJsonRequest.h */,
+				4DD4634516B983560038FA89 /* SVJsonRequest.m */,
+			);
+			name = Requests;
+			sourceTree = "<group>";
+		};
+		4DD4636016B9842C0038FA89 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				4DD4636216B984450038FA89 /* Wrappers */,
+				4DD4636116B984350038FA89 /* Managers */,
+				4DD4635F16B984150038FA89 /* Requests */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		4DD4636116B984350038FA89 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				4DD4632E16B981E40038FA89 /* SVMoviesSyncManager.h */,
+				4DD4632F16B981E40038FA89 /* SVMoviesSyncManager.m */,
+				4DD4634716B983610038FA89 /* SVFileManager.h */,
+				4DD4634816B983610038FA89 /* SVFileManager.m */,
+			);
+			name = Managers;
+			sourceTree = "<group>";
+		};
+		4DD4636216B984450038FA89 /* Wrappers */ = {
+			isa = PBXGroup;
+			children = (
+				4DD4632C16B981D70038FA89 /* SVDatabaseWrapper.m */,
+				4DD4632B16B981D70038FA89 /* SVDatabaseWrapper.h */,
+			);
+			name = Wrappers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,6 +292,19 @@
 			files = (
 				4DD4631216B97FE10038FA89 /* main.m in Sources */,
 				4DD4631616B97FE10038FA89 /* SVAppDelegate.m in Sources */,
+				4DD4632416B981A10038FA89 /* SVRootViewController.m in Sources */,
+				4DD4632716B981B00038FA89 /* SVSettingsViewController.m in Sources */,
+				4DD4632A16B981BD0038FA89 /* SVMoviesViewController.m in Sources */,
+				4DD4632D16B981D70038FA89 /* SVDatabaseWrapper.m in Sources */,
+				4DD4633016B981E40038FA89 /* SVMoviesSyncManager.m in Sources */,
+				4DD4634016B983000038FA89 /* SVTmdbWatchListRequest.m in Sources */,
+				4DD4634316B983470038FA89 /* SVRTDvdReleaseDateRequest.m in Sources */,
+				4DD4634616B983560038FA89 /* SVJsonRequest.m in Sources */,
+				4DD4634916B983610038FA89 /* SVFileManager.m in Sources */,
+				4DD4634C16B9836E0038FA89 /* SVMovie.m in Sources */,
+				4DD4635516B9839F0038FA89 /* SVMoviesLoadingView.m in Sources */,
+				4DD4635816B983AA0038FA89 /* SVMoviesTopView.m in Sources */,
+				4DD4635B16B983C90038FA89 /* SVMovieTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
