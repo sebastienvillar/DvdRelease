@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SVMovie.h"
 
 @interface SVRTDvdReleaseDateRequest : NSObject
-
 @end

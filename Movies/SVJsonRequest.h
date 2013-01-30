@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface SVJsonRequest : NSObject
+@interface SVJsonRequest : NSObject <NSURLConnectionDelegate>
+@property (strong, readwrite) NSURL *url;
 
+- (id)initWithUrl:(NSURL*)aUrl;
+- (void)fetchJson:(void (^)(NSObject * json))callbackBlock;
 @end
