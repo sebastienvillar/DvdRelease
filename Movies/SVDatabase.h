@@ -12,12 +12,13 @@
 @class SVDatabase;
 
 @protocol SVDatabaseSenderProtocol <NSObject>
-// Return nil if the request was a put operation
+@optional
 - (void)database:(SVDatabase*)database didFinishTransaction:(SVTransaction*)transaction withSuccess:(BOOL)success;
 - (void)database:(SVDatabase*)database didFinishQuery:(SVQuery*)query;
 @end
 
 @interface SVDatabase : NSObject
++ (SVDatabase*)sharedDatabase;
 - (void)executeQuery:(SVQuery*)query;
 - (void)executeTransaction:(SVTransaction*)transaction;
 - (BOOL)open;

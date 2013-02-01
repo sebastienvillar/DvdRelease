@@ -39,7 +39,7 @@ static SVDatabase* sharedDatabase = nil;
 		_databasePath = [NSString stringWithFormat:@"%@%@",applicationSupportDirectoryPath, @"/database.db"];
 		if (![[NSFileManager defaultManager] fileExistsAtPath:_databasePath]) {
 			NSString *createServiceStatement = @"CREATE TABLE watchlist_service (id INTEGER PRIMARY KEY,"
-			"service TEXT,"
+			"name TEXT,"
 			"session_id TEXT,"
 			"is_current_service INTEGER);";
 			NSString *createMovieStatement = @"CREATE TABLE movie (id INTEGER PRIMARY KEY,"
@@ -63,7 +63,6 @@ static SVDatabase* sharedDatabase = nil;
 }
 
 - (BOOL)open {
-	NSLog(@"Impossible to open the database");
 	return sqlite3_open_v2([self.databasePath UTF8String], &_database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL) == SQLITE_OK;
 }
 				
@@ -91,8 +90,7 @@ static SVDatabase* sharedDatabase = nil;
 
 - (void)executeQuery:(SVQuery *)query {
 	query.result = [self executeSQLQuery:query.sqlQuery];
-	NSLog(@"query.result : %@",query.result);
-	if ([query.sender respondsToSelector:@selector(database:didFinishQuery::)]) {
+	if ([query.sender respondsToSelector:@selector(database:didFinishQuery:)]) {
 		[query.sender database:self didFinishQuery:query];
 	}
 }

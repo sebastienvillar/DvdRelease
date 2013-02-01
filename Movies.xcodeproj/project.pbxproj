@@ -63,8 +63,6 @@
 		4DD4632C16B981D70038FA89 /* SVDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVDatabase.m; sourceTree = "<group>"; };
 		4DD4632E16B981E40038FA89 /* SVMoviesSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesSyncManager.h; sourceTree = "<group>"; };
 		4DD4632F16B981E40038FA89 /* SVMoviesSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesSyncManager.m; sourceTree = "<group>"; };
-		4DD4633C16B982BF0038FA89 /* SVWatchListServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SVWatchListServiceProtocol.h; path = ../SVWatchListServiceProtocol.h; sourceTree = "<group>"; };
-		4DD4633D16B982E20038FA89 /* SVDvdReleaseDateServiceProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVDvdReleaseDateServiceProtocol.h; sourceTree = "<group>"; };
 		4DD4633E16B983000038FA89 /* SVTmdbWatchListRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVTmdbWatchListRequest.h; sourceTree = "<group>"; };
 		4DD4633F16B983000038FA89 /* SVTmdbWatchListRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVTmdbWatchListRequest.m; sourceTree = "<group>"; };
 		4DD4634116B983470038FA89 /* SVRTDvdReleaseDateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVRTDvdReleaseDateRequest.h; sourceTree = "<group>"; };
@@ -192,8 +190,6 @@
 		4DD4635F16B984150038FA89 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				4DD4633C16B982BF0038FA89 /* SVWatchListServiceProtocol.h */,
-				4DD4633D16B982E20038FA89 /* SVDvdReleaseDateServiceProtocol.h */,
 				4DD4633E16B983000038FA89 /* SVTmdbWatchListRequest.h */,
 				4DD4633F16B983000038FA89 /* SVTmdbWatchListRequest.m */,
 				4DD4634116B983470038FA89 /* SVRTDvdReleaseDateRequest.h */,

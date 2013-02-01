@@ -22,8 +22,8 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
+	_database = [SVDatabase sharedDatabase];
 	self.window.rootViewController = [[SVRootViewController alloc] init];
-	_database = [[SVDatabase alloc] init];
     [self.window makeKeyAndVisible];
     return YES;
 }

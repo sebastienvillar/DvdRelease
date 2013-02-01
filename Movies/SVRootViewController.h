@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SVDatabase.h"
 
-@interface SVRootViewController : UIViewController
+@interface SVRootViewController : UIViewController <SVDatabaseSenderProtocol>
 
 @end
