@@ -20,16 +20,16 @@
 
 @implementation SVJsonRequest
 
-@synthesize callbackBlock = callbackBlock_,
-			url = url_,
-			mutableData = mutableData_;
+@synthesize callbackBlock = _callbackBlock,
+			url = _url,
+			mutableData = _mutableData;
 
 - (id)initWithUrl:(NSURL*)aUrl {
     self = [super init];
     if (self) {
-        callbackBlock_ = nil;
-        mutableData_ = nil;
-        url_ = aUrl;
+        _callbackBlock = nil;
+        _mutableData = nil;
+        _url = aUrl;
     }
     return self;
 }

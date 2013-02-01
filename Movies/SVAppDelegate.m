@@ -7,14 +7,23 @@
 //
 
 #import "SVAppDelegate.h"
+#import "SVRootViewController.h"
+#import "SVDatabase.h"
+#import "SVQuery.h"
+
+@interface SVAppDelegate ()
+@property (strong, readwrite) SVDatabase* database;
+@end
 
 @implementation SVAppDelegate
+@synthesize database = _database;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+	self.window.rootViewController = [[SVRootViewController alloc] init];
+	_database = [[SVDatabase alloc] init];
     [self.window makeKeyAndVisible];
     return YES;
 }
