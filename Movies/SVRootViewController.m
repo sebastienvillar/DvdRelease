@@ -62,6 +62,7 @@
 	if (query == self.currentServiceQuery) {
 		if (result && result.count != 0) {
 			self.moviesSyncManager.service = [[result objectAtIndex:0] objectAtIndex:0];
+			[self.moviesSyncManager connect];
 		}
 		else {
 			self.settingsViewController = [[SVSettingsViewController alloc] init];
@@ -75,12 +76,17 @@
 #pragma mark - SVMoviesSyncManagerDelegate
 //////////////////////////////////////////////////////////////////////
 
-- (void)moviesSyncManager:(SVMoviesSyncManager *)aManager didFetchWatchList:(NSArray *)movies {
+- (void)moviesSyncManagerDidStartSyncing:(SVMoviesSyncManager *)aManager {
+	
+}
+
+- (void)moviesSyncManagerDidFinishSyncing:(SVMoviesSyncManager *)aManager {
 	
 }
 
 - (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager *)aManager {
-	NSLog(@"SVRootViewController: Manager did connect");
+	NSLog(@"did connect");
+	[aManager sync];
 }
 
 - (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager *)aManager {
@@ -92,7 +98,7 @@
 }
 
 - (void)moviesSyncManagerDidFailToSync:(SVMoviesSyncManager *)aManager {
-	
+	NSLog(@"SVMoviesSyncManager failed to sync");
 }
 
 - (void)moviesSyncManagerNeedsApproval:(SVMoviesSyncManager *)aManager withUrl:(NSURL *)url {

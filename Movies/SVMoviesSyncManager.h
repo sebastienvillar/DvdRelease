@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "SVDatabase.h"
+#import "SVTmdbWatchListRequest.h"
+#import "SVRTDvdReleaseDateRequest.h"
 @class SVMoviesSyncManager;
 
 @protocol SVMoviesSyncManagerDelegate <NSObject>
@@ -15,14 +17,16 @@
 - (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager*)aManager;
 - (void)moviesSyncManagerNeedsApproval:(SVMoviesSyncManager*)aManager withUrl:(NSURL*)aUrl;
 - (void)moviesSyncManagerUserDeniedConnection:(SVMoviesSyncManager*)aManager;
-- (void)moviesSyncManager:(SVMoviesSyncManager*)aManager didFetchWatchList:(NSArray*)movies;
+- (void)moviesSyncManagerDidStartSyncing:(SVMoviesSyncManager*)aManager;
+- (void)moviesSyncManagerDidFinishSyncing:(SVMoviesSyncManager*)aManager;
 - (void)moviesSyncManagerDidFailToSync:(SVMoviesSyncManager*)aManager;
 @end
 
-@interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol, UIWebViewDelegate>
+@interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol, UIWebViewDelegate, SVTmdbWatchListRequestDelegate, SVRTDvdReleaseDateRequestDelegate>
 @property (strong, readwrite) NSString* service;
 @property (weak, readwrite) NSObject<SVMoviesSyncManagerDelegate>* delegate;
 
 + (SVMoviesSyncManager*)sharedMoviesSyncManager;
 - (void)connect;
+- (void)sync;
 @end

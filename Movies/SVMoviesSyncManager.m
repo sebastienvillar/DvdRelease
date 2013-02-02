@@ -7,7 +7,7 @@
 //
 
 #import "SVMoviesSyncManager.h"
-#import "SVTmdbWatchListRequest.h"
+#import "SVJsonRequest.h"
 
 static SVMoviesSyncManager* sharedMoviesSyncManager;
 
@@ -15,10 +15,9 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 @property (strong, readonly) SVDatabase* database;
 @property (strong, readwrite) SVQuery* sessionIdQuery;
 @property (strong, readwrite) SVTransaction* sessionIdTransaction;
-@property (strong, readwrite) NSString* sessionId;
-@property (strong, readwrite) NSString* token;
-@property (readwrite, getter = isTokenAccepted) BOOL tokenAccepted;
-@property (readwrite, getter = isLastWebPage) BOOL lastWebPage;
+@property (strong, readwrite) NSMutableDictionary* tmdbInfo;
+@property (strong, readwrite) SVTmdbWatchListRequest* tmdbWatchListRequest;
+@property (readwrite, getter = isSyncing) BOOL syncing;
 @end
 
 //////////////////////////////////////////////////////////////////////
@@ -28,10 +27,9 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 @synthesize service = _service,
 			sessionIdQuery = _sessionIdQuery,
 			sessionIdTransaction = _sessionIdTransaction,
-			sessionId = _sessionId,
-			tokenAccepted = _tokenAccepted,
-			lastWebPage = _lastWebPage,
-			token = _token;
+			tmdbWatchListRequest = _tmdbWatchListRequest,
+			syncing = _syncing,
+			tmdbInfo = _tmdbInfo;
 
 + (SVMoviesSyncManager*)sharedMoviesSyncManager {
 	if (!sharedMoviesSyncManager) {
@@ -46,20 +44,38 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		_database = [SVDatabase sharedDatabase];
 		_service = nil;
 		_sessionIdQuery = nil;
-		_sessionId = nil;
-		_token = nil;
-		_tokenAccepted = NO;
-		_lastWebPage = NO;
 		_sessionIdTransaction = nil;
+		_tmdbWatchListRequest = nil;
+		_syncing = NO;
+		_tmdbInfo = [[NSMutableDictionary alloc] init];
+		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isLastWebPage"];
+		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isTokenAccepted"];
 	}
 	return self;
 }
 
 - (void)connect {
 	if ([self.service isEqualToString:@"tmdb"]) {
+		if (![self configure]) {
+			return;
+		}
 		NSString* sqlQuery = @"SELECT session_id FROM watchlist_service WHERE name='tmdb'";
 		self.sessionIdQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
 		[self.database executeQuery:self.sessionIdQuery];
+	}
+}
+
+- (void)sync {
+	if (self.isSyncing) {
+		return;
+	}
+	self.syncing = YES;
+	if ([self.service isEqualToString:@"tmdb"]) {
+		self.tmdbWatchListRequest = [[SVTmdbWatchListRequest alloc] initWithSessionId:[self.tmdbInfo objectForKey:(@"sessionId")]
+																		  andImageUrl:[self.tmdbInfo objectForKey:(@"imageUrl")]];
+		self.tmdbWatchListRequest.delegate = self;
+		[self.tmdbWatchListRequest fetch];
+		[self.delegate moviesSyncManagerDidStartSyncing:self];
 	}
 }
 
@@ -67,8 +83,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	NSArray* result = query.result;
 	if (query == self.sessionIdQuery) {
 		if (result && result.count != 0) {
-			self.sessionId = [[result objectAtIndex:0] objectAtIndex:0];
-			if (self.sessionId) {
+			[self.tmdbInfo setObject:(NSString*)[[result objectAtIndex:0] objectAtIndex:0] forKey:@"sessionId"];
+			if ([self.tmdbInfo objectForKey:@"sessionId"]) {
 				[self.delegate moviesSyncManagerDidConnect:self];
 				return;
 			}
@@ -78,7 +94,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			[self.delegate moviesSyncManagerConnectionDidFail:self];
 			return;
 		}
-		self.token = [result objectAtIndex:0];
+		[self.tmdbInfo setObject:(NSString*)[result objectAtIndex:0] forKey:@"token"];
 		NSURL* callbackUrl = [NSURL URLWithString:[result objectAtIndex:1]];
 		[self.delegate moviesSyncManagerNeedsApproval:self withUrl:callbackUrl];
 	}
@@ -89,8 +105,46 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 }
 
 //////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 #pragma mark - Tmdb
 //////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////
+#pragma mark - SVTmdbWatchListRequestDelegate
+//////////////////////////////////////////////////////////////////////
+
+- (void)tmdbWatchListRequestDidFinish:(SVTmdbWatchListRequest *)request {
+	self.syncing = NO;
+	NSSet* result = request.result;
+}
+
+- (void)tmdbWatchListRequestDidFail:(SVTmdbWatchListRequest *)request {
+	self.syncing = NO;
+	[self.delegate moviesSyncManagerDidFailToSync:self];
+}
+
+//////////////////////////////////////////////////////////////////////
+#pragma mark - Tmdb Helpers
+//////////////////////////////////////////////////////////////////////
+
+- (BOOL)configure {
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", kTmdbUrl, @"configuration?api_key=", kTmdbKey]];
+	NSURLResponse *response;
+	NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:&response error:nil];
+	if (!data) {
+		[self.delegate moviesSyncManagerConnectionDidFail:self];
+		return NO;
+	}
+	else {
+		NSDictionary *jsonDictionary = [SVJsonRequest serializeJson:data];
+		NSDictionary* imageInformation = [jsonDictionary objectForKey:@"images"];
+		NSString* baseUrl = [imageInformation objectForKey:@"base_url"];
+		NSString* size = [(NSArray*)[imageInformation objectForKey:@"logo_sizes"] objectAtIndex:1];
+		[self.tmdbInfo setObject:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseUrl, size]] forKey:@"imageUrl"];
+	}
+	return YES;
+}
 
 - (NSArray*)fetchTokenAndCallback {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", kTmdbUrl, @"authentication/token/new?api_key=", kTmdbKey]];
@@ -99,7 +153,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
     if (!data) {
 		return nil;
     }
-	NSDictionary *jsonDictionary = [self serializeJson:data];
+	NSDictionary *jsonDictionary = [SVJsonRequest serializeJson:data];
 	NSString *token = [jsonDictionary objectForKey:@"request_token"];
 	NSString *authenticationCallback = nil;
 	NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
@@ -112,12 +166,12 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 }
 
 - (NSString*)fetchSessionId {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@%@%@", kTmdbUrl, @"authentication/session/new?api_key=", kTmdbKey, @"&request_token=", self.token]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@%@%@", kTmdbUrl, @"authentication/session/new?api_key=", kTmdbKey, @"&request_token=", [self.tmdbInfo objectForKey:@"token"]]];
     NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:nil error:nil];
     if (!data) {
 		return nil;
     }
-	NSDictionary *jsonDictionary = [self serializeJson:data];
+	NSDictionary *jsonDictionary = [SVJsonRequest serializeJson:data];
 	BOOL success = (BOOL)[jsonDictionary objectForKey:@"success"];
 	if (success) {
 		NSString* sessionId = (NSString*)[jsonDictionary objectForKey:@"session_id"];
@@ -129,15 +183,22 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	return nil;
 }
 
-- (NSDictionary *)serializeJson:(NSData *)data {
-    NSError *error;
-    NSObject *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    if (json && [json isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *jsonDictionary = (NSDictionary *)json;
-        return jsonDictionary;
-    }
-	NSLog(@"SVMoviesSyncManager: Json is nil or not a dictionary");
-    return nil;
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+#pragma mark - RottenTomatoe
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////
+#pragma mark - SVRTDvdReleaseDateRequestDelegate
+//////////////////////////////////////////////////////////////////////
+
+- (void)dvdReleaseDateRequestDidFinish:(SVRTDvdReleaseDateRequest *)request {
+	
+}
+
+- (void)dvdReleaseDateRequestDidFail:(SVRTDvdReleaseDateRequest *)request {
+	
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -154,18 +215,21 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
     }
     if (matchString) {
         if ([matchString isEqualToString:@"allow"]) {
-            self.tokenAccepted = YES;
+            [self.tmdbInfo setObject:[[NSNumber alloc] initWithBool:YES] forKey:@"isTokenAccepted"];
         }
-        self.lastWebPage = YES;
+		[self.tmdbInfo setObject:[[NSNumber alloc] initWithBool:YES] forKey:@"isLastWebPage"];
     }
     return YES;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    if (self.isLastWebPage) {
-        if (self.isTokenAccepted) {
-			if (self.sessionId = [self fetchSessionId])
+    if (((NSNumber*)[self.tmdbInfo objectForKey:@"isLastWebPage"]).boolValue) {
+        if (((NSNumber*)[self.tmdbInfo objectForKey:@"isTokenAccepted"]).boolValue) {
+			NSString* sessionId = [self fetchSessionId];
+			if (sessionId) {
+				[self.tmdbInfo setObject:sessionId forKey:@"sessionId"];
 				[self.delegate moviesSyncManagerDidConnect:self];
+			}
 			else
 				[self.delegate moviesSyncManagerConnectionDidFail:self];
         }

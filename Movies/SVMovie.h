@@ -9,5 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @interface SVMovie : NSObject
-
+@property (readwrite) NSNumber* identifier;
+@property (strong, readwrite) NSString *title;
+@property (strong, readwrite) NSDate *dvdReleaseDate;
+@property (strong, readwrite) NSNumber *yearOfRelease;
+@property (strong, readwrite) NSURL *imageUrl;
+@property (strong, readwrite) NSString* imageFileName;
+@property (strong, readwrite) NSString* smallImageFileName;
 @end

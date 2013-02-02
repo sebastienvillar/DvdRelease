@@ -24,6 +24,19 @@
 			url = _url,
 			mutableData = _mutableData;
 
++ (NSDictionary *)serializeJson:(NSData *)data {
+    NSError *error;
+    NSObject *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (json && [json isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *jsonDictionary = (NSDictionary *)json;
+        return jsonDictionary;
+    }
+    else {
+		return nil;
+    }
+    return nil;
+}
+
 - (id)initWithUrl:(NSURL*)aUrl {
     self = [super init];
     if (self) {

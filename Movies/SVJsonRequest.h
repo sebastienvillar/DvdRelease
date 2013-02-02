@@ -11,6 +11,7 @@
 @interface SVJsonRequest : NSObject <NSURLConnectionDelegate>
 @property (strong, readwrite) NSURL *url;
 
++ (NSDictionary *)serializeJson:(NSData *)data;
 - (id)initWithUrl:(NSURL*)aUrl;
 - (void)fetchJson:(void (^)(NSObject * json))callbackBlock;
 @end
