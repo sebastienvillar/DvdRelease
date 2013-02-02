@@ -10,18 +10,18 @@
 #import "SVDatabase.h"
 @class SVMoviesSyncManager;
 
-@protocol SVMovieSyncManagerDelegate <NSObject>
-- (void)movieSyncManagerDidConnect:(SVMoviesSyncManager*)aManager;
-- (void)movieSyncManagerConnectionDidFail:(SVMoviesSyncManager*)aManager;
-- (void)movieSyncManagerNeedsApproval:(SVMoviesSyncManager*)aManager withUrl:(NSURL*)aUrl;
-- (void)movieSyncManagerDeniedConnection:(SVMoviesSyncManager*)aManager;
-- (void)movieSyncManager:(SVMoviesSyncManager*)aManager didFetchWatchList:(NSArray*)movies;
-- (void)movieSyncManagerDidFailToSync:(SVMoviesSyncManager*)aManager;
+@protocol SVMoviesSyncManagerDelegate <NSObject>
+- (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager*)aManager;
+- (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager*)aManager;
+- (void)moviesSyncManagerNeedsApproval:(SVMoviesSyncManager*)aManager withUrl:(NSURL*)aUrl;
+- (void)moviesSyncManagerUserDeniedConnection:(SVMoviesSyncManager*)aManager;
+- (void)moviesSyncManager:(SVMoviesSyncManager*)aManager didFetchWatchList:(NSArray*)movies;
+- (void)moviesSyncManagerDidFailToSync:(SVMoviesSyncManager*)aManager;
 @end
 
-@interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol>
+@interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol, UIWebViewDelegate>
 @property (strong, readwrite) NSString* service;
-@property (weak, readwrite) NSObject<SVMovieSyncManagerDelegate>* delegate;
+@property (weak, readwrite) NSObject<SVMoviesSyncManagerDelegate>* delegate;
 
 + (SVMoviesSyncManager*)sharedMoviesSyncManager;
 - (void)connect;

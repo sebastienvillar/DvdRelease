@@ -71,28 +71,36 @@ static SVDatabase* sharedDatabase = nil;
 }
 
 - (void)executeTransaction:(SVTransaction *)transaction {
-	BOOL success = YES;
-	[self executeSQLStatement:@"BEGIN"];
-	for (NSString* statement in transaction.sqlStatements) {
-		if (![self executeSQLStatement:statement]) {
-			[self executeSQLStatement:@"ROLLBACK"];
-			success = NO;
-			break;
+	dispatch_async(self.queue, ^{
+		BOOL success = YES;
+		[self executeSQLStatement:@"BEGIN"];
+		for (NSString* statement in transaction.sqlStatements) {
+			if (![self executeSQLStatement:statement]) {
+				[self executeSQLStatement:@"ROLLBACK"];
+				success = NO;
+				break;
+			}
 		}
-	}
-	if (success) {
-		[self executeSQLStatement:@"COMMIT"];
-	}
-	if ([transaction.sender respondsToSelector:@selector(database:didFinishTransaction:withSuccess:)])
-		[transaction.sender database:self didFinishTransaction:transaction withSuccess:success];
-
+		if (success) {
+			[self executeSQLStatement:@"COMMIT"];
+		}
+		if ([transaction.sender respondsToSelector:@selector(database:didFinishTransaction:withSuccess:)]) {
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[transaction.sender database:self didFinishTransaction:transaction withSuccess:success];
+			});
+		}
+	});
 }
 
 - (void)executeQuery:(SVQuery *)query {
-	query.result = [self executeSQLQuery:query.sqlQuery];
-	if ([query.sender respondsToSelector:@selector(database:didFinishQuery:)]) {
-		[query.sender database:self didFinishQuery:query];
-	}
+	dispatch_async(self.queue, ^{
+		query.result = [self executeSQLQuery:query.sqlQuery];
+		if ([query.sender respondsToSelector:@selector(database:didFinishQuery:)]) {
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[query.sender database:self didFinishQuery:query];
+			});
+		}
+	});
 }
 
 - (NSString*)applicationSupportDirectoryPath {

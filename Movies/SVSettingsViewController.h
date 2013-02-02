@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface SVSettingsViewController : UIViewController
-
+- (void)loadWebViewWithUrl:(NSURL*)url;
 @end
