@@ -18,12 +18,33 @@
 @synthesize sqlStatements = _sqlStatements,
 			sender = _sender;
 
-- (id)initWithStatements:(NSArray*)statements andSender:(NSObject<SVDatabaseSenderProtocol>*)sender {
-	self = [super init];
-	if (self) {
-		_sqlStatements = statements;
-		_sender = sender;
-	}
+- (id)initWithSender:(NSObject<SVDatabaseSenderProtocol>*)sender {
+	self =[self init];
+	_sender = sender;
+	_sqlStatements = [[NSMutableArray alloc] init];
 	return self;
+}
+
+- (id)initWithStatements:(NSArray*)statements andSender:(NSObject<SVDatabaseSenderProtocol>*)sender {
+	self = [self init];
+	_sqlStatements = [NSMutableArray arrayWithArray:statements];
+	_sender = sender;
+	return self;
+}
+
+- (void)addStatements:(NSArray*)statements {
+	[self.sqlStatements addObjectsFromArray:statements];
+}
+
+- (void)addStatement:(NSString*)statement {
+	[self.sqlStatements addObject:statement];
+}
+
+- (NSString*)description {
+	NSMutableString* description = [[NSMutableString alloc] initWithString:@"Transaction: "];
+	for (NSString* sqlStatement in self.sqlStatements) {
+		[description appendFormat:@"%@\n", sqlStatement];
+	}
+return description;
 }
 @end

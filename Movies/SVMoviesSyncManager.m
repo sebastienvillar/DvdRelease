@@ -8,15 +8,22 @@
 
 #import "SVMoviesSyncManager.h"
 #import "SVJsonRequest.h"
+#import "SVAppDelegate.h"
 
 static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 @interface SVMoviesSyncManager ()
 @property (strong, readonly) SVDatabase* database;
 @property (strong, readwrite) SVQuery* sessionIdQuery;
+@property (strong, readwrite) SVQuery* moviesQuery;
 @property (strong, readwrite) SVTransaction* sessionIdTransaction;
+@property (strong, readwrite) SVTransaction* moviesTransaction;
+@property (readwrite) dispatch_semaphore_t moviesQuerySemaphore;
 @property (strong, readwrite) NSMutableDictionary* tmdbInfo;
+@property (strong, readwrite) NSMutableDictionary* moviesActions;
+@property (strong, readwrite) NSMutableSet* movies;
 @property (strong, readwrite) SVTmdbWatchListRequest* tmdbWatchListRequest;
+
 @property (readwrite, getter = isSyncing) BOOL syncing;
 @end
 
@@ -29,6 +36,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			sessionIdTransaction = _sessionIdTransaction,
 			tmdbWatchListRequest = _tmdbWatchListRequest,
 			syncing = _syncing,
+			moviesQuery = _moviesQuery,
+			movies = _movies,
+			moviesTransaction = _moviesTransaction,
+			moviesQuerySemaphore = _moviesQuerySemaphore,
 			tmdbInfo = _tmdbInfo;
 
 + (SVMoviesSyncManager*)sharedMoviesSyncManager {
@@ -47,6 +58,11 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		_sessionIdTransaction = nil;
 		_tmdbWatchListRequest = nil;
 		_syncing = NO;
+		_moviesQuery = nil;
+		_moviesQuerySemaphore = nil;
+		_moviesTransaction = nil;
+		_movies = [[NSMutableSet alloc] init];
+		_moviesActions = [[NSMutableDictionary alloc] init];
 		_tmdbInfo = [[NSMutableDictionary alloc] init];
 		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isLastWebPage"];
 		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isTokenAccepted"];
@@ -62,6 +78,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		NSString* sqlQuery = @"SELECT session_id FROM watchlist_service WHERE name='tmdb'";
 		self.sessionIdQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
 		[self.database executeQuery:self.sessionIdQuery];
+		self.moviesQuerySemaphore = dispatch_semaphore_create(0);
+		sqlQuery = @"SELECT * FROM movie";
+		self.moviesQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
+		[self.database executeQuery:self.moviesQuery];
 	}
 }
 
@@ -81,7 +101,35 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 - (void)database:(SVDatabase *)database didFinishQuery:(SVQuery *)query {
 	NSArray* result = query.result;
-	if (query == self.sessionIdQuery) {
+
+	if (query == self.moviesQuery) {
+		if (result) {
+			for (NSArray* row in result) {
+				SVMovie* movie = [[SVMovie alloc] init];
+				movie.uuid = [SVAppDelegate uuid];
+				movie.identifier = [row objectAtIndex:0];
+				movie.title = [row objectAtIndex:1];
+				NSString* dateString = [row objectAtIndex:2];
+				if (![dateString isEqualToString:@"NULL"]) {
+					NSArray* dateArray = [dateString componentsSeparatedByString:@"-"];
+					NSCalendar* calendar = [NSCalendar currentCalendar];
+					NSDateComponents* dateComponents = [[NSDateComponents alloc] init];
+					dateComponents.year = [[dateArray objectAtIndex:0] intValue];
+					dateComponents.month = [[dateArray objectAtIndex:1] intValue];
+					dateComponents.day = [[dateArray objectAtIndex:2] intValue];
+					movie.dvdReleaseDate = [calendar dateFromComponents:dateComponents];
+				}
+				movie.yearOfRelease = [row objectAtIndex:3];
+				movie.imageUrl = [NSURL URLWithString:[row objectAtIndex:4]];
+				movie.imageFileName = [row objectAtIndex:5];
+				movie.smallImageFileName = [row objectAtIndex:6];
+				[self.movies addObject:movie];
+			}
+		}
+		dispatch_semaphore_signal(self.moviesQuerySemaphore);
+	}
+	
+	else if (query == self.sessionIdQuery) {
 		if (result && result.count != 0) {
 			[self.tmdbInfo setObject:(NSString*)[[result objectAtIndex:0] objectAtIndex:0] forKey:@"sessionId"];
 			if ([self.tmdbInfo objectForKey:@"sessionId"]) {
@@ -89,19 +137,32 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 				return;
 			}
 		}
-		NSArray* result = [self fetchTokenAndCallback];
-		if (!result) {
+		NSArray* fetch = [self fetchTokenAndCallback];
+		if (!fetch) {
 			[self.delegate moviesSyncManagerConnectionDidFail:self];
 			return;
 		}
-		[self.tmdbInfo setObject:(NSString*)[result objectAtIndex:0] forKey:@"token"];
-		NSURL* callbackUrl = [NSURL URLWithString:[result objectAtIndex:1]];
+		[self.tmdbInfo setObject:(NSString*)[fetch objectAtIndex:0] forKey:@"token"];
+		NSURL* callbackUrl = [NSURL URLWithString:[fetch objectAtIndex:1]];
 		[self.delegate moviesSyncManagerNeedsApproval:self withUrl:callbackUrl];
 	}
 }
 
 - (void)database:(SVDatabase *)database didFinishTransaction:(SVTransaction *)transaction withSuccess:(BOOL)success {
-	NSLog(@"couldn't add session Id");
+	if (success) {
+		if (transaction == self.moviesTransaction) {
+			[self.delegate moviesSyncManagerDidFinishSyncing:self];
+			self.syncing = NO;
+		}
+	}
+	else {
+		if (transaction == self.sessionIdTransaction) {
+			NSLog(@"couldn't add session Id in DB");
+		}
+		else if (transaction == self.moviesTransaction) {
+			NSLog(@"coulnt add/update/remove movies in DB");
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -115,8 +176,57 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 //////////////////////////////////////////////////////////////////////
 
 - (void)tmdbWatchListRequestDidFinish:(SVTmdbWatchListRequest *)request {
-	self.syncing = NO;
-	NSSet* result = request.result;
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		if (self.moviesQuerySemaphore) {
+			dispatch_semaphore_wait(self.moviesQuerySemaphore, DISPATCH_TIME_FOREVER);
+			self.moviesQuerySemaphore = nil;
+		}
+		NSMutableSet* movies = request.result;
+		self.moviesTransaction = [[SVTransaction alloc] initWithSender:self];
+
+		NSMutableSet* toRevoveMovies = [[NSMutableSet alloc] initWithSet:self.movies];
+		[toRevoveMovies minusSet:movies];
+		[self.movies minusSet:toRevoveMovies];
+		
+		NSMutableSet* toAddMovies = [[NSMutableSet alloc] initWithSet:movies];
+		[toAddMovies minusSet:self.movies];
+		
+		NSPredicate* predicate = [NSPredicate predicateWithFormat:@"dvdReleaseDate == nil"];
+		NSMutableSet* toUpdateMovies = [[NSMutableSet alloc] initWithSet:self.movies];
+		[toUpdateMovies filterUsingPredicate:predicate];
+		
+		for (SVMovie* movie in toRevoveMovies) {
+			NSString* sqlStatement = [NSString stringWithFormat:@"DELETE FROM movie WHERE id = %@;", movie.identifier];
+			[self.moviesTransaction addStatement:sqlStatement];
+		}
+		
+		for (SVMovie* movie in toUpdateMovies) {
+			[self.moviesActions setObject:@"update" forKey:movie.uuid];
+		}
+		
+		for (SVMovie* movie in toAddMovies) {
+			movie.uuid = [SVAppDelegate uuid];
+			[self.moviesActions setObject:@"add" forKey:movie.uuid];
+		}
+
+		NSMutableSet* toFetchMovies = [[NSMutableSet alloc] initWithSet:toUpdateMovies];
+		[toFetchMovies unionSet:toAddMovies];
+		
+		for (SVMovie* movie in toFetchMovies) {
+			SVRTDvdReleaseDateRequest* dvdReleaseDateRequest = [[SVRTDvdReleaseDateRequest alloc] initWithMovie:movie];
+			dvdReleaseDateRequest.delegate = self;
+			[dvdReleaseDateRequest fetch];
+		}
+		if (toFetchMovies.count == 0) {
+			if (toRevoveMovies) {
+				[self.database executeTransaction:self.moviesTransaction];
+			}
+			else {
+				[self.delegate moviesSyncManagerDidFinishSyncing:self];
+				self.syncing = NO;
+			}
+		}
+	});
 }
 
 - (void)tmdbWatchListRequestDidFail:(SVTmdbWatchListRequest *)request {
@@ -194,11 +304,38 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 //////////////////////////////////////////////////////////////////////
 
 - (void)dvdReleaseDateRequestDidFinish:(SVRTDvdReleaseDateRequest *)request {
+	NSDate* date = request.result;
+	SVMovie* movie = request.movie;
+	NSString* dvdReleaseDate = @"NULL";
+	if (date) {
+		NSCalendar* calendar = [NSCalendar currentCalendar];
+		NSDateComponents* components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:date];
+		dvdReleaseDate = [NSString stringWithFormat:@"'%d-%d-%d'", components.year, components.month, components.day];
+		if ([((NSString*)[self.moviesActions objectForKey:movie.uuid]) isEqualToString:@"update"]) {
+			NSString* statement = [NSString stringWithFormat:@"UPDATE movie SET dvd_release_date = %@ WHERE id = %@;",
+								   dvdReleaseDate,
+								   movie.identifier];
+			[self.moviesTransaction addStatement:statement];
+		}
+	}
+	if ([((NSString*)[self.moviesActions objectForKey:movie.uuid]) isEqualToString:@"add"]) {
+		NSString* statement = [NSString stringWithFormat:@"INSERT INTO movie (title, dvd_release_date, year_of_release) VALUES ('%@', %@, %@);",
+							  movie.title,
+							  dvdReleaseDate,
+							  movie.yearOfRelease];
+		[self.moviesTransaction addStatement:statement];
+	}
+	[self.moviesActions removeObjectForKey:movie.uuid];
 	
+	if (self.moviesActions.count == 0) {
+		[self.database executeTransaction:self.moviesTransaction];
+		[self.delegate moviesSyncManagerDidFinishSyncing:self];
+		self.syncing = NO;
+	}
 }
 
 - (void)dvdReleaseDateRequestDidFail:(SVRTDvdReleaseDateRequest *)request {
-	
+	[self.delegate moviesSyncManagerDidFailToSync:self];
 }
 
 //////////////////////////////////////////////////////////////////////

@@ -17,5 +17,9 @@
 
 @interface SVRTDvdReleaseDateRequest : NSObject
 @property (weak, readwrite) NSObject<SVRTDvdReleaseDateRequestDelegate>* delegate;
+@property (strong, readwrite) NSDate* result;
+@property (strong, readonly) SVMovie* movie;
+
 - (id)initWithMovie:(SVMovie*)movie;
+- (void)fetch;
 @end

@@ -85,7 +85,6 @@
 }
 
 - (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager *)aManager {
-	NSLog(@"did connect");
 	[aManager sync];
 }
 

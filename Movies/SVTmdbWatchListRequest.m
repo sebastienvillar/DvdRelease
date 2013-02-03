@@ -7,6 +7,7 @@
 //
 
 #import "SVTmdbWatchListRequest.h"
+#import "SVAppDelegate.h"
 #import "SVJsonRequest.h"
 #import "SVMovie.h"
 
@@ -39,17 +40,14 @@
 }
 
 - (void)fetch {
-	NSLog(@"fetch");
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 		[self fetchPage:1];		
 	});
 }
 
 - (void)fetchPage:(int)page {
-	NSLog(@"fetch page");
     NSString* urlString = [NSString stringWithFormat:@"%@account/%@/movie_watchlist?api_key=%@&session_id=%@&page=%d", kTmdbUrl, self.sessionId, kTmdbKey, self.sessionId, page];
     NSURL* url = [NSURL URLWithString:urlString];
-	NSLog(@"url : %@",urlString);
     void(^callbackBlock)(NSObject* json) = ^(NSObject* json) {
 		if (!json) {
 			dispatch_async(dispatch_get_main_queue(), ^{

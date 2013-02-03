@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface SVMovie : NSObject
-@property (readwrite) NSNumber* identifier;
+@property (readwrite) NSString* uuid;
+@property (strong, readwrite) NSNumber* identifier;
 @property (strong, readwrite) NSString *title;
 @property (strong, readwrite) NSDate *dvdReleaseDate;
 @property (strong, readwrite) NSNumber *yearOfRelease;

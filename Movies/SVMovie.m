@@ -9,7 +9,8 @@
 #import "SVMovie.h"
 
 @implementation SVMovie
-@synthesize identifier = _identifier,
+@synthesize	uuid = _uuid,
+			identifier = _identifier,
 			title = _title,
 			dvdReleaseDate = _dvdReleaseDate,
 			yearOfRelease = _yearOfRelease,
@@ -27,5 +28,13 @@
 							 self.imageFileName,
 							 self.smallImageFileName];
 	return description;
+}
+
+- (BOOL)isEqual:(id)object {
+	return ([object isKindOfClass:[SVMovie class]] && [self.title isEqual:((SVMovie*)object).title]);
+}
+
+- (NSUInteger)hash {
+	return [self.title hash];
 }
 @end
