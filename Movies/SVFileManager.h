@@ -9,5 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface SVFileManager : NSObject
++ (SVFileManager*)sharedFileManager;
+- (BOOL)writeDataToCache:(NSData*)data withPath:(NSString*)path;
+- (NSData*)dataFromCache:(NSString*)path;
 
 @end

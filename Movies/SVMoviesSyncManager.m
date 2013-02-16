@@ -9,6 +9,7 @@
 #import "SVMoviesSyncManager.h"
 #import "SVJsonRequest.h"
 #import "SVAppDelegate.h"
+#import "SVImageManager.h"
 
 static SVMoviesSyncManager* sharedMoviesSyncManager;
 
@@ -157,10 +158,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	}
 	else {
 		if (transaction == self.sessionIdTransaction) {
-			NSLog(@"couldn't add session Id in DB");
+			[self.delegate moviesSyncManagerConnectionDidFail:self];
 		}
 		else if (transaction == self.moviesTransaction) {
-			NSLog(@"coulnt add/update/remove movies in DB");
+			[self.delegate moviesSyncManagerConnectionDidFail:self];
 		}
 	}
 }
@@ -329,8 +330,6 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	
 	if (self.moviesActions.count == 0) {
 		[self.database executeTransaction:self.moviesTransaction];
-		[self.delegate moviesSyncManagerDidFinishSyncing:self];
-		self.syncing = NO;
 	}
 }
 

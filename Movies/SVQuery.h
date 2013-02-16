@@ -11,8 +11,8 @@
 
 @interface SVQuery : NSObject
 @property (strong, readonly) NSString* sqlQuery;
-@property (strong, readonly) NSObject<SVDatabaseSenderProtocol>* sender;
+@property (strong, readonly) id sender;
 @property (strong, readwrite) NSArray* result;
 
-- (id)initWithQuery:(NSString*)query andSender:(NSObject<SVDatabaseSenderProtocol>*)sender;
+- (id)initWithQuery:(NSString*)query andSender:(id)sender;
 @end

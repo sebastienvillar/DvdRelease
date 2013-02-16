@@ -124,7 +124,7 @@ static SVDatabase* sharedDatabase = nil;
 - (BOOL)executeSQLStatement:(NSString*)statement {
 	char* error;
 	if (sqlite3_exec(self.database, [statement UTF8String], NULL, NULL, &error) != SQLITE_OK) {
-			NSLog(@"RLDatabase: Failed to execute the statement : %@\n%s", statement, error);
+		NSLog(@"RLDatabase: Failed to execute the statement : %@\n%s", statement, error);
 		return NO;
 	}
 	return YES;

@@ -11,10 +11,10 @@
 
 @interface SVTransaction : NSObject
 @property (strong, readonly) NSMutableArray* sqlStatements;
-@property (strong, readonly) NSObject<SVDatabaseSenderProtocol>* sender;
+@property (strong, readonly) id sender;
 
-- (id)initWithStatements:(NSArray*)statements andSender:(NSObject<SVDatabaseSenderProtocol>*)sender;
-- (id)initWithSender:(NSObject<SVDatabaseSenderProtocol>*)sender;
+- (id)initWithStatements:(NSArray*)statements andSender:(id)sender;
+- (id)initWithSender:(id)sender;
 - (void)addStatements:(NSArray*)statements;
 - (void)addStatement:(NSString*)statement;
 @end

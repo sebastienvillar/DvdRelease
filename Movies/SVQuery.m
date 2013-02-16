@@ -19,7 +19,7 @@
 			sender = _sender,
 			result = _result;
 
-- (id)initWithQuery:(NSString*)query andSender:(NSObject<SVDatabaseSenderProtocol>*)sender {
+- (id)initWithQuery:(NSString*)query andSender:(id)sender {
 	self = [super init];
 	if (self) {
 		_sqlQuery = query;

@@ -77,27 +77,34 @@
 //////////////////////////////////////////////////////////////////////
 
 - (void)moviesSyncManagerDidStartSyncing:(SVMoviesSyncManager *)aManager {
-	
+	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidStartSyncingNotification"
+										   object:self];
 }
 
 - (void)moviesSyncManagerDidFinishSyncing:(SVMoviesSyncManager *)aManager {
-	
+	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFinishSyncingNotification"
+										   object:self];
 }
 
 - (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager *)aManager {
+	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidConnectNotification"
+										   object:self];
 	[aManager sync];
 }
 
 - (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager *)aManager {
-	NSLog(@"SVRootViewController: Connection did fail");
+	[self.notificationCenter postNotificationName:@"moviesSyncManagerConnectionDidFailNotification"
+										   object:self];
 }
 
 - (void)moviesSyncManagerUserDeniedConnection:(SVMoviesSyncManager *)aManager {
-	NSLog(@"user denied connection");
+	[self.notificationCenter postNotificationName:@"moviesSyncManagerUserDeniedConnectoinNotification"
+										   object:self];
 }
 
 - (void)moviesSyncManagerDidFailToSync:(SVMoviesSyncManager *)aManager {
-	NSLog(@"SVMoviesSyncManager failed to sync");
+	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFailToSyncNotification"
+										   object:self];
 }
 
 - (void)moviesSyncManagerNeedsApproval:(SVMoviesSyncManager *)aManager withUrl:(NSURL *)url {

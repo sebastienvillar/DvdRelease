@@ -18,14 +18,14 @@
 @synthesize sqlStatements = _sqlStatements,
 			sender = _sender;
 
-- (id)initWithSender:(NSObject<SVDatabaseSenderProtocol>*)sender {
+- (id)initWithSender:(id)sender {
 	self =[self init];
 	_sender = sender;
 	_sqlStatements = [[NSMutableArray alloc] init];
 	return self;
 }
 
-- (id)initWithStatements:(NSArray*)statements andSender:(NSObject<SVDatabaseSenderProtocol>*)sender {
+- (id)initWithStatements:(NSArray*)statements andSender:(id)sender {
 	self = [self init];
 	_sqlStatements = [NSMutableArray arrayWithArray:statements];
 	_sender = sender;
@@ -45,6 +45,6 @@
 	for (NSString* sqlStatement in self.sqlStatements) {
 		[description appendFormat:@"%@\n", sqlStatement];
 	}
-return description;
+	return description;
 }
 @end
