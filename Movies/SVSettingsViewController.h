@@ -10,4 +10,6 @@
 
 @interface SVSettingsViewController : UIViewController
 - (void)loadWebViewWithUrl:(NSURL*)url;
+- (void)loadDisconnectedSettingsView;
+- (void)loadConnectedSettingsView;
 @end

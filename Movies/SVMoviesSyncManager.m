@@ -232,7 +232,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 - (void)tmdbWatchListRequestDidFail:(SVTmdbWatchListRequest *)request {
 	self.syncing = NO;
-	[self.delegate moviesSyncManagerDidFailToSync:self];
+	[self.delegate moviesSyncManagerDidFailSyncing:self];
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -334,7 +334,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 }
 
 - (void)dvdReleaseDateRequestDidFail:(SVRTDvdReleaseDateRequest *)request {
-	[self.delegate moviesSyncManagerDidFailToSync:self];
+	[self.delegate moviesSyncManagerDidFailSyncing:self];
 }
 
 //////////////////////////////////////////////////////////////////////

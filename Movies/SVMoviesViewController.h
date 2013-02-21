@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SVDatabase.h"
 
-@interface SVMoviesViewController : UIViewController
+@interface SVMoviesViewController : UIViewController <SVDatabaseSenderProtocol>
 
 @end

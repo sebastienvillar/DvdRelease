@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SVSettingsView : UIView
 
+@interface SVSettingsDisconnectedView : UIView
+@property (strong, readonly) UIButton* signInButton;
 @end

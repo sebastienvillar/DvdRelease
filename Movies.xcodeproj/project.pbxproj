@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D2FD4E216D66CEF00765DD9 /* SVSettingsConnectedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2FD4E116D66CEF00765DD9 /* SVSettingsConnectedView.m */; };
 		4D77EF2316BBF73D00E1ADC3 /* SVTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF2216BBF73D00E1ADC3 /* SVTransaction.m */; };
 		4D77EF2716BBFEFC00E1ADC3 /* SVQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF2616BBFEFC00E1ADC3 /* SVQuery.m */; };
 		4D77EF2916BC03E900E1ADC3 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D77EF2816BC03E900E1ADC3 /* libsqlite3.dylib */; };
-		4D77EF3816BC208600E1ADC3 /* SVSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF3716BC208600E1ADC3 /* SVSettingsView.m */; };
+		4D77EF3816BC208600E1ADC3 /* SVSettingsDisconnectedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF3716BC208600E1ADC3 /* SVSettingsDisconnectedView.m */; };
 		4D96674316CFA5E70051C349 /* SVImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D96674216CFA5E70051C349 /* SVImageManager.m */; };
 		4DD4630616B97FE10038FA89 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630516B97FE10038FA89 /* UIKit.framework */; };
 		4DD4630816B97FE10038FA89 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630716B97FE10038FA89 /* Foundation.framework */; };
@@ -34,16 +35,24 @@
 		4DD4635516B9839F0038FA89 /* SVMoviesLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635416B9839F0038FA89 /* SVMoviesLoadingView.m */; };
 		4DD4635816B983AA0038FA89 /* SVMoviesTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */; };
 		4DD4635B16B983C90038FA89 /* SVMovieTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */; };
+		4DDA2FFC16D54DD5006CE8C8 /* button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF616D54DD5006CE8C8 /* button@2x.png */; };
+		4DDA2FFD16D54DD5006CE8C8 /* dvd_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF716D54DD5006CE8C8 /* dvd_overlay@2x.png */; };
+		4DDA2FFE16D54DD5006CE8C8 /* error_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF816D54DD5006CE8C8 /* error_icon@2x.png */; };
+		4DDA2FFF16D54DD5006CE8C8 /* home_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF916D54DD5006CE8C8 /* home_button@2x.png */; };
+		4DDA300016D54DD5006CE8C8 /* settings_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FFA16D54DD5006CE8C8 /* settings_background@2x.png */; };
+		4DDA300116D54DD5006CE8C8 /* settings_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FFB16D54DD5006CE8C8 /* settings_button@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D2FD4E016D66CEF00765DD9 /* SVSettingsConnectedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsConnectedView.h; sourceTree = "<group>"; };
+		4D2FD4E116D66CEF00765DD9 /* SVSettingsConnectedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsConnectedView.m; sourceTree = "<group>"; };
 		4D77EF2116BBF73D00E1ADC3 /* SVTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVTransaction.h; sourceTree = "<group>"; };
 		4D77EF2216BBF73D00E1ADC3 /* SVTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVTransaction.m; sourceTree = "<group>"; };
 		4D77EF2516BBFEFC00E1ADC3 /* SVQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVQuery.h; sourceTree = "<group>"; };
 		4D77EF2616BBFEFC00E1ADC3 /* SVQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVQuery.m; sourceTree = "<group>"; };
 		4D77EF2816BC03E900E1ADC3 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		4D77EF3616BC208600E1ADC3 /* SVSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsView.h; sourceTree = "<group>"; };
-		4D77EF3716BC208600E1ADC3 /* SVSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsView.m; sourceTree = "<group>"; };
+		4D77EF3616BC208600E1ADC3 /* SVSettingsDisconnectedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsDisconnectedView.h; sourceTree = "<group>"; };
+		4D77EF3716BC208600E1ADC3 /* SVSettingsDisconnectedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsDisconnectedView.m; sourceTree = "<group>"; };
 		4D96674116CFA5E70051C349 /* SVImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVImageManager.h; sourceTree = "<group>"; };
 		4D96674216CFA5E70051C349 /* SVImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVImageManager.m; sourceTree = "<group>"; };
 		4DD4630116B97FE10038FA89 /* Movies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Movies.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,6 +94,12 @@
 		4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesTopView.m; sourceTree = "<group>"; };
 		4DD4635916B983C80038FA89 /* SVMovieTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMovieTableViewCell.h; sourceTree = "<group>"; };
 		4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMovieTableViewCell.m; sourceTree = "<group>"; };
+		4DDA2FF616D54DD5006CE8C8 /* button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button@2x.png"; sourceTree = "<group>"; };
+		4DDA2FF716D54DD5006CE8C8 /* dvd_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dvd_overlay@2x.png"; sourceTree = "<group>"; };
+		4DDA2FF816D54DD5006CE8C8 /* error_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error_icon@2x.png"; sourceTree = "<group>"; };
+		4DDA2FF916D54DD5006CE8C8 /* home_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "home_button@2x.png"; sourceTree = "<group>"; };
+		4DDA2FFA16D54DD5006CE8C8 /* settings_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_background@2x.png"; sourceTree = "<group>"; };
+		4DDA2FFB16D54DD5006CE8C8 /* settings_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_button@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +160,7 @@
 		4DD4630C16B97FE10038FA89 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4DDA2FF516D54DC8006CE8C8 /* Images */,
 				4DD4630D16B97FE10038FA89 /* Movies-Info.plist */,
 				4DD4630E16B97FE10038FA89 /* InfoPlist.strings */,
 				4DD4631116B97FE10038FA89 /* main.m */,
@@ -189,8 +205,10 @@
 				4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */,
 				4DD4635916B983C80038FA89 /* SVMovieTableViewCell.h */,
 				4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */,
-				4D77EF3616BC208600E1ADC3 /* SVSettingsView.h */,
-				4D77EF3716BC208600E1ADC3 /* SVSettingsView.m */,
+				4D77EF3616BC208600E1ADC3 /* SVSettingsDisconnectedView.h */,
+				4D77EF3716BC208600E1ADC3 /* SVSettingsDisconnectedView.m */,
+				4D2FD4E016D66CEF00765DD9 /* SVSettingsConnectedView.h */,
+				4D2FD4E116D66CEF00765DD9 /* SVSettingsConnectedView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -242,6 +260,19 @@
 				4D77EF2616BBFEFC00E1ADC3 /* SVQuery.m */,
 			);
 			name = Wrappers;
+			sourceTree = "<group>";
+		};
+		4DDA2FF516D54DC8006CE8C8 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				4DDA2FF616D54DD5006CE8C8 /* button@2x.png */,
+				4DDA2FF716D54DD5006CE8C8 /* dvd_overlay@2x.png */,
+				4DDA2FF816D54DD5006CE8C8 /* error_icon@2x.png */,
+				4DDA2FF916D54DD5006CE8C8 /* home_button@2x.png */,
+				4DDA2FFA16D54DD5006CE8C8 /* settings_background@2x.png */,
+				4DDA2FFB16D54DD5006CE8C8 /* settings_button@2x.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -300,6 +331,12 @@
 				4DD4631816B97FE20038FA89 /* Default.png in Resources */,
 				4DD4631A16B97FE20038FA89 /* Default@2x.png in Resources */,
 				4DD4631C16B97FE20038FA89 /* Default-568h@2x.png in Resources */,
+				4DDA2FFC16D54DD5006CE8C8 /* button@2x.png in Resources */,
+				4DDA2FFD16D54DD5006CE8C8 /* dvd_overlay@2x.png in Resources */,
+				4DDA2FFE16D54DD5006CE8C8 /* error_icon@2x.png in Resources */,
+				4DDA2FFF16D54DD5006CE8C8 /* home_button@2x.png in Resources */,
+				4DDA300016D54DD5006CE8C8 /* settings_background@2x.png in Resources */,
+				4DDA300116D54DD5006CE8C8 /* settings_button@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,8 +364,9 @@
 				4DD4635B16B983C90038FA89 /* SVMovieTableViewCell.m in Sources */,
 				4D77EF2316BBF73D00E1ADC3 /* SVTransaction.m in Sources */,
 				4D77EF2716BBFEFC00E1ADC3 /* SVQuery.m in Sources */,
-				4D77EF3816BC208600E1ADC3 /* SVSettingsView.m in Sources */,
+				4D77EF3816BC208600E1ADC3 /* SVSettingsDisconnectedView.m in Sources */,
 				4D96674316CFA5E70051C349 /* SVImageManager.m in Sources */,
+				4D2FD4E216D66CEF00765DD9 /* SVSettingsConnectedView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

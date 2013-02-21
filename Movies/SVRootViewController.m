@@ -8,11 +8,13 @@
 
 #import "SVRootViewController.h"
 #import "SVSettingsViewController.h"
+#import "SVMoviesViewController.h"
 
 @interface SVRootViewController ()
 @property (strong, readonly) SVDatabase* database;
 @property (strong, readonly) SVMoviesSyncManager* moviesSyncManager;
 @property (strong, readwrite) SVSettingsViewController* settingsViewController;
+@property (strong, readwrite) SVMoviesViewController* moviesViewController;
 @property (strong, readwrite) SVQuery* currentServiceQuery;
 @property (strong, readonly) NSNotificationCenter* notificationCenter;
 @end
@@ -24,6 +26,7 @@
 @synthesize database = _database,
 			currentServiceQuery = _currentServiceQuery,
 			settingsViewController = _settingsViewController,
+			moviesViewController = _moviesViewController,
 			notificationCenter = _notificationCenter,
 			moviesSyncManager = _moviesSyncManager;
 
@@ -34,6 +37,7 @@
 		_moviesSyncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
 		_moviesSyncManager.delegate = self;
 		_settingsViewController = nil;
+		_moviesViewController = [[SVMoviesViewController alloc] init];
 		_notificationCenter = [NSNotificationCenter defaultCenter];
 	}
 	return self;
@@ -67,6 +71,7 @@
 		else {
 			self.settingsViewController = [[SVSettingsViewController alloc] init];
 			self.settingsViewController.view.frame = self.view.bounds;
+			[self.settingsViewController loadDisconnectedSettingsView];
 			[self.view addSubview:self.settingsViewController.view];
 		}
 	}
@@ -102,8 +107,8 @@
 										   object:self];
 }
 
-- (void)moviesSyncManagerDidFailToSync:(SVMoviesSyncManager *)aManager {
-	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFailToSyncNotification"
+- (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager *)aManager {
+	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFailSyncingNotification"
 										   object:self];
 }
 

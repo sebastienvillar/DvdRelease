@@ -19,7 +19,7 @@
 - (void)moviesSyncManagerUserDeniedConnection:(SVMoviesSyncManager*)aManager;
 - (void)moviesSyncManagerDidStartSyncing:(SVMoviesSyncManager*)aManager;
 - (void)moviesSyncManagerDidFinishSyncing:(SVMoviesSyncManager*)aManager;
-- (void)moviesSyncManagerDidFailToSync:(SVMoviesSyncManager*)aManager;
+- (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager*)aManager;
 @end
 
 @interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol, UIWebViewDelegate, SVTmdbWatchListRequestDelegate, SVRTDvdReleaseDateRequestDelegate>
