@@ -14,12 +14,12 @@
 
 @protocol SVMoviesSyncManagerDelegate <NSObject>
 - (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager*)aManager;
-- (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager*)aManager;
+- (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager*)aManager withError:(NSError*)error;
 - (void)moviesSyncManagerNeedsApproval:(SVMoviesSyncManager*)aManager withUrl:(NSURL*)aUrl;
 - (void)moviesSyncManagerUserDeniedConnection:(SVMoviesSyncManager*)aManager;
 - (void)moviesSyncManagerDidStartSyncing:(SVMoviesSyncManager*)aManager;
 - (void)moviesSyncManagerDidFinishSyncing:(SVMoviesSyncManager*)aManager;
-- (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager*)aManager;
+- (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager*)aManager withError:(NSError*)error;
 @end
 
 @interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol, UIWebViewDelegate, SVTmdbWatchListRequestDelegate, SVRTDvdReleaseDateRequestDelegate>

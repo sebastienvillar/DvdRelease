@@ -19,7 +19,7 @@
 			smallImageFileName = _smallImageFileName;
 
 - (NSString*)description {
-	NSString* description = [NSString stringWithFormat:@"Movie: %@\nTitle: %@\nDvdReleaseDate: %@\nYearOfRelease: %@\nImageUrl: %@\nImageFileName: %@\nSmallImageFileName\n: %@\n",
+	NSString* description = [NSString stringWithFormat:@"Movie: %@\nTitle: %@\nDvdReleaseDate: %@\nYearOfRelease: %@\nImageUrl: %@\nImageFileName: %@\nSmallImageFileName: %@\n",
 							 self.identifier,
 							 self.title,
 							 self.dvdReleaseDate,
@@ -28,6 +28,28 @@
 							 self.imageFileName,
 							 self.smallImageFileName];
 	return description;
+}
+
+- (void)setImageFileName:(NSString *)imageFileName {
+	if ([imageFileName isEqualToString:@"NULL"])
+		_imageFileName = nil;
+	else
+		_imageFileName = imageFileName;
+}
+
+- (NSString*)imageFileName {
+	return _imageFileName;
+}
+
+- (void)setSmallImageFileName:(NSString *)smallImageFileName {
+	if ([smallImageFileName isEqualToString:@"NULL"])
+		_smallImageFileName = nil;
+	else
+		_smallImageFileName = smallImageFileName;
+}
+
+- (NSString*)smallImageFileName {
+	return _smallImageFileName;
 }
 
 - (BOOL)isEqual:(id)object {

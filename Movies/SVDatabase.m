@@ -165,5 +165,4 @@ static SVDatabase* sharedDatabase = nil;
 	return result;
 }
 
-
 @end

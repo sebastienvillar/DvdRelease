@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SVDatabase.h"
 
-@interface SVMoviesViewController : UIViewController <SVDatabaseSenderProtocol>
-
+@interface SVMoviesViewController : UIViewController <SVDatabaseSenderProtocol, UITableViewDataSource, UITableViewDelegate>
+- (void)loadLoadingView;
+- (void)loadMainView;
 @end

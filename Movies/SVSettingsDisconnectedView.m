@@ -40,9 +40,8 @@
 - (void)drawRect:(CGRect)rect
 {
 	//Background
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	CGContextSetRGBFillColor(context, 0, 0, 0, 1);
-	CGContextFillRect(context, self.frame);
+	[[UIColor blackColor] set];
+	[[UIBezierPath bezierPathWithRect:self.bounds] fill];
 	UIImage* backgroundImage = [UIImage imageNamed:@"settings_background-568.png"];
 	CGRect imageRect = CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height);
 	[backgroundImage drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:0.2];
@@ -50,7 +49,7 @@
 	NSString* explanation = @"This application uses TMDB to\n synchronize your movie watchlist and\n display DVD release dates";
 	float height = self.frame.size.height;
 	float width = self.frame.size.width;
-	[[UIColor colorWithRed:203 green:203 blue:203 alpha:1] set];
+	[[UIColor colorWithRed:0.9333 green:0.9255 blue:0.8353 alpha:1.0000] set];
 	[explanation drawInRect:CGRectMake(20, height/2 - 80, width - 40, 100)
 				   withFont:[UIFont systemFontOfSize:15]
 			  lineBreakMode:nil
