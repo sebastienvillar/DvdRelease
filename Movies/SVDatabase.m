@@ -40,8 +40,7 @@ static SVDatabase* sharedDatabase = nil;
 		if (![[NSFileManager defaultManager] fileExistsAtPath:_databasePath]) {
 			NSString *createServiceStatement = @"CREATE TABLE watchlist_service (id INTEGER PRIMARY KEY,"
 			"name TEXT,"
-			"session_id TEXT,"
-			"is_current_service INTEGER);";
+			"session_id TEXT);";
 			NSString *createMovieStatement = @"CREATE TABLE movie (id INTEGER PRIMARY KEY,"
 			"title TEXT,"
 			"dvd_release_date DATE, "

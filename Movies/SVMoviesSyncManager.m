@@ -25,6 +25,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 @property (strong, readwrite) NSMutableDictionary* moviesActions;
 @property (strong, readwrite) NSMutableSet* movies;
 @property (strong, readwrite) SVTmdbWatchListRequest* tmdbWatchListRequest;
+@property (readwrite, getter = isErrorAlreadyReported) BOOL errorAlreadyReported;
 
 @property (readwrite, getter = isSyncing) BOOL syncing;
 @end
@@ -42,6 +43,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			movies = _movies,
 			moviesTransaction = _moviesTransaction,
 			moviesQuerySemaphore = _moviesQuerySemaphore,
+			errorAlreadyReported = _errorAlreadyReported,
 			tmdbInfo = _tmdbInfo;
 
 + (SVMoviesSyncManager*)sharedMoviesSyncManager {
@@ -63,7 +65,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		_moviesQuery = nil;
 		_moviesQuerySemaphore = nil;
 		_moviesTransaction = nil;
-		_movies = [[NSMutableSet alloc] init];
+		_errorAlreadyReported = NO;
+		_movies = nil;
 		_moviesActions = [[NSMutableDictionary alloc] init];
 		_tmdbInfo = [[NSMutableDictionary alloc] init];
 		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isLastWebPage"];
@@ -77,6 +80,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		if (![self configure]) {
 			return;
 		}
+		self.movies = [[NSMutableSet alloc] init];
 		NSString* sqlQuery = @"SELECT session_id FROM watchlist_service WHERE name='tmdb'";
 		self.sessionIdQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
 		[self.database executeQuery:self.sessionIdQuery];
@@ -179,9 +183,9 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		NSMutableSet* movies = request.result;
 		self.moviesTransaction = [[SVTransaction alloc] initWithSender:self];
 
-		NSMutableSet* toRevoveMovies = [[NSMutableSet alloc] initWithSet:self.movies];
-		[toRevoveMovies minusSet:movies];
-		[self.movies minusSet:toRevoveMovies];
+		NSMutableSet* toRemoveMovies = [[NSMutableSet alloc] initWithSet:self.movies];
+		[toRemoveMovies minusSet:movies];
+		[self.movies minusSet:toRemoveMovies];
 		
 		NSMutableSet* toAddMovies = [[NSMutableSet alloc] initWithSet:movies];
 		[toAddMovies minusSet:self.movies];
@@ -190,7 +194,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		NSMutableSet* toUpdateMovies = [[NSMutableSet alloc] initWithSet:self.movies];
 		[toUpdateMovies filterUsingPredicate:predicate];
 		
-		for (SVMovie* movie in toRevoveMovies) {
+		for (SVMovie* movie in toRemoveMovies) {
 			NSString* sqlStatement = [NSString stringWithFormat:@"DELETE FROM movie WHERE id = %@;", movie.identifier];
 			[self.moviesTransaction addStatement:sqlStatement];
 		}
@@ -213,7 +217,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			[dvdReleaseDateRequest fetch];
 		}
 		if (toFetchMovies.count == 0) {
-			if (toRevoveMovies) {
+			if (toRemoveMovies) {
 				[self.database executeTransaction:self.moviesTransaction];
 			}
 			else {
@@ -278,17 +282,15 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 - (NSString*)fetchSessionId {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@%@%@", kTmdbUrl, @"authentication/session/new?api_key=", kTmdbKey, @"&request_token=", [self.tmdbInfo objectForKey:@"token"]]];
-	NSError* error;
-    NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:nil error:&error];
+    NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:nil error:nil];
     if (!data) {
-		[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
 		return nil;
     }
 	NSDictionary *jsonDictionary = [SVJsonRequest serializeJson:data];
 	BOOL success = (BOOL)[jsonDictionary objectForKey:@"success"];
 	if (success) {
 		NSString* sessionId = (NSString*)[jsonDictionary objectForKey:@"session_id"];
-		NSString* sqlStatement = [NSString stringWithFormat: @"INSERT INTO watchlist_service (name, session_id, is_current_service) VALUES ('tmdb', '%@', 1);", sessionId];
+		NSString* sqlStatement = [NSString stringWithFormat: @"INSERT INTO watchlist_service (name, session_id) VALUES ('tmdb', '%@');", sessionId];
 		self.sessionIdTransaction = [[SVTransaction alloc] initWithStatements:[[NSArray alloc] initWithObjects:sqlStatement, nil] andSender:self];
 		[self.database executeTransaction:self.sessionIdTransaction];
 		return sessionId;
@@ -332,7 +334,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	[self.moviesActions removeObjectForKey:movie.uuid];
 	
 	if (self.moviesActions.count == 0) {
-		[self.database executeTransaction:self.moviesTransaction];
+		if (!self.isErrorAlreadyReported) {
+			[self.database executeTransaction:self.moviesTransaction];
+		}
+		self.errorAlreadyReported = NO;
 	}
 }
 
@@ -340,12 +345,19 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
 	[userInfo setObject:@"DvdReleaseDateRequest failed" forKey:NSLocalizedDescriptionKey];
 	NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
-	[self.delegate moviesSyncManagerDidFailSyncing:self withError:error];
+	if (!self.isErrorAlreadyReported) {
+		[self.delegate moviesSyncManagerDidFailSyncing:self withError:error];
+	}
+	[self.moviesActions removeObjectForKey:request.movie.uuid];
+	self.errorAlreadyReported = YES;
+	if (self.moviesActions.count == 0)
+		self.errorAlreadyReported = NO;
 }
 
 //////////////////////////////////////////////////////////////////////
 #pragma mark - UIWebViewDelegate
 //////////////////////////////////////////////////////////////////////
+
 
 - (BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
     NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"/(allow|deny)$" options:0 error:nil];
@@ -367,6 +379,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     if (((NSNumber*)[self.tmdbInfo objectForKey:@"isLastWebPage"]).boolValue) {
         if (((NSNumber*)[self.tmdbInfo objectForKey:@"isTokenAccepted"]).boolValue) {
+			[self.tmdbInfo setObject:[[NSNumber alloc] initWithBool:NO] forKey:@"isTokenAccepted"];
+			[self.tmdbInfo setObject:[[NSNumber alloc] initWithBool:NO] forKey:@"isLastWebPage"];
 			NSString* sessionId = [self fetchSessionId];
 			if (sessionId) {
 				[self.tmdbInfo setObject:sessionId forKey:@"sessionId"];

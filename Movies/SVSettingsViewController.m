@@ -7,14 +7,14 @@
 //
 
 #import "SVSettingsViewController.h"
-#import "SVSettingsDisconnectedView.h"
-#import "SVSettingsConnectedView.h"
+#import "SVSettingsLogOutView.h"
+#import "SVSettingsSignInView.h"
 #import "SVMoviesSyncManager.h"
 
 @interface SVSettingsViewController ()
 @property (strong, readwrite) UIWebView* webView;
-@property (strong, readwrite) SVSettingsDisconnectedView* settingsDisconnectedView;
-@property (strong, readwrite) SVSettingsConnectedView* settingsConnectedView;
+@property (strong, readwrite) SVSettingsLogOutView* settingsLogOutView;
+@property (strong, readwrite) SVSettingsSignInView* settingsSignInView;
 @property (strong, readwrite) SVMoviesSyncManager* moviesSyncManager;
 @end
 
@@ -23,8 +23,8 @@
 
 @implementation SVSettingsViewController
 @synthesize webView = _webView,
-			settingsDisconnectedView = _settingsDisconnectedView,
-			settingsConnectedView = _settingsConnectedView,
+			settingsLogOutView = _settingsLogOutView,
+			settingsSignInView = _settingsSignInView,
 			moviesSyncManager = _moviesSyncManager;
 
 - (id)init
@@ -32,8 +32,8 @@
     self = [super init];
     if (self) {
 		_webView = nil;
-		_settingsDisconnectedView = [[SVSettingsDisconnectedView alloc] initWithFrame:self.view.bounds];
-		_settingsConnectedView = [[SVSettingsConnectedView alloc] initWithFrame:self.view.bounds];
+		_settingsSignInView = [[SVSettingsSignInView alloc] initWithFrame:self.view.bounds];
+		_settingsLogOutView = [[SVSettingsLogOutView alloc] initWithFrame:self.view.bounds];
 		_moviesSyncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadWebViewWithUrl:) name:@"moviesSyncManagerNeedsApprovalNotification" object:nil];
     }
@@ -52,16 +52,21 @@
 }
 
 - (void)loadView {
-	self.view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	CGRect rect = [UIScreen mainScreen].applicationFrame;
+	rect.origin.y = 0;
+	self.view = [[UIView alloc] initWithFrame:rect];
 }
 
-- (void)loadDisconnectedSettingsView {
-	self.view = self.settingsDisconnectedView;
-	[self.settingsDisconnectedView.signInButton addTarget:self action:@selector(disconnect) forControlEvents:UIControlEventAllTouchEvents];
+- (void)loadSignInView {
+	[self.webView removeFromSuperview];
+	self.view = self.settingsSignInView;
+	[self.settingsSignInView.signInButton addTarget:self action:@selector(didClickSignIn) forControlEvents:UIControlEventTouchDown];
 }
 
-- (void)loadConnectedSettingsView {
-	self.view = self.settingsConnectedView;
+- (void)loadLogOutView {
+	self.view = self.settingsLogOutView;
+	[self.settingsLogOutView.logoutButton addTarget:self action:@selector(didClickSignOut) forControlEvents:UIControlEventTouchDown];
+	[self.settingsLogOutView.homeButton addTarget:self action:@selector(didClickHome) forControlEvents:UIControlEventTouchDown];
 }
 
 - (void)loadWebViewWithUrl:(NSNotification*)notification {
@@ -80,20 +85,36 @@
 	[self.view addSubview:self.webView];
 	[self.webView loadRequest:urlRequest];
 	self.webView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.height, self.view.frame.size.width);
-	[UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.5];
-    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-    self.webView.frame = self.view.bounds;
-    [UIView commitAnimations];
+	void(^animationBlock)(void) = ^{
+		self.webView.frame = self.view.bounds;
+	};
+	[UIView animateWithDuration:0.5
+						  delay:0
+						options:UIViewAnimationCurveLinear
+					 animations:animationBlock
+					 completion:NULL];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // ACTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)disconnect {
-	self.moviesSyncManager.service = @"tmdb";
-	[self.moviesSyncManager connect];
+- (void)didClickSignIn {
+	if ([self.delegate respondsToSelector:@selector(settingsViewControllerDidClickSignInButton:)]) {
+		[self.delegate settingsViewControllerDidClickSignInButton:self];
+	}
+}
+
+- (void)didClickSignOut {
+	if ([self.delegate respondsToSelector:@selector(settingsViewControllerDidClickLogOutButton:)]) {
+		[self.delegate settingsViewControllerDidClickLogOutButton:self];
+	}
+}
+
+- (void)didClickHome {
+	if ([self.delegate respondsToSelector:@selector(settingsViewControllerDidClickHomeButton:)]) {
+		[self.delegate settingsViewControllerDidClickHomeButton:self];
+	}
 }
 
 @end

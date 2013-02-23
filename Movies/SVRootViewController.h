@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "SVDatabase.h"
+#import "SVMoviesViewController.h"
+#import "SVSettingsViewController.h"
 #import "SVMoviesSyncManager.h"
 
-@interface SVRootViewController : UIViewController <SVDatabaseSenderProtocol, SVMoviesSyncManagerDelegate>
+@interface SVRootViewController : UIViewController <SVDatabaseSenderProtocol, SVMoviesSyncManagerDelegate, SVMoviesViewControllerDelegate, SVSettingsViewControllerDelegate>
 
 @end

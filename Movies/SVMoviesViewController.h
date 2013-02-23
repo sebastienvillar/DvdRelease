@@ -9,7 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "SVDatabase.h"
 
+@class SVMoviesViewController;
+
+@protocol SVMoviesViewControllerDelegate <NSObject>
+- (void)moviesViewControllerDidClickSettingsButton:(SVMoviesViewController*)moviesViewController;
+@end
+
 @interface SVMoviesViewController : UIViewController <SVDatabaseSenderProtocol, UITableViewDataSource, UITableViewDelegate>
+@property (weak, readwrite)id delegate;
 - (void)loadLoadingView;
 - (void)loadMainView;
+- (void)loadData;
+- (void)clearData;
 @end

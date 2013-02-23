@@ -25,6 +25,9 @@ static NSCache* imagesCache = nil;
 @property (strong, readonly) SVImageManager* imageManager;
 @end
 
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
 @implementation SVMovieTableViewCell
 @synthesize movie = _movie,
 			tableViewParent = _tableViewParent,

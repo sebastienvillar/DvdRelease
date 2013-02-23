@@ -8,8 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@class SVSettingsViewController;
+
+@protocol SVSettingsViewControllerDelegate <NSObject>
+- (void)settingsViewControllerDidClickHomeButton:(SVSettingsViewController*)settingsViewController;
+- (void)settingsViewControllerDidClickSignInButton:(SVSettingsViewController*)settingsViewController;
+- (void)settingsViewControllerDidClickLogOutButton:(SVSettingsViewController*)settingsViewController;
+@end
+
 @interface SVSettingsViewController : UIViewController
+@property (weak, readwrite) id delegate;
 - (void)loadWebViewWithUrl:(NSURL*)url;
-- (void)loadDisconnectedSettingsView;
-- (void)loadConnectedSettingsView;
+- (void)loadSignInView;
+- (void)loadLogOutView;
 @end

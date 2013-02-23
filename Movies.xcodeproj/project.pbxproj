@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4D2FD4E216D66CEF00765DD9 /* SVSettingsConnectedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2FD4E116D66CEF00765DD9 /* SVSettingsConnectedView.m */; };
+		4D2FD4E216D66CEF00765DD9 /* SVSettingsLogOutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2FD4E116D66CEF00765DD9 /* SVSettingsLogOutView.m */; };
 		4D77EF2316BBF73D00E1ADC3 /* SVTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF2216BBF73D00E1ADC3 /* SVTransaction.m */; };
 		4D77EF2716BBFEFC00E1ADC3 /* SVQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF2616BBFEFC00E1ADC3 /* SVQuery.m */; };
 		4D77EF2916BC03E900E1ADC3 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D77EF2816BC03E900E1ADC3 /* libsqlite3.dylib */; };
-		4D77EF3816BC208600E1ADC3 /* SVSettingsDisconnectedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF3716BC208600E1ADC3 /* SVSettingsDisconnectedView.m */; };
+		4D77EF3816BC208600E1ADC3 /* SVSettingsSignInView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF3716BC208600E1ADC3 /* SVSettingsSignInView.m */; };
 		4D96674316CFA5E70051C349 /* SVImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D96674216CFA5E70051C349 /* SVImageManager.m */; };
 		4DAE806116D79EA000DA09DC /* SVHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAE806016D79EA000DA09DC /* SVHelper.m */; };
+		4DB1600F16D8D29400A16F6E /* SVMoviesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1600E16D8D29300A16F6E /* SVMoviesTableViewController.m */; };
 		4DD4630616B97FE10038FA89 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630516B97FE10038FA89 /* UIKit.framework */; };
 		4DD4630816B97FE10038FA89 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630716B97FE10038FA89 /* Foundation.framework */; };
 		4DD4630A16B97FE10038FA89 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630916B97FE10038FA89 /* CoreGraphics.framework */; };
@@ -40,24 +41,26 @@
 		4DDA2FFD16D54DD5006CE8C8 /* dvd_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF716D54DD5006CE8C8 /* dvd_overlay@2x.png */; };
 		4DDA2FFE16D54DD5006CE8C8 /* error_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF816D54DD5006CE8C8 /* error_icon@2x.png */; };
 		4DDA2FFF16D54DD5006CE8C8 /* home_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF916D54DD5006CE8C8 /* home_button@2x.png */; };
-		4DDA300016D54DD5006CE8C8 /* settings_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FFA16D54DD5006CE8C8 /* settings_background@2x.png */; };
+		4DDA300016D54DD5006CE8C8 /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FFA16D54DD5006CE8C8 /* background@2x.png */; };
 		4DDA300116D54DD5006CE8C8 /* settings_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FFB16D54DD5006CE8C8 /* settings_button@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4D2FD4E016D66CEF00765DD9 /* SVSettingsConnectedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsConnectedView.h; sourceTree = "<group>"; };
-		4D2FD4E116D66CEF00765DD9 /* SVSettingsConnectedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsConnectedView.m; sourceTree = "<group>"; };
+		4D2FD4E016D66CEF00765DD9 /* SVSettingsLogOutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsLogOutView.h; sourceTree = "<group>"; };
+		4D2FD4E116D66CEF00765DD9 /* SVSettingsLogOutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsLogOutView.m; sourceTree = "<group>"; };
 		4D77EF2116BBF73D00E1ADC3 /* SVTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVTransaction.h; sourceTree = "<group>"; };
 		4D77EF2216BBF73D00E1ADC3 /* SVTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVTransaction.m; sourceTree = "<group>"; };
 		4D77EF2516BBFEFC00E1ADC3 /* SVQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVQuery.h; sourceTree = "<group>"; };
 		4D77EF2616BBFEFC00E1ADC3 /* SVQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVQuery.m; sourceTree = "<group>"; };
 		4D77EF2816BC03E900E1ADC3 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		4D77EF3616BC208600E1ADC3 /* SVSettingsDisconnectedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsDisconnectedView.h; sourceTree = "<group>"; };
-		4D77EF3716BC208600E1ADC3 /* SVSettingsDisconnectedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsDisconnectedView.m; sourceTree = "<group>"; };
+		4D77EF3616BC208600E1ADC3 /* SVSettingsSignInView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsSignInView.h; sourceTree = "<group>"; };
+		4D77EF3716BC208600E1ADC3 /* SVSettingsSignInView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsSignInView.m; sourceTree = "<group>"; };
 		4D96674116CFA5E70051C349 /* SVImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVImageManager.h; sourceTree = "<group>"; };
 		4D96674216CFA5E70051C349 /* SVImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVImageManager.m; sourceTree = "<group>"; };
 		4DAE805F16D79EA000DA09DC /* SVHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVHelper.h; sourceTree = "<group>"; };
 		4DAE806016D79EA000DA09DC /* SVHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVHelper.m; sourceTree = "<group>"; };
+		4DB1600D16D8D29300A16F6E /* SVMoviesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesTableViewController.h; sourceTree = "<group>"; };
+		4DB1600E16D8D29300A16F6E /* SVMoviesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesTableViewController.m; sourceTree = "<group>"; };
 		4DD4630116B97FE10038FA89 /* Movies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Movies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DD4630516B97FE10038FA89 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4DD4630716B97FE10038FA89 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -101,7 +104,7 @@
 		4DDA2FF716D54DD5006CE8C8 /* dvd_overlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dvd_overlay@2x.png"; sourceTree = "<group>"; };
 		4DDA2FF816D54DD5006CE8C8 /* error_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error_icon@2x.png"; sourceTree = "<group>"; };
 		4DDA2FF916D54DD5006CE8C8 /* home_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "home_button@2x.png"; sourceTree = "<group>"; };
-		4DDA2FFA16D54DD5006CE8C8 /* settings_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_background@2x.png"; sourceTree = "<group>"; };
+		4DDA2FFA16D54DD5006CE8C8 /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
 		4DDA2FFB16D54DD5006CE8C8 /* settings_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_button@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -195,6 +198,8 @@
 				4DD4632616B981B00038FA89 /* SVSettingsViewController.m */,
 				4DD4632816B981BD0038FA89 /* SVMoviesViewController.h */,
 				4DD4632916B981BD0038FA89 /* SVMoviesViewController.m */,
+				4DB1600D16D8D29300A16F6E /* SVMoviesTableViewController.h */,
+				4DB1600E16D8D29300A16F6E /* SVMoviesTableViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -208,10 +213,10 @@
 				4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */,
 				4DD4635916B983C80038FA89 /* SVMovieTableViewCell.h */,
 				4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */,
-				4D77EF3616BC208600E1ADC3 /* SVSettingsDisconnectedView.h */,
-				4D77EF3716BC208600E1ADC3 /* SVSettingsDisconnectedView.m */,
-				4D2FD4E016D66CEF00765DD9 /* SVSettingsConnectedView.h */,
-				4D2FD4E116D66CEF00765DD9 /* SVSettingsConnectedView.m */,
+				4D77EF3616BC208600E1ADC3 /* SVSettingsSignInView.h */,
+				4D77EF3716BC208600E1ADC3 /* SVSettingsSignInView.m */,
+				4D2FD4E016D66CEF00765DD9 /* SVSettingsLogOutView.h */,
+				4D2FD4E116D66CEF00765DD9 /* SVSettingsLogOutView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -274,7 +279,7 @@
 				4DDA2FF716D54DD5006CE8C8 /* dvd_overlay@2x.png */,
 				4DDA2FF816D54DD5006CE8C8 /* error_icon@2x.png */,
 				4DDA2FF916D54DD5006CE8C8 /* home_button@2x.png */,
-				4DDA2FFA16D54DD5006CE8C8 /* settings_background@2x.png */,
+				4DDA2FFA16D54DD5006CE8C8 /* background@2x.png */,
 				4DDA2FFB16D54DD5006CE8C8 /* settings_button@2x.png */,
 			);
 			name = Images;
@@ -340,7 +345,7 @@
 				4DDA2FFD16D54DD5006CE8C8 /* dvd_overlay@2x.png in Resources */,
 				4DDA2FFE16D54DD5006CE8C8 /* error_icon@2x.png in Resources */,
 				4DDA2FFF16D54DD5006CE8C8 /* home_button@2x.png in Resources */,
-				4DDA300016D54DD5006CE8C8 /* settings_background@2x.png in Resources */,
+				4DDA300016D54DD5006CE8C8 /* background@2x.png in Resources */,
 				4DDA300116D54DD5006CE8C8 /* settings_button@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,10 +374,11 @@
 				4DD4635B16B983C90038FA89 /* SVMovieTableViewCell.m in Sources */,
 				4D77EF2316BBF73D00E1ADC3 /* SVTransaction.m in Sources */,
 				4D77EF2716BBFEFC00E1ADC3 /* SVQuery.m in Sources */,
-				4D77EF3816BC208600E1ADC3 /* SVSettingsDisconnectedView.m in Sources */,
+				4D77EF3816BC208600E1ADC3 /* SVSettingsSignInView.m in Sources */,
 				4D96674316CFA5E70051C349 /* SVImageManager.m in Sources */,
-				4D2FD4E216D66CEF00765DD9 /* SVSettingsConnectedView.m in Sources */,
+				4D2FD4E216D66CEF00765DD9 /* SVSettingsLogOutView.m in Sources */,
 				4DAE806116D79EA000DA09DC /* SVHelper.m in Sources */,
+				4DB1600F16D8D29400A16F6E /* SVMoviesTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,9 +6,16 @@
 //  Copyright (c) 2013 Sébastien Villar. All rights reserved.
 //
 
-#import "SVSettingsDisconnectedView.h"
+#import "SVSettingsSignInView.h"
 
-@implementation SVSettingsDisconnectedView
+static const int kSignInButtonTop = 262;
+static const int kExplanationTop = 198;
+static const int kExplanationLeft = 10;
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+@implementation SVSettingsSignInView
 @synthesize signInButton = _signInButton;
 
 - (id)initWithFrame:(CGRect)frame
@@ -23,7 +30,7 @@
 		[self addSubview:_signInButton];
 		float buttonWidth = 130;
 		float buttonHeight = buttonImage.size.height;
-		_signInButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, self.frame.size.height/2 - 23, buttonWidth, buttonHeight);
+		_signInButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, kSignInButtonTop, buttonWidth, buttonHeight);
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateNormal];
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateHighlighted];
 		[_signInButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -42,15 +49,15 @@
 	//Background
 	[[UIColor blackColor] set];
 	[[UIBezierPath bezierPathWithRect:self.bounds] fill];
-	UIImage* backgroundImage = [UIImage imageNamed:@"settings_background-568.png"];
+	UIImage* backgroundImage = [UIImage imageNamed:@"background.png"];
 	CGRect imageRect = CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height);
 	[backgroundImage drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:0.2];
 	
 	NSString* explanation = @"This application uses TMDB to\n synchronize your movie watchlist and\n display DVD release dates";
-	float height = self.frame.size.height;
+
 	float width = self.frame.size.width;
-	[[UIColor colorWithRed:0.9333 green:0.9255 blue:0.8353 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(20, height/2 - 80, width - 40, 100)
+	[[UIColor colorWithRed:0.7333 green:0.7843 blue:0.7961 alpha:1.0000] set];
+	[explanation drawInRect:CGRectMake(kExplanationLeft, kExplanationTop, width - 2 * kExplanationLeft, 100)
 				   withFont:[UIFont systemFontOfSize:15]
 			  lineBreakMode:nil
 				  alignment:NSTextAlignmentCenter];

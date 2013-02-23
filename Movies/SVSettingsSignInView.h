@@ -1,5 +1,5 @@
 //
-//  SVSettingsView.h
+//  SVSettingsSignInView.h
 //  Movies
 //
 //  Created by Sébastien Villar on 1/02/13.
@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 
-@interface SVSettingsDisconnectedView : UIView
+@interface SVSettingsSignInView : UIView
 @property (strong, readonly) UIButton* signInButton;
 @end
