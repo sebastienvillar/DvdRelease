@@ -8,7 +8,6 @@
 
 #import "SVSettingsLogOutView.h"
 
-static const int kLogOutButton = 262;
 static const int  kHomeButtonBottom = 7;
 static const int kHomeButtonRight = 7;
 static const int kThanksBottom = 17;
@@ -33,7 +32,7 @@ static const int kThanksLeft = 23;
 		[self addSubview:_logoutButton];
 		float buttonWidth = 130;
 		float buttonHeight = buttonImage.size.height;
-		_logoutButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, kLogOutButton, buttonWidth, buttonHeight);
+		_logoutButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, self.frame.size.height/2 - buttonHeight/2, buttonWidth, buttonHeight);
 		[_logoutButton setTitle:@"Log out" forState:UIControlStateNormal];
 		[_logoutButton setTitle:@"Log out" forState:UIControlStateHighlighted];
 		[_logoutButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];

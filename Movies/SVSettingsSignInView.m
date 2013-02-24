@@ -8,8 +8,6 @@
 
 #import "SVSettingsSignInView.h"
 
-static const int kSignInButtonTop = 262;
-static const int kExplanationTop = 198;
 static const int kExplanationLeft = 10;
 
 //////////////////////////////////////////////////////////////////////
@@ -30,7 +28,7 @@ static const int kExplanationLeft = 10;
 		[self addSubview:_signInButton];
 		float buttonWidth = 130;
 		float buttonHeight = buttonImage.size.height;
-		_signInButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, kSignInButtonTop, buttonWidth, buttonHeight);
+		_signInButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, self.frame.size.height/2 - buttonHeight/2, buttonWidth, buttonHeight);
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateNormal];
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateHighlighted];
 		[_signInButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -57,7 +55,7 @@ static const int kExplanationLeft = 10;
 
 	float width = self.frame.size.width;
 	[[UIColor colorWithRed:0.7333 green:0.7843 blue:0.7961 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(kExplanationLeft, kExplanationTop, width - 2 * kExplanationLeft, 100)
+	[explanation drawInRect:CGRectMake(kExplanationLeft, self.frame.size.height/2 - self.signInButton.frame.size.height/2 - 62, width - 2 * kExplanationLeft, 100)
 				   withFont:[UIFont systemFontOfSize:15]
 			  lineBreakMode:nil
 				  alignment:NSTextAlignmentCenter];

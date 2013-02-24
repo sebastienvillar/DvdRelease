@@ -136,6 +136,9 @@ static int const kSettingsButtonRight = 7;
 
 - (void)database:(SVDatabase *)database didFinishQuery:(SVQuery *)query {
 	NSArray* result = query.result;
+	for (NSArray* movie in result ){
+		//NSLog(@"\nmovie: %@\n date: %@", [movie objectAtIndex:1], [movie objectAtIndex:2]);
+	}
 	if (query == self.moviesQuery) {
 		[self.movies removeAllObjects];
 		for (NSArray* movieArray in result) {

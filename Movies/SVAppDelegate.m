@@ -9,7 +9,6 @@
 #import "SVAppDelegate.h"
 #import "SVRootViewController.h"
 #import "SVDatabase.h"
-#import "SVQuery.h"
 
 @interface SVAppDelegate ()
 @property (strong, readwrite) SVDatabase* database;

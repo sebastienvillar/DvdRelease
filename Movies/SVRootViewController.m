@@ -188,6 +188,7 @@
 - (void)moviesSyncManagerUserDeniedConnection:(SVMoviesSyncManager *)aManager {
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerUserDeniedConnectionNotification"
 										   object:self];
+	[self.settingsViewController loadSignInView];
 	NSLog(@"user denied connection");
 }
 

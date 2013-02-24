@@ -10,6 +10,7 @@
 
 @interface SVJsonRequest : NSObject <NSURLConnectionDelegate>
 @property (strong, readwrite) NSURL *url;
+@property (strong, readonly) NSURLResponse* response;
 
 + (NSDictionary *)serializeJson:(NSData *)data;
 - (id)initWithUrl:(NSURL*)aUrl;

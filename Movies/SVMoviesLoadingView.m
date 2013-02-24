@@ -44,7 +44,7 @@
 	float height = self.frame.size.height;
 	float width = self.frame.size.width;
 	[[UIColor colorWithRed:0.7333 green:0.7843 blue:0.7961 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(20, height/2 - 70, width - 40, 100)
+	[explanation drawInRect:CGRectMake(20, height/2 - 62, width - 40, 100)
 				   withFont:[UIFont systemFontOfSize:15]
 			  lineBreakMode:nil
 				  alignment:NSTextAlignmentCenter];

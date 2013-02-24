@@ -12,6 +12,10 @@
 #import "SVImageManager.h"
 #import "SVHelper.h"
 
+#define kTmdbConfigureUrl @"configuration?api_key="
+#define kTmdbSessionIdUrl @"authentication/session/new?api_key="
+#define kTmdbTokenUrl @"authentication/token/new?api_key="
+
 static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 @interface SVMoviesSyncManager ()
@@ -77,17 +81,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 - (void)connect {
 	if ([self.service isEqualToString:@"tmdb"]) {
-		if (![self configure]) {
-			return;
-		}
-		self.movies = [[NSMutableSet alloc] init];
-		NSString* sqlQuery = @"SELECT session_id FROM watchlist_service WHERE name='tmdb'";
-		self.sessionIdQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
-		[self.database executeQuery:self.sessionIdQuery];
-		self.moviesQuerySemaphore = dispatch_semaphore_create(0);
-		sqlQuery = @"SELECT * FROM movie";
-		self.moviesQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
-		[self.database executeQuery:self.moviesQuery];
+		[self configure];
 	}
 }
 
@@ -135,17 +129,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 				return;
 			}
 		}
-		NSArray* fetch = [self fetchTokenAndCallback];
-		if (!fetch) {
-			NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
-			[userInfo setObject:@"Token fetch failed" forKey:NSLocalizedDescriptionKey];
-			NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
-			[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
-			return;
-		}
-		[self.tmdbInfo setObject:(NSString*)[fetch objectAtIndex:0] forKey:@"token"];
-		NSURL* callbackUrl = [NSURL URLWithString:[fetch objectAtIndex:1]];
-		[self.delegate moviesSyncManagerNeedsApproval:self withUrl:callbackUrl];
+		[self fetchToken];
 	}
 }
 
@@ -240,62 +224,102 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 #pragma mark - Tmdb Helpers
 //////////////////////////////////////////////////////////////////////
 
-- (BOOL)configure {
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", kTmdbUrl, @"configuration?api_key=", kTmdbKey]];
-	NSURLResponse *response;
-	NSError* error;
-	NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:&response error:&error];
-	if (!data) {
-		[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
-		return NO;
-	}
-	else {
-		NSDictionary *jsonDictionary = [SVJsonRequest serializeJson:data];
-		NSDictionary* imageInformation = [jsonDictionary objectForKey:@"images"];
-		NSString* baseUrl = [imageInformation objectForKey:@"base_url"];
-		NSString* size = [(NSArray*)[imageInformation objectForKey:@"logo_sizes"] objectAtIndex:4];
-		[self.tmdbInfo setObject:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseUrl, size]] forKey:@"imageUrl"];
-	}
-	return YES;
+- (void)configure {
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", kTmdbUrl, kTmdbConfigureUrl, kTmdbKey]];
+	SVJsonRequest* jsonRequest = [[SVJsonRequest alloc] initWithUrl:url];
+	void (^callbackBlock) (NSObject* json) = ^(NSObject* json){
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if (!json) {
+				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
+				[userInfo setObject:[NSString stringWithFormat:@"Configure failed"] forKey:NSLocalizedDescriptionKey];
+				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
+				[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
+				return;
+			}
+			NSDictionary *jsonDictionary = (NSDictionary*)json;
+			NSDictionary* imageInformation = [jsonDictionary objectForKey:@"images"];
+			NSString* baseUrl = [imageInformation objectForKey:@"base_url"];
+			NSString* size = [(NSArray*)[imageInformation objectForKey:@"logo_sizes"] objectAtIndex:4];
+			[self.tmdbInfo setObject:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseUrl, size]] forKey:@"imageUrl"];
+
+			self.movies = [[NSMutableSet alloc] init];
+			NSString* sqlQuery = @"SELECT session_id FROM watchlist_service WHERE name='tmdb'";
+			self.sessionIdQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
+			[self.database executeQuery:self.sessionIdQuery];
+			self.moviesQuerySemaphore = dispatch_semaphore_create(0);
+			sqlQuery = @"SELECT * FROM movie";
+			self.moviesQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
+			[self.database executeQuery:self.moviesQuery];
+		});
+	};
+	[jsonRequest fetchJson:callbackBlock];
 }
 
-- (NSArray*)fetchTokenAndCallback {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", kTmdbUrl, @"authentication/token/new?api_key=", kTmdbKey]];
-    NSURLResponse *response;
-	NSError* error;
-    NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:&response error:&error];
-    if (!data) {
-		[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
-		return nil;
-    }
-	NSDictionary *jsonDictionary = [SVJsonRequest serializeJson:data];
-	NSString *token = [jsonDictionary objectForKey:@"request_token"];
-	NSString *authenticationCallback = nil;
-	NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-	if ([response respondsToSelector:@selector(allHeaderFields)]) {
-		NSDictionary *headersDictionary = [httpResponse allHeaderFields];
-		authenticationCallback = [headersDictionary objectForKey:@"Authentication-callback"];
-	}
-	NSArray* result = [[NSArray alloc] initWithObjects:token, authenticationCallback, nil];
-	return result;
+- (void)fetchToken {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", kTmdbUrl, kTmdbTokenUrl, kTmdbKey]];
+	SVJsonRequest* jsonRequest = [[SVJsonRequest alloc] initWithUrl:url];
+	void (^callbackBlock) (NSObject* json) = ^(NSObject* json) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if (!json) {
+				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
+				[userInfo setObject:[NSString stringWithFormat:@"FetchToken failed"] forKey:NSLocalizedDescriptionKey];
+				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
+				[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
+				return;
+			}
+			NSDictionary *jsonDictionary = (NSDictionary*)json;
+			NSString *token = [jsonDictionary objectForKey:@"request_token"];
+			NSString *authenticationCallback = nil;
+			NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)jsonRequest.response;
+			if ([httpResponse respondsToSelector:@selector(allHeaderFields)]) {
+				NSDictionary *headersDictionary = [httpResponse allHeaderFields];
+				authenticationCallback = [headersDictionary objectForKey:@"Authentication-callback"];
+				[self.tmdbInfo setObject:token forKey:@"token"];
+				NSURL* callbackUrl = [NSURL URLWithString:authenticationCallback];
+				[self.delegate moviesSyncManagerNeedsApproval:self withUrl:callbackUrl];
+			}
+			else {
+				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
+				[userInfo setObject:[NSString stringWithFormat:@"Callback url not found"] forKey:NSLocalizedDescriptionKey];
+				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
+				[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
+			}
+		});
+	};
+	[jsonRequest fetchJson:callbackBlock];
 }
 
-- (NSString*)fetchSessionId {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@%@%@", kTmdbUrl, @"authentication/session/new?api_key=", kTmdbKey, @"&request_token=", [self.tmdbInfo objectForKey:@"token"]]];
-    NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url] returningResponse:nil error:nil];
-    if (!data) {
-		return nil;
-    }
-	NSDictionary *jsonDictionary = [SVJsonRequest serializeJson:data];
-	BOOL success = (BOOL)[jsonDictionary objectForKey:@"success"];
-	if (success) {
-		NSString* sessionId = (NSString*)[jsonDictionary objectForKey:@"session_id"];
-		NSString* sqlStatement = [NSString stringWithFormat: @"INSERT INTO watchlist_service (name, session_id) VALUES ('tmdb', '%@');", sessionId];
-		self.sessionIdTransaction = [[SVTransaction alloc] initWithStatements:[[NSArray alloc] initWithObjects:sqlStatement, nil] andSender:self];
-		[self.database executeTransaction:self.sessionIdTransaction];
-		return sessionId;
-	}
-	return nil;
+- (void)fetchSessionId {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@%@%@", kTmdbUrl, kTmdbSessionIdUrl, kTmdbKey, @"&request_token=", [self.tmdbInfo objectForKey:@"token"]]];
+	SVJsonRequest* jsonRequest = [[SVJsonRequest alloc] initWithUrl:url];
+	void (^callbackBlock) (NSObject* json) = ^(NSObject* json) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if (!json) {
+				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
+				[userInfo setObject:[NSString stringWithFormat:@"FetchSessionId failed"] forKey:NSLocalizedDescriptionKey];
+				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
+				[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
+				return;
+			}
+			NSDictionary *jsonDictionary = (NSDictionary*)json;
+			BOOL success = (BOOL)[jsonDictionary objectForKey:@"success"];
+			if (success) {
+				NSString* sessionId = (NSString*)[jsonDictionary objectForKey:@"session_id"];
+				NSString* sqlStatement = [NSString stringWithFormat: @"INSERT INTO watchlist_service (name, session_id) VALUES ('tmdb', '%@');", sessionId];
+				self.sessionIdTransaction = [[SVTransaction alloc] initWithStatements:[[NSArray alloc] initWithObjects:sqlStatement, nil] andSender:self];
+				[self.database executeTransaction:self.sessionIdTransaction];
+				[self.tmdbInfo setObject:sessionId forKey:@"sessionId"];
+				[self.delegate moviesSyncManagerDidConnect:self];
+			}
+			else {
+				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
+				[userInfo setObject:[NSString stringWithFormat:@"FetchSessionId failed"] forKey:NSLocalizedDescriptionKey];
+				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
+				[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
+			}
+		});
+	};
+	[jsonRequest fetchJson:callbackBlock];
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -378,20 +402,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     if (((NSNumber*)[self.tmdbInfo objectForKey:@"isLastWebPage"]).boolValue) {
+		[self.tmdbInfo setObject:[[NSNumber alloc] initWithBool:NO] forKey:@"isLastWebPage"];
         if (((NSNumber*)[self.tmdbInfo objectForKey:@"isTokenAccepted"]).boolValue) {
 			[self.tmdbInfo setObject:[[NSNumber alloc] initWithBool:NO] forKey:@"isTokenAccepted"];
-			[self.tmdbInfo setObject:[[NSNumber alloc] initWithBool:NO] forKey:@"isLastWebPage"];
-			NSString* sessionId = [self fetchSessionId];
-			if (sessionId) {
-				[self.tmdbInfo setObject:sessionId forKey:@"sessionId"];
-				[self.delegate moviesSyncManagerDidConnect:self];
-			}
-			else {
-				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
-				[userInfo setObject:[NSString stringWithFormat:@"SessionId fetch failed"] forKey:NSLocalizedDescriptionKey];
-				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
-				[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
-			}
+			[self fetchSessionId];
         }
         else {
 			[self.delegate moviesSyncManagerUserDeniedConnection:self];

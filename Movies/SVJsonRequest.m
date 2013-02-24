@@ -12,6 +12,7 @@
 
 @property (strong, readwrite) void(^callbackBlock)(NSObject *json);
 @property (strong, readwrite) NSMutableData *mutableData;
+@property (strong, readwrite) NSURLResponse* response;
 
 @end
 
@@ -22,6 +23,7 @@
 
 @synthesize callbackBlock = _callbackBlock,
 			url = _url,
+			response = _response,
 			mutableData = _mutableData;
 
 + (NSDictionary *)serializeJson:(NSData *)data {
@@ -65,7 +67,13 @@
     });
 }
 
-#pragma NSURLConnectionDelegate methods
+//////////////////////////////////////////////////////////////////////
+#pragma mark - NSURLConnectionDelegate
+//////////////////////////////////////////////////////////////////////
+
+- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse *)response {
+	self.response = response;
+}
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     [self.mutableData appendData:data];
@@ -89,5 +97,27 @@
     }
     CFRunLoopStop(CFRunLoopGetCurrent());
 }
+/*- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+	NSLog(@"canAuthenticateAgainstProtectionSpace %@",protectionSpace);
+	return YES;
+}
+- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+	NSLog(@"didReceiveAuthenticationChallenge");
+	if([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])
+	{
+//		// we only trust our own domain
+//		if ([challenge.protectionSpace.host isEqualToString:[[NSURL alloc] initWithString:self.hostname].host]) {
+			NSURLCredential *credential = [NSURLCredential credentialForTrust:
+										   challenge.protectionSpace.serverTrust];
+			[challenge.sender useCredential:credential
+				 forAuthenticationChallenge:challenge];
+//		}
+	}
+	[challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+}
+- (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection *)connection {
+	NSLog(@"connectionShouldUseCredentialStorage");
+	return YES;
+}*/
 
 @end

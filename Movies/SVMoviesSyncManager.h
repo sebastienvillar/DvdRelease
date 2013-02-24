@@ -22,7 +22,7 @@
 - (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager*)aManager withError:(NSError*)error;
 @end
 
-@interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol, UIWebViewDelegate, SVTmdbWatchListRequestDelegate, SVRTDvdReleaseDateRequestDelegate>
+@interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol, UIWebViewDelegate, SVTmdbWatchListRequestDelegate, SVRTDvdReleaseDateRequestDelegate, NSURLConnectionDelegate>
 @property (strong, readwrite) NSString* service;
 @property (weak, readwrite) NSObject<SVMoviesSyncManagerDelegate>* delegate;
 
