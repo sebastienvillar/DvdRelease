@@ -203,10 +203,7 @@ static const int SVAnimationStyleSlideDown = 3;
 		if (result && result.count != 0) {
 			self.moviesSyncManager.service = [[result objectAtIndex:0] objectAtIndex:0];
 		}
-		else {
-			self.firstConnection = YES;
-			[self layoutControllers];
-		}
+		[self layoutControllers];
 		[self.moviesSyncManager connect];
 	}
 }
@@ -225,6 +222,7 @@ static const int SVAnimationStyleSlideDown = 3;
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFinishSyncingNotification"
 										   object:self];
 	if (self.isFirstConnection) {
+		self.firstConnection = NO;
 		[self layoutControllers];
 	}
 }
@@ -232,7 +230,9 @@ static const int SVAnimationStyleSlideDown = 3;
 - (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager *)aManager {
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidConnectNotification"
 										   object:self];
-	[self layoutControllers];
+	if (self.isFirstConnection) {
+		[self layoutControllers];
+	}
 	[aManager sync];
 }
 

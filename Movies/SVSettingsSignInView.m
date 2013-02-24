@@ -54,8 +54,8 @@ static const int kExplanationLeft = 10;
 	NSString* explanation = @"This application uses TMDB to\n synchronize your movie watchlist and\n display DVD release dates";
 
 	float width = self.frame.size.width;
-	[[UIColor colorWithRed:0.7333 green:0.7843 blue:0.7961 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(kExplanationLeft, self.frame.size.height/2 - self.signInButton.frame.size.height/2 - 62, width - 2 * kExplanationLeft, 100)
+	[[UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000] set];
+	[explanation drawInRect:CGRectMake(kExplanationLeft, self.signInButton.frame.origin.y - 70, width - 2 * kExplanationLeft, 100)
 				   withFont:[UIFont systemFontOfSize:15]
 			  lineBreakMode:nil
 				  alignment:NSTextAlignmentCenter];

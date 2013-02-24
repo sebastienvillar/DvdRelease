@@ -10,6 +10,7 @@
 #import "SVMovieTableViewCell.h"
 #import "SVDatabase.h"
 #import "SVHelper.h"
+#import "SVMoviesSyncManager.h"
 
 static NSString* kCellIdentifier = @"movieCell";
 
@@ -31,6 +32,10 @@ static NSString* kCellIdentifier = @"movieCell";
 {
     self = [super initWithStyle:style];
     if (self) {
+		self.refreshControl = [[UIRefreshControl alloc] init];
+		SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
+		[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
+		self.refreshControl.tintColor = [UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000];
 		_moviesQuery = nil;
 		_database = [SVDatabase sharedDatabase];
 		_movies = [[NSMutableArray alloc] init];

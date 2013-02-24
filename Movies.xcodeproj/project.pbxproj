@@ -262,9 +262,9 @@
 		4DD4636216B984450038FA89 /* Wrappers */ = {
 			isa = PBXGroup;
 			children = (
+				4D77EF2116BBF73D00E1ADC3 /* SVTransaction.h */,
 				4DD4632B16B981D70038FA89 /* SVDatabase.h */,
 				4DD4632C16B981D70038FA89 /* SVDatabase.m */,
-				4D77EF2116BBF73D00E1ADC3 /* SVTransaction.h */,
 				4D77EF2216BBF73D00E1ADC3 /* SVTransaction.m */,
 				4D77EF2516BBFEFC00E1ADC3 /* SVQuery.h */,
 				4D77EF2616BBFEFC00E1ADC3 /* SVQuery.m */,

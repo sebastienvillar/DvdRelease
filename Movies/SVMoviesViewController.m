@@ -11,7 +11,7 @@
 #import "SVMoviesTopView.h"
 #import "SVMoviesTableViewController.h"
 
-static int const kTopViewHeight = 48;
+static int const kTopViewHeight = 43;
 static int const kSettingsButtonBottom = 7;
 static int const kSettingsButtonRight = 7;
 
@@ -54,9 +54,8 @@ static int const kSettingsButtonRight = 7;
 		[moviesView addSubview:_tableViewController.view];
 		[moviesView addSubview:_settingsButton];
 		_views = [[NSDictionary alloc] initWithObjectsAndKeys:loadingView, @"loadingView", topView, @"topView", moviesView, @"moviesView", nil];
-		//[_notificationCenter addObserver:self selector:@selector(nilSymbol) name:@"moviesSyncManagerDidStartSyncingNotification" object:nil];
+		[_notificationCenter addObserver:self selector:@selector(didStartSyncing) name:@"moviesSyncManagerDidStartSyncingNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didFinishSyncing) name:@"moviesSyncManagerDidFinishSyncingNotification" object:nil];
-		[_notificationCenter addObserver:self selector:@selector(connectionDidFail) name:@"moviesSyncManagerConnectionDidFailNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didFailSyncing) name:@"moviesSyncManagerDidFailSyncingNotification" object:nil];
     }
     return self;
@@ -105,16 +104,26 @@ static int const kSettingsButtonRight = 7;
 #pragma mark - Notification actions
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+- (void)didStartSyncing {
+	if (self.currentState == SVMoviesViewDisplayState) {
+		if (!self.tableViewController.refreshControl.isRefreshing) {
+			[self.tableViewController.refreshControl beginRefreshing];
+		}
+	}
+}
+
 - (void)didFinishSyncing {
+	if (self.tableViewController.refreshControl.isRefreshing) {
+		[self.tableViewController.refreshControl endRefreshing];
+	}
 	[self.tableViewController loadData];
 }
 
 - (void)didFailSyncing {
-
-}
-
-- (void)connectionDidFail {
-	
+	NSLog(@"in");
+	if (self.tableViewController.refreshControl.isRefreshing) {
+		[self.view addSubview:[self.views objectForKey:@"topView"]];
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
