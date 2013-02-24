@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D0BEA3D16DA4CCA0070DA53 /* SVMoviesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0BEA3C16DA4CCA0070DA53 /* SVMoviesTableViewController.m */; };
 		4D2FD4E216D66CEF00765DD9 /* SVSettingsLogOutView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2FD4E116D66CEF00765DD9 /* SVSettingsLogOutView.m */; };
 		4D77EF2316BBF73D00E1ADC3 /* SVTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF2216BBF73D00E1ADC3 /* SVTransaction.m */; };
 		4D77EF2716BBFEFC00E1ADC3 /* SVQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF2616BBFEFC00E1ADC3 /* SVQuery.m */; };
@@ -45,6 +46,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D0BEA3B16DA4CCA0070DA53 /* SVMoviesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesTableViewController.h; sourceTree = "<group>"; };
+		4D0BEA3C16DA4CCA0070DA53 /* SVMoviesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesTableViewController.m; sourceTree = "<group>"; };
 		4D2FD4E016D66CEF00765DD9 /* SVSettingsLogOutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSettingsLogOutView.h; sourceTree = "<group>"; };
 		4D2FD4E116D66CEF00765DD9 /* SVSettingsLogOutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSettingsLogOutView.m; sourceTree = "<group>"; };
 		4D77EF2116BBF73D00E1ADC3 /* SVTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVTransaction.h; sourceTree = "<group>"; };
@@ -195,6 +198,8 @@
 				4DD4632616B981B00038FA89 /* SVSettingsViewController.m */,
 				4DD4632816B981BD0038FA89 /* SVMoviesViewController.h */,
 				4DD4632916B981BD0038FA89 /* SVMoviesViewController.m */,
+				4D0BEA3B16DA4CCA0070DA53 /* SVMoviesTableViewController.h */,
+				4D0BEA3C16DA4CCA0070DA53 /* SVMoviesTableViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -373,6 +378,7 @@
 				4D96674316CFA5E70051C349 /* SVImageManager.m in Sources */,
 				4D2FD4E216D66CEF00765DD9 /* SVSettingsLogOutView.m in Sources */,
 				4DAE806116D79EA000DA09DC /* SVHelper.m in Sources */,
+				4D0BEA3D16DA4CCA0070DA53 /* SVMoviesTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

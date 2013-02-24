@@ -11,14 +11,16 @@
 
 @class SVMoviesViewController;
 
+typedef int SVMoviesViewState;
+static const int SVMoviesViewLoadingState = 0;
+static const int SVMoviesViewDisplayState = 1;
+
 @protocol SVMoviesViewControllerDelegate <NSObject>
 - (void)moviesViewControllerDidClickSettingsButton:(SVMoviesViewController*)moviesViewController;
 @end
 
 @interface SVMoviesViewController : UIViewController <SVDatabaseSenderProtocol, UITableViewDataSource, UITableViewDelegate>
 @property (weak, readwrite)id delegate;
-- (void)loadLoadingView;
-- (void)loadMainView;
-- (void)loadData;
-- (void)clearData;
+@property (readonly) SVMoviesViewState currentState;
+- (void)displayViewForState:(SVMoviesViewState)state;
 @end

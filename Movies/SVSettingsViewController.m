@@ -13,8 +13,9 @@
 
 @interface SVSettingsViewController ()
 @property (strong, readwrite) UIWebView* webView;
-@property (strong, readwrite) SVSettingsLogOutView* settingsLogOutView;
-@property (strong, readwrite) SVSettingsSignInView* settingsSignInView;
+@property (strong, readonly) NSDictionary* views;
+@property (strong, readwrite) UIView* currentView;
+@property (readwrite) SVSettingsViewState currentState;
 @property (strong, readwrite) SVMoviesSyncManager* moviesSyncManager;
 @end
 
@@ -23,8 +24,10 @@
 
 @implementation SVSettingsViewController
 @synthesize webView = _webView,
-			settingsLogOutView = _settingsLogOutView,
-			settingsSignInView = _settingsSignInView,
+			views = _views,
+			currentState = _currentState,
+			currentView = _currentView,
+			delegate = _delegate,
 			moviesSyncManager = _moviesSyncManager;
 
 - (id)init
@@ -32,9 +35,15 @@
     self = [super init];
     if (self) {
 		_webView = nil;
-		_settingsSignInView = [[SVSettingsSignInView alloc] initWithFrame:self.view.bounds];
-		_settingsLogOutView = [[SVSettingsLogOutView alloc] initWithFrame:self.view.bounds];
+		SVSettingsSignInView* signInView = [[SVSettingsSignInView alloc] initWithFrame:self.view.bounds];
+		[signInView.signInButton addTarget:self action:@selector(didClickSignIn) forControlEvents:UIControlEventTouchDown];
+		SVSettingsLogOutView* logOutView = [[SVSettingsLogOutView alloc] initWithFrame:self.view.bounds];
+		[logOutView.logoutButton addTarget:self action:@selector(didClickSignOut) forControlEvents:UIControlEventTouchDown];
+		[logOutView.homeButton addTarget:self action:@selector(didClickHome) forControlEvents:UIControlEventTouchDown];
+		_views = [[NSDictionary alloc] initWithObjectsAndKeys:signInView, @"signInView", logOutView, @"logOutView", nil];
 		_moviesSyncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
+		_delegate = nil;
+		_currentView = nil;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadWebViewWithUrl:) name:@"moviesSyncManagerNeedsApprovalNotification" object:nil];
     }
     return self;
@@ -48,7 +57,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)loadView {
@@ -57,16 +65,22 @@
 	self.view = [[UIView alloc] initWithFrame:rect];
 }
 
-- (void)loadSignInView {
-	[self.webView removeFromSuperview];
-	self.view = self.settingsSignInView;
-	[self.settingsSignInView.signInButton addTarget:self action:@selector(didClickSignIn) forControlEvents:UIControlEventTouchDown];
+- (void)displayViewForState:(SVSettingsViewState)state {
+	if (state == SVSettingsViewSignInState) {
+		[self displayView:[self.views objectForKey:@"signInView"]];
+	}
+	else if (state == SVSettingsViewLogOutState) {
+		[self displayView:[self.views objectForKey:@"logOutView"]];		
+	}
+	self.currentState = state;
 }
 
-- (void)loadLogOutView {
-	self.view = self.settingsLogOutView;
-	[self.settingsLogOutView.logoutButton addTarget:self action:@selector(didClickSignOut) forControlEvents:UIControlEventTouchDown];
-	[self.settingsLogOutView.homeButton addTarget:self action:@selector(didClickHome) forControlEvents:UIControlEventTouchDown];
+- (void)displayView:(UIView*)view {
+	if (self.currentView) {
+		[self.currentView removeFromSuperview];
+	}
+	self.currentView = view;
+	[self.view addSubview:self.currentView];
 }
 
 - (void)loadWebViewWithUrl:(NSNotification*)notification {
@@ -88,15 +102,21 @@
 	void(^animationBlock)(void) = ^{
 		self.webView.frame = self.view.bounds;
 	};
+	void(^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
+		if (isFinished) {
+			[self.currentView removeFromSuperview];
+			self.currentView = self.webView;
+		}
+	};
 	[UIView animateWithDuration:0.5
 						  delay:0
 						options:UIViewAnimationCurveLinear
 					 animations:animationBlock
-					 completion:NULL];
+					 completion:completionBlock];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-// ACTIONS
+#pragma mark - Actions
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)didClickSignIn {

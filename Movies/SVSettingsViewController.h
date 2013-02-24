@@ -10,6 +10,10 @@
 
 @class SVSettingsViewController;
 
+typedef int SVSettingsViewState;
+static const int SVSettingsViewSignInState = 0;
+static const int SVSettingsViewLogOutState = 1;
+
 @protocol SVSettingsViewControllerDelegate <NSObject>
 - (void)settingsViewControllerDidClickHomeButton:(SVSettingsViewController*)settingsViewController;
 - (void)settingsViewControllerDidClickSignInButton:(SVSettingsViewController*)settingsViewController;
@@ -18,7 +22,6 @@
 
 @interface SVSettingsViewController : UIViewController
 @property (weak, readwrite) id delegate;
-- (void)loadWebViewWithUrl:(NSURL*)url;
-- (void)loadSignInView;
-- (void)loadLogOutView;
+@property (readonly) SVSettingsViewState currentState;
+- (void)displayViewForState:(SVSettingsViewState)state;
 @end

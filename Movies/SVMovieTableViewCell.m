@@ -76,6 +76,7 @@ static NSCache* imagesCache = nil;
 		NSDate *today = [NSDate date];
 		NSCalendar *calendar = [NSCalendar currentCalendar];
 		NSDateComponents *dateComponents = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:today];
+		dateComponents.timeZone = [NSTimeZone localTimeZone];
 		dateComponents.hour = 0;
 		dateComponents.minute = 0;
 		dateComponents.second = 0;

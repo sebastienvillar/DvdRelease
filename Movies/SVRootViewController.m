@@ -8,16 +8,26 @@
 
 #import "SVRootViewController.h"
 
+typedef int SVAnimationStyle;
+static const int SVAnimationStyleNone = 0;
+static const int SVAnimationStyleFadeIn = 1;
+static const int SVAnimationStyleFadeOut = 2;
+static const int SVAnimationStyleSlideDown = 3;
+
 @interface SVRootViewController ()
 @property (strong, readonly) SVDatabase* database;
 @property (strong, readonly) SVMoviesSyncManager* moviesSyncManager;
-@property (strong, readwrite) SVSettingsViewController* settingsViewController;
-@property (strong, readwrite) SVMoviesViewController* moviesViewController;
-@property (strong, readwrite) UIViewController* currentController;
+@property (strong, readwrite) UIViewController* currentViewController;
 @property (strong, readwrite) SVQuery* currentServiceQuery;
+@property (strong, readonly) NSDictionary* viewControllers;
 @property (strong, readonly) NSNotificationCenter* notificationCenter;
 @property (strong, readwrite) UIViewController* myPresentedViewController;
 @property (readwrite, getter = isDataAvailable) BOOL dataAvailable;
+@property (readwrite, getter = isFirstConnection) BOOL firstConnection;
+@property (strong, readwrite) NSString* lastButtonIdentifier;
+@property (strong, readwrite) SVTransaction* logOutTransaction;
+@property (readwrite) int nbOfSyncTries;
+
 @end
 
 //////////////////////////////////////////////////////////////////////
@@ -26,12 +36,14 @@
 @implementation SVRootViewController
 @synthesize database = _database,
 			currentServiceQuery = _currentServiceQuery,
-			settingsViewController = _settingsViewController,
-			moviesViewController = _moviesViewController,
+			viewControllers = _viewControllers,
 			notificationCenter = _notificationCenter,
-			currentController = _currentController,
+			currentViewController = _currentViewController,
 			myPresentedViewController = _myPresentedViewController,
 			dataAvailable = _databaseAvailable,
+			lastButtonIdentifier = _lastButtonIdentifier,
+			logOutTransaction = _logOutTransaction,
+			nbOfSyncTries = _nbOfSyncTries,
 			moviesSyncManager = _moviesSyncManager;
 
 - (id)init {
@@ -40,12 +52,17 @@
 		_database = [SVDatabase sharedDatabase];
 		_moviesSyncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
 		_moviesSyncManager.delegate = self;
-		_settingsViewController = [[SVSettingsViewController alloc] init];
-		_settingsViewController.delegate = self;
-		_currentController = nil;
+		SVSettingsViewController* settingsViewController = [[SVSettingsViewController alloc] init];
+		settingsViewController.delegate = self;
+		SVMoviesViewController* moviesViewController = [[SVMoviesViewController alloc] init];
+		moviesViewController.delegate = self;
+		_viewControllers = [[NSDictionary alloc] initWithObjectsAndKeys:settingsViewController, @"settingsViewController", moviesViewController, @"moviesViewController", nil];
+		_currentViewController = nil;
 		_databaseAvailable = NO;
-		_moviesViewController = [[SVMoviesViewController alloc] init];
-		_moviesViewController.delegate = self;
+		_lastButtonIdentifier = nil;
+		_firstConnection = NO;
+		_logOutTransaction = nil;
+		_nbOfSyncTries = 0;
 		_notificationCenter = [NSNotificationCenter defaultCenter];
 	}
 	return self;
@@ -69,58 +86,111 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)loadController:(UIViewController*)controller {
-	if (self.currentController) {
-		[self.currentController.view removeFromSuperview];
+- (void)layoutControllers {
+	UIViewController* currentViewController = self.currentViewController;
+	if (!currentViewController) {
+		if (self.isFirstConnection) {
+			SVSettingsViewController* settingsViewController = (SVSettingsViewController*)[self.viewControllers objectForKey:@"settingsViewController"];
+			[settingsViewController displayViewForState:SVSettingsViewSignInState];
+			[self loadController:settingsViewController withAnimation:SVAnimationStyleNone];
+		}
+		else {
+			SVMoviesViewController* moviesViewController = (SVMoviesViewController*)[self.viewControllers objectForKey:@"moviesViewController"];
+			[moviesViewController displayViewForState:SVMoviesViewDisplayState];
+			[self loadController:moviesViewController withAnimation:SVAnimationStyleNone];
+		}
 	}
-	self.currentController = controller;
-	[self.view addSubview:self.currentController.view];
+	else if (currentViewController == [self.viewControllers objectForKey:@"settingsViewController"]) {
+		SVSettingsViewController* settingsViewController = (SVSettingsViewController*)currentViewController;
+		NSLog(@"state : %d", settingsViewController.currentState);
+		NSLog(@"button : %@", self.lastButtonIdentifier);
+		if (settingsViewController.currentState == SVSettingsViewSignInState) {
+			SVMoviesViewController* moviesViewController = (SVMoviesViewController*)[self.viewControllers objectForKey:@"moviesViewController"];
+			[moviesViewController displayViewForState:SVMoviesViewLoadingState];
+			[self loadController:moviesViewController withAnimation:SVAnimationStyleSlideDown];
+		}
+		else if (settingsViewController.currentState == SVSettingsViewLogOutState) {
+			if ([self.lastButtonIdentifier isEqualToString:@"home"]) {
+				SVMoviesViewController* moviesViewController = (SVMoviesViewController*)[self.viewControllers objectForKey:@"moviesViewController"];
+				[moviesViewController displayViewForState:SVMoviesViewDisplayState];
+				[self loadController:moviesViewController withAnimation:SVAnimationStyleFadeOut];
+			}
+			else if ([self.lastButtonIdentifier isEqualToString:@"logOut"]) {
+				[settingsViewController displayViewForState:SVSettingsViewSignInState];
+				[self loadController:settingsViewController withAnimation:SVAnimationStyleNone];
+			}
+			self.lastButtonIdentifier = nil;
+		}
+	}
+	else if (currentViewController == [self.viewControllers objectForKey:@"moviesViewController"]) {
+		SVMoviesViewController* moviesViewController = (SVMoviesViewController*)currentViewController;
+		if (moviesViewController.currentState == SVMoviesViewLoadingState) {
+			[moviesViewController displayViewForState:SVMoviesViewDisplayState];
+			[self loadController:moviesViewController withAnimation:SVAnimationStyleFadeIn];
+		}
+		else if (moviesViewController.currentState == SVMoviesViewDisplayState) {
+			SVSettingsViewController* settingsViewController = (SVSettingsViewController*)[self.viewControllers objectForKey:@"settingsViewController"];
+			[settingsViewController displayViewForState:SVSettingsViewLogOutState];
+			[self loadController:settingsViewController withAnimation:SVAnimationStyleFadeIn];
+		}
+	}
 }
 
-- (void)presentViewController:(UIViewController*)viewController withAnimation:(BOOL)isAnimated {
-	self.myPresentedViewController = viewController;
-	self.myPresentedViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.size.height, self.currentController.view.bounds.size.width, self.currentController.view.bounds.size.height);
-	if (isAnimated) {
+- (void)loadController:(UIViewController*)viewController withAnimation:(SVAnimationStyle)animationStyle {
+	if (animationStyle == SVAnimationStyleNone) {
+		if (self.currentViewController) {
+			[self.currentViewController.view removeFromSuperview];
+		}
+		[self.view addSubview:viewController.view];
+	}
+	else if (animationStyle == SVAnimationStyleSlideDown) {
+		[self.view insertSubview:viewController.view belowSubview:self.currentViewController.view];
+		UIViewController* currentViewController = self.currentViewController;
 		void (^animationBlock)(void) = ^{
-			self.myPresentedViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.currentController.view.bounds.size.width, self.currentController.view.bounds.size.height);
+			CGRect rect = currentViewController.view.frame;
+			rect.origin.y = self.view.frame.size.height;
+			currentViewController.view.frame = rect;
+		};
+		void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
+			if (isFinished) {
+				[currentViewController.view removeFromSuperview];
+			}
 		};
 		[UIView animateWithDuration:0.5
+							  delay:0
+							options:UIViewAnimationCurveLinear
+						 animations:animationBlock completion:completionBlock];
+	}
+	else if (animationStyle == SVAnimationStyleFadeIn) {
+		viewController.view.alpha = 0;
+		viewController.view.frame = self.view.bounds;
+		[self.view addSubview:viewController.view];
+		void (^animationBlock)(void) = ^{
+			viewController.view.alpha = 1;
+		};
+		[UIView animateWithDuration:0.3
 							  delay:0
 							options:UIViewAnimationCurveLinear
 						 animations:animationBlock
 						 completion:NULL];
 	}
-	else {
-		self.myPresentedViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.currentController.view.bounds.size.width, self.currentController.view.bounds.size.height);
+	else if (animationStyle == SVAnimationStyleFadeOut) {
+		UIViewController* currentViewController = self.currentViewController;
+		void (^animationBlock)(void) = ^{
+			currentViewController.view.alpha = 0;
+		};
+		void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
+			if (isFinished) {
+				[currentViewController.view removeFromSuperview];
+			}
+		};
+		[UIView animateWithDuration:0.3
+							  delay:0
+							options:UIViewAnimationCurveLinear
+						 animations:animationBlock completion:completionBlock];
 	}
-	[self.view addSubview:self.myPresentedViewController.view];
+	self.currentViewController = viewController;
 }
-
-- (void)dismissViewControllerWithAnimation:(BOOL)isAnimated {
-	if (self.myPresentedViewController) {
-		if (isAnimated) {
-			void (^animationBlock)(void) = ^{
-				self.myPresentedViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.size.height, self.currentController.view.bounds.size.width, self.currentController.view.bounds.size.height);
-			};
-			void (^completionBlock)(BOOL) = ^(BOOL isFinished){
-				if (isFinished) {
-					[self.myPresentedViewController.view removeFromSuperview];
-					self.myPresentedViewController = nil;
-				}
-			};
-			[UIView animateWithDuration:0.5
-								  delay:0 options:UIViewAnimationCurveLinear
-							 animations:animationBlock
-							 completion:completionBlock];
-		}
-		else {
-			self.myPresentedViewController.view.frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.size.height, self.currentController.view.bounds.size.width, self.currentController.view.bounds.size.height);
-			[self.myPresentedViewController.view removeFromSuperview];
-			self.myPresentedViewController = nil;
-		}
-	}
-}
-
 
 //////////////////////////////////////////////////////////////////////
 #pragma mark - SVDatabaseSenderProtocol
@@ -132,19 +202,12 @@
 	if (query == self.currentServiceQuery) {
 		if (result && result.count != 0) {
 			self.moviesSyncManager.service = [[result objectAtIndex:0] objectAtIndex:0];
-			[self.moviesViewController loadMainView];
-			[self.moviesViewController loadData];
-			[self loadController:self.moviesViewController];
-			self.dataAvailable = YES;
-			[self.moviesSyncManager connect];
 		}
 		else {
-			self.currentController = self.settingsViewController;
-			[self.moviesViewController loadLoadingView];
-			[self loadController:self.moviesViewController];
-			[self presentViewController:self.settingsViewController withAnimation:NO];
-			[self.settingsViewController loadSignInView];
+			self.firstConnection = YES;
+			[self layoutControllers];
 		}
+		[self.moviesSyncManager connect];
 	}
 }
 
@@ -155,27 +218,22 @@
 - (void)moviesSyncManagerDidStartSyncing:(SVMoviesSyncManager *)aManager {
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidStartSyncingNotification"
 										   object:self];
+	self.nbOfSyncTries++;
 }
 
 - (void)moviesSyncManagerDidFinishSyncing:(SVMoviesSyncManager *)aManager {
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFinishSyncingNotification"
 										   object:self];
-	if (!self.isDataAvailable) {
-		self.dataAvailable = YES;
-		[self.moviesViewController loadMainView];
+	if (self.isFirstConnection) {
+		[self layoutControllers];
 	}
 }
 
 - (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager *)aManager {
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidConnectNotification"
 										   object:self];
+	[self layoutControllers];
 	[aManager sync];
-	if (!self.isDataAvailable) {
-		[self.moviesViewController loadLoadingView];
-	}
-	if (self.myPresentedViewController) {
-		[self dismissViewControllerWithAnimation:YES];
-	}
 }
 
 - (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager *)aManager withError:(NSError *)error{
@@ -188,13 +246,17 @@
 - (void)moviesSyncManagerUserDeniedConnection:(SVMoviesSyncManager *)aManager {
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerUserDeniedConnectionNotification"
 										   object:self];
-	[self.settingsViewController loadSignInView];
 	NSLog(@"user denied connection");
 }
 
-- (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager *)aManager withError:(NSError *)error{
-	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFailSyncingNotification"
-										   object:self];
+- (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager *)aManager withError:(NSError *)error {
+	if (self.nbOfSyncTries < 4) {
+		[aManager sync];
+	}
+	else {
+		[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFailSyncingNotification"
+											   object:self];
+	}
 	NSLog(@"Error: %@, description: %@", error.domain, error.localizedDescription);
 }
 
@@ -210,8 +272,8 @@
 //////////////////////////////////////////////////////////////////////
 
 - (void)moviesViewControllerDidClickSettingsButton:(SVMoviesViewController *)moviesViewController {
-	[self.settingsViewController loadLogOutView];
-	[self presentViewController:self.settingsViewController withAnimation:YES];
+	self.lastButtonIdentifier = @"settings";
+	[self layoutControllers];
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -219,14 +281,14 @@
 //////////////////////////////////////////////////////////////////////
 
 - (void)settingsViewControllerDidClickHomeButton:(SVSettingsViewController *)settingsViewController {
-	if (self.myPresentedViewController) {
-		[self dismissViewControllerWithAnimation:YES];
-	}
+	self.lastButtonIdentifier = @"home";
+	[self layoutControllers];
 }
 
 - (void)settingsViewControllerDidClickSignInButton:(SVSettingsViewController *)settingsViewController {
+	self.firstConnection = YES;
+	self.lastButtonIdentifier = @"signIn";
 	self.moviesSyncManager.service = @"tmdb";
-	self.dataAvailable = NO;
 	[self.moviesSyncManager connect];
 }
 
@@ -234,10 +296,21 @@
 	NSString* statement = @"DELETE FROM watchlist_service;";
 	NSString* statement2 = @"DELETE FROM movie;";
 	NSArray* statements = [[NSArray alloc] initWithObjects:statement, statement2, nil];
-	SVTransaction* transaction = [[SVTransaction alloc] initWithStatements:statements andSender:self];
-	[self.database executeTransaction:transaction];
-	[self.moviesViewController clearData];
-	[settingsViewController loadSignInView];
+	self.logOutTransaction = [[SVTransaction alloc] initWithStatements:statements andSender:self];
+	[self.database executeTransaction:self.logOutTransaction];
+}
+
+//////////////////////////////////////////////////////////////////////
+#pragma mark - SVDatabaseSenderProtocol
+//////////////////////////////////////////////////////////////////////
+
+- (void)database:(SVDatabase *)database didFinishTransaction:(SVTransaction *)transaction withSuccess:(BOOL)success {
+	if (transaction == self.logOutTransaction) {
+		if (success) {
+			self.lastButtonIdentifier = @"logOut";
+			[self layoutControllers];
+		}
+	}
 }
 
 @end

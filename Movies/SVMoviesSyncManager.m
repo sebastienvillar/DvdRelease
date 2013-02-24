@@ -99,6 +99,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	}
 }
 
+//////////////////////////////////////////////////////////////////////
+#pragma mark - SVDatabaseSenderProtocol
+//////////////////////////////////////////////////////////////////////
+
 - (void)database:(SVDatabase *)database didFinishQuery:(SVQuery *)query {
 	NSArray* result = query.result;
 
@@ -313,7 +317,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			}
 			else {
 				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
-				[userInfo setObject:[NSString stringWithFormat:@"FetchSessionId failed"] forKey:NSLocalizedDescriptionKey];
+				[userInfo setObject:[NSString stringWithFormat:@"FetchSessionId denied"] forKey:NSLocalizedDescriptionKey];
 				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
 				[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
 			}
