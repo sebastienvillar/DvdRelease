@@ -81,6 +81,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 - (void)connect {
 	if ([self.service isEqualToString:@"tmdb"]) {
+		self.moviesQuerySemaphore = dispatch_semaphore_create(0);
+		NSString* sqlQuery = @"SELECT * FROM movie";
+		self.moviesQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
+		[self.database executeQuery:self.moviesQuery];
 		[self configure];
 	}
 }
@@ -108,6 +112,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 	if (query == self.moviesQuery) {
 		if (result) {
+			self.movies = [[NSMutableSet alloc] init];
 			for (NSArray* row in result) {
 				SVMovie* movie = [[SVMovie alloc] init];
 				movie.uuid = [SVAppDelegate uuid];
@@ -246,14 +251,9 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			NSString* size = [(NSArray*)[imageInformation objectForKey:@"logo_sizes"] objectAtIndex:4];
 			[self.tmdbInfo setObject:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseUrl, size]] forKey:@"imageUrl"];
 
-			self.movies = [[NSMutableSet alloc] init];
 			NSString* sqlQuery = @"SELECT session_id FROM watchlist_service WHERE name='tmdb'";
 			self.sessionIdQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
 			[self.database executeQuery:self.sessionIdQuery];
-			self.moviesQuerySemaphore = dispatch_semaphore_create(0);
-			sqlQuery = @"SELECT * FROM movie";
-			self.moviesQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
-			[self.database executeQuery:self.moviesQuery];
 		});
 	};
 	[jsonRequest fetchJson:callbackBlock];
@@ -357,6 +357,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 							  dvdReleaseDate,
 							  movie.yearOfRelease,
 							  movie.imageUrl.absoluteString];
+		[self.movies addObject:movie];
 		[self.moviesTransaction addStatement:statement];
 	}
 	[self.moviesActions removeObjectForKey:movie.uuid];

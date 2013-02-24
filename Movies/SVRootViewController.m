@@ -102,8 +102,6 @@ static const int SVAnimationStyleSlideDown = 3;
 	}
 	else if (currentViewController == [self.viewControllers objectForKey:@"settingsViewController"]) {
 		SVSettingsViewController* settingsViewController = (SVSettingsViewController*)currentViewController;
-		NSLog(@"state : %d", settingsViewController.currentState);
-		NSLog(@"button : %@", self.lastButtonIdentifier);
 		if (settingsViewController.currentState == SVSettingsViewSignInState) {
 			SVMoviesViewController* moviesViewController = (SVMoviesViewController*)[self.viewControllers objectForKey:@"moviesViewController"];
 			[moviesViewController displayViewForState:SVMoviesViewLoadingState];
@@ -202,6 +200,9 @@ static const int SVAnimationStyleSlideDown = 3;
 	if (query == self.currentServiceQuery) {
 		if (result && result.count != 0) {
 			self.moviesSyncManager.service = [[result objectAtIndex:0] objectAtIndex:0];
+		}
+		else {
+			self.firstConnection = YES;
 		}
 		[self layoutControllers];
 		[self.moviesSyncManager connect];

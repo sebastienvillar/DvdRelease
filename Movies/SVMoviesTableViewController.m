@@ -18,6 +18,7 @@ static NSString* kCellIdentifier = @"movieCell";
 @property (strong, readonly) SVDatabase* database;
 @property (strong, readwrite) SVQuery* moviesQuery;
 @property (strong, readwrite) NSMutableArray* movies;
+@property (strong, readonly) UIRefreshControl* refresher;
 @end
 
 //////////////////////////////////////////////////////////////////////
@@ -26,13 +27,15 @@ static NSString* kCellIdentifier = @"movieCell";
 @implementation SVMoviesTableViewController
 @synthesize database = _database,
 			movies = _movies,
+			refresher = _refresher,
 			moviesQuery = _moviesQuery;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
-		self.refreshControl = [[UIRefreshControl alloc] init];
+		_refresher = [[UIRefreshControl alloc] init];
+		self.refreshControl = _refresher;
 		SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
 		[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
 		self.refreshControl.tintColor = [UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000];
@@ -54,6 +57,16 @@ static NSString* kCellIdentifier = @"movieCell";
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)setRefreshControlEnabled:(BOOL)boolean {
+	if (boolean) {
+		[self.view addSubview:self.refresher];
+		self.refreshControl = self.refresher;
+	}
+	else {
+		
+	}
 }
 
 - (void)loadData {

@@ -42,7 +42,7 @@ static int const kSettingsButtonRight = 7;
 		_notificationCenter = [NSNotificationCenter defaultCenter];
 		_currentView = nil;
 		SVMoviesLoadingView* loadingView = [[SVMoviesLoadingView alloc] initWithFrame:self.view.bounds];
-		SVMoviesTopView* topView = [[SVMoviesTopView alloc] initWithFrame:CGRectMake(0, -kTopViewHeight, self.view.frame.size.width, kTopViewHeight)];
+		SVMoviesTopView* topView = [[SVMoviesTopView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, kTopViewHeight)];
 		_settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		UIImage* settingsButtonImage = [UIImage imageNamed:@"settings_button.png"];
 		[_settingsButton setBackgroundImage:settingsButtonImage forState:UIControlStateNormal];
@@ -54,6 +54,7 @@ static int const kSettingsButtonRight = 7;
 		[moviesView addSubview:_tableViewController.view];
 		[moviesView addSubview:_settingsButton];
 		_views = [[NSDictionary alloc] initWithObjectsAndKeys:loadingView, @"loadingView", topView, @"topView", moviesView, @"moviesView", nil];
+		[_notificationCenter addObserver:self selector:@selector(connectionDidFail) name:@"moviesSyncManagerConnectionDidFailNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didStartSyncing) name:@"moviesSyncManagerDidStartSyncingNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didFinishSyncing) name:@"moviesSyncManagerDidFinishSyncingNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didFailSyncing) name:@"moviesSyncManagerDidFailSyncingNotification" object:nil];
@@ -88,6 +89,39 @@ static int const kSettingsButtonRight = 7;
 		UIView* moviesView = [self.views objectForKey:@"moviesView"];
 		[self displayView:moviesView];
 	}
+	else if (state == SVMoviesViewErrorState) {
+		UITableView* tableView = self.tableViewController.tableView;
+		UIView* view = [[UIView alloc] initWithFrame:self.view.bounds];
+		SVMoviesTopView* topView = [self.views objectForKey:@"topView"];
+		CGRect tableViewRect = tableView.frame;
+		tableViewRect.origin.y = 0;
+		tableView.frame = tableViewRect;
+		[view addSubview:tableView];
+		[view addSubview:topView];
+		if (self.tableViewController.refreshControl.isRefreshing) {
+			CGRect topViewRect = topView.frame;
+			topViewRect.origin.y = 0;
+			topView.frame = topViewRect;
+		}
+		else {
+			CGRect topViewRect = topView.frame;
+			topViewRect.origin.y = -kTopViewHeight;
+			topView.frame = topViewRect;
+			void (^animationBlock) (void) =  ^{
+				CGRect tableViewRect = tableView.frame;
+				CGRect topViewRect = topView.frame;
+				topViewRect.origin.y += kTopViewHeight;
+				tableViewRect.origin.y += kTopViewHeight;
+				tableView.frame = tableViewRect;
+				topView.frame = topViewRect;
+			};
+			[UIView animateWithDuration:0.3
+								  delay:0
+								options:UIViewAnimationCurveLinear
+							 animations:animationBlock completion:NULL];
+		}
+		[self displayView:view];
+	}
 	self.currentState = state;
 }
 
@@ -120,9 +154,17 @@ static int const kSettingsButtonRight = 7;
 }
 
 - (void)didFailSyncing {
-	NSLog(@"in");
+	[self displayViewForState:SVMoviesViewErrorState];
 	if (self.tableViewController.refreshControl.isRefreshing) {
-		[self.view addSubview:[self.views objectForKey:@"topView"]];
+		[self.tableViewController.refreshControl removeFromSuperview];
+		[self.tableViewController.refreshControl endRefreshing];
+	}
+}
+
+- (void)connectionDidFail {
+	[self displayViewForState:SVMoviesViewErrorState];
+	if (self.tableViewController.refreshControl.isRefreshing) {
+		[self.tableViewController.refreshControl endRefreshing];
 	}
 }
 

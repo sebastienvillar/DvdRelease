@@ -8,8 +8,8 @@
 
 #import "SVMoviesTopView.h"
 
-static const int triangleTop = 5;
-static const int explanationTop = triangleTop + 3;
+static const int triangleTop = 3;
+static const int explanationTop = triangleTop + 2;
 static const int explanationHeight = 14;
 
 @interface SVMoviesTopView ()
@@ -31,7 +31,8 @@ static const int explanationHeight = 14;
 - (void)drawRect:(CGRect)rect
 {
 	//Background
-	[[UIColor blackColor] set];
+	//[[UIColor blackColor] set];
+	[[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2] set];
     [[UIBezierPath bezierPathWithRect:self.bounds] fill];
 	
 	//Image
