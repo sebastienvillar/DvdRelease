@@ -16,7 +16,7 @@
 #define kReleaseDateHeight 19
 #define kReleaseDateLeft 133
 #define kImageWidth 121
-#define kImageHeight 43
+#define kImageHeight 176
 #define kImageLeft 0
 #define kImageTop 0
 
