@@ -11,7 +11,8 @@
 #import "SVMoviesViewController.h"
 #import "SVSettingsViewController.h"
 #import "SVMoviesSyncManager.h"
+#import "SVWebViewController.h"
 
-@interface SVRootViewController : UIViewController <SVDatabaseSenderProtocol, SVMoviesSyncManagerDelegate, SVMoviesViewControllerDelegate, SVSettingsViewControllerDelegate>
+@interface SVRootViewController : UIViewController <SVDatabaseSenderProtocol, SVMoviesSyncManagerDelegate, SVMoviesViewControllerDelegate, SVSettingsViewControllerDelegate, SVWebViewControllerDelegate>
 
 @end

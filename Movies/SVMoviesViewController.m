@@ -87,39 +87,6 @@ static int const kSettingsButtonRight = 7;
 		UIView* moviesView = [self.views objectForKey:@"moviesView"];
 		[self displayView:moviesView];
 	}
-	/*else if (state == SVMoviesViewErrorState) {
-		UITableView* tableView = self.tableViewController.tableView;
-		UIView* view = [[UIView alloc] initWithFrame:self.view.bounds];
-		SVMoviesTopView* topView = [self.views objectForKey:@"topView"];
-		CGRect tableViewRect = tableView.frame;
-		tableViewRect.origin.y = 0;
-		tableView.frame = tableViewRect;
-		[view addSubview:tableView];
-		[view addSubview:topView];
-		if (self.tableViewController.refreshControl.isRefreshing) {
-			CGRect topViewRect = topView.frame;
-			topViewRect.origin.y = 0;
-			topView.frame = topViewRect;
-		}
-		else {
-			CGRect topViewRect = topView.frame;
-			topViewRect.origin.y = -kTopViewHeight;
-			topView.frame = topViewRect;
-			void (^animationBlock) (void) =  ^{
-				CGRect tableViewRect = tableView.frame;
-				CGRect topViewRect = topView.frame;
-				topViewRect.origin.y += kTopViewHeight;
-				tableViewRect.origin.y += kTopViewHeight;
-				tableView.frame = tableViewRect;
-				topView.frame = topViewRect;
-			};
-			[UIView animateWithDuration:0.3
-								  delay:0
-								options:UIViewAnimationCurveLinear
-							 animations:animationBlock completion:NULL];
-		}
-		[self displayView:view];
-	}*/
 	self.currentState = state;
 }
 

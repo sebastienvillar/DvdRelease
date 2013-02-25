@@ -18,4 +18,5 @@ enum {
 typedef int SVSettingsSignInViewState;
 @property (strong, readonly) UIButton* signInButton;
 @property (readwrite) SVSettingsSignInViewState state;
+@property (strong, readwrite) UIActivityIndicatorView* activityIndicatorView;
 @end

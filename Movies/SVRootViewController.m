@@ -14,6 +14,7 @@ enum {
 	SVAnimationStyleFadeIn = 1,
 	SVAnimationStyleFadeOut = 2,
 	SVAnimationStyleSlideDown = 3,
+	SVAnimationStyleSlideUp = 4,
 };
 
 typedef int SVLayoutState;
@@ -25,6 +26,7 @@ enum {
 	SVLayoutSettingsState = 5,
 	SVLayoutLoggedOutErrorState = 6,
 	SVLayoutLoggedOutUserDeniedState = 7,
+	SVLayoutWebViewState = 8,
 };
 
 @interface SVRootViewController ()
@@ -71,14 +73,16 @@ enum {
 		settingsViewController.delegate = self;
 		SVMoviesViewController* moviesViewController = [[SVMoviesViewController alloc] init];
 		moviesViewController.delegate = self;
-		_viewControllers = [[NSDictionary alloc] initWithObjectsAndKeys:settingsViewController, @"settingsViewController", moviesViewController, @"moviesViewController", nil];
+		SVWebViewController* webViewController = [[SVWebViewController alloc] init];
+		webViewController.delegate = self;
+		_viewControllers = [[NSDictionary alloc] initWithObjectsAndKeys:settingsViewController, @"settingsViewController", moviesViewController, @"moviesViewController", webViewController, @"webViewController", nil];
 		_currentViewController = nil;
 		_databaseAvailable = NO;
 		_firstConnection = NO;
 		_logOutTransaction = nil;
 		_nbOfSyncTries = 0;
 		_ignoreFlagEnabled = NO;
-		_currentLayoutState = SVLayoutLoggedOutState;
+		_currentLayoutState = -1;
 		_notificationCenter = [NSNotificationCenter defaultCenter];
 	}
 	return self;
@@ -108,21 +112,36 @@ enum {
 		case SVLayoutLoggedOutState: {
 			SVSettingsViewController* settingsViewController = [self.viewControllers objectForKey:@"settingsViewController"];
 			[settingsViewController displayViewForState:SVSettingsViewLoggedOutState];
-			[self loadController:settingsViewController withAnimation:SVAnimationStyleNone];
+			if ((currentLayoutState == SVLayoutSettingsState) || (currentLayoutState == -1)) {
+				[self loadController:settingsViewController withAnimation:SVAnimationStyleNone];
+			}
+			else {
+				[self loadController:settingsViewController withAnimation:SVAnimationStyleSlideDown];
+			}
 			break;
 		}
 			
 		case SVLayoutLoggedOutUserDeniedState: {
 			SVSettingsViewController* settingsViewController = [self.viewControllers objectForKey:@"settingsViewController"];
 			[settingsViewController displayViewForState:SVSettingsViewLoggedOutUserDeniedState];
-			[self loadController:settingsViewController withAnimation:SVAnimationStyleNone];
+			if (currentLayoutState == SVLayoutWebViewState) {
+				[self loadController:settingsViewController withAnimation:SVAnimationStyleSlideDown];
+			}
+			else {
+				[self loadController:settingsViewController withAnimation:SVAnimationStyleNone];
+			}
 			break;
 		}
 			
 		case SVLayoutLoggedOutErrorState: {
 			SVSettingsViewController* settingsViewController = [self.viewControllers objectForKey:@"settingsViewController"];
 			[settingsViewController displayViewForState:SVSettingsViewLoggedOutErrorState];
-			[self loadController:settingsViewController withAnimation:SVAnimationStyleNone];
+			if (currentLayoutState == SVLayoutWebViewState) {
+				[self loadController:settingsViewController withAnimation:SVAnimationStyleSlideDown];
+			}
+			else {
+				[self loadController:settingsViewController withAnimation:SVAnimationStyleNone];
+			}
 			break;
 		}
 			
@@ -136,14 +155,11 @@ enum {
 		case SVLayoutDisplayState: {
 			SVMoviesViewController* moviesViewController = [self.viewControllers objectForKey:@"moviesViewController"];
 			[moviesViewController displayViewForState:SVMoviesViewDisplayState];
-			if (currentLayoutState == SVLayoutLoadingState) {
+			if ((currentLayoutState == SVLayoutLoadingState) || (currentLayoutState == -1)) {
 				[self loadController:moviesViewController withAnimation:SVAnimationStyleNone];
 			}
 			else if (currentLayoutState == SVLayoutSettingsState) {
 				[self loadController:moviesViewController withAnimation:SVAnimationStyleFadeOut];
-			}
-			else {
-				[self loadController:moviesViewController withAnimation:SVAnimationStyleNone];
 			}
 			break;
 		}
@@ -154,6 +170,12 @@ enum {
 			[self loadController:settingsViewController withAnimation:SVAnimationStyleFadeIn];
 			break;
 		}
+			
+		case SVLayoutWebViewState: {
+			SVWebViewController* webViewController = [self.viewControllers objectForKey:@"webViewController"];
+			[self loadController:webViewController withAnimation:SVAnimationStyleSlideUp];
+		}
+			
 		default: {
 			break;
 		}
@@ -164,8 +186,10 @@ enum {
 - (void)loadController:(UIViewController*)viewController withAnimation:(SVAnimationStyle)animationStyle {
 	switch (animationStyle) {
 		case SVAnimationStyleNone: {
-			if (self.currentViewController) {
-				[self.currentViewController.view removeFromSuperview];
+			if (self.view.subviews) {
+				for (UIView* view in self.view.subviews) {
+					[view removeFromSuperview];
+				}
 			}
 			CGRect rect = viewController.view.frame;
 			rect.origin.y = 0;
@@ -181,6 +205,29 @@ enum {
 				CGRect rect = currentViewController.view.frame;
 				rect.origin.y = self.view.frame.size.height;
 				currentViewController.view.frame = rect;
+			};
+			void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
+				if (isFinished) {
+					[currentViewController.view removeFromSuperview];
+				}
+			};
+			[UIView animateWithDuration:0.5
+								  delay:0
+								options:UIViewAnimationCurveLinear
+							 animations:animationBlock completion:completionBlock];
+			break;
+		}
+			
+		case SVAnimationStyleSlideUp: {
+			UIViewController* currentViewController = self.currentViewController;
+			CGRect rect = viewController.view.frame;
+			rect.origin.y = self.view.frame.size.height;
+			viewController.view.frame = rect;
+			[self.view addSubview:viewController.view];
+			void (^animationBlock)(void) = ^{
+				CGRect rect = viewController.view.frame;
+				rect.origin.y = 0;
+				viewController.view.frame = rect;
 			};
 			void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
 				if (isFinished) {
@@ -327,10 +374,9 @@ enum {
 
 - (void)moviesSyncManagerNeedsApproval:(SVMoviesSyncManager *)aManager withUrl:(NSURL *)url {
 	self.currentLayoutState = SVLayoutSignInState;
-	NSDictionary* dictionary = [NSDictionary dictionaryWithObject:url forKey:@"callbackUrl"];
-	[self.notificationCenter postNotificationName:@"moviesSyncManagerNeedsApprovalNotification"
-										   object:self
-										 userInfo:dictionary];
+	SVWebViewController* webViewController = [self.viewControllers objectForKey:@"webViewController"];
+	[webViewController loadUrl:url];
+	[self layoutControllerWithState:SVLayoutWebViewState];
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -364,6 +410,14 @@ enum {
 	NSArray* statements = [[NSArray alloc] initWithObjects:statement, statement2, nil];
 	self.logOutTransaction = [[SVTransaction alloc] initWithStatements:statements andSender:self];
 	[self.database executeTransaction:self.logOutTransaction];
+	[self layoutControllerWithState:SVLayoutLoggedOutState];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - SVWebViewControllerDelegate
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)webViewControllerDidClickCancelButton:(SVWebViewController *)webViewController {
 	[self layoutControllerWithState:SVLayoutLoggedOutState];
 }
 

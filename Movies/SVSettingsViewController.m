@@ -70,6 +70,7 @@
 		case SVSettingsViewLoggedOutState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
 			view.state = SVSettingsSignInViewNormalState;
+			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
 			break;
 		}
@@ -83,6 +84,7 @@
 		case SVSettingsViewLoggedOutErrorState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
 			view.state = SVSettingsSignInViewErrorState;
+			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
 			break;
 		}
@@ -90,6 +92,7 @@
 		case SVSettingsViewLoggedOutUserDeniedState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
 			view.state = SVSettingsSignInViewUserDeniedState;
+			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
 			break;
 		}
@@ -108,43 +111,13 @@
 	[self.view addSubview:self.currentView];
 }
 
-- (void)loadWebViewWithUrl:(NSNotification*)notification {
-	NSHTTPCookie *cookie;
-	NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-	for (cookie in [storage cookies]) {
-		if (!NSEqualRanges([cookie.domain rangeOfString:@"themoviedb.org"], NSMakeRange(NSNotFound, 0))) {
-			[storage deleteCookie:cookie];
-		}
-	}
-	NSDictionary* dictionary = notification.userInfo;
-	NSURL* url = [dictionary objectForKey:@"callbackUrl"];
-	NSURLRequest* urlRequest = [NSURLRequest requestWithURL:url];
-	self.webView = [[UIWebView alloc] init];
-	self.webView.delegate = self.moviesSyncManager;
-	[self.view addSubview:self.webView];
-	[self.webView loadRequest:urlRequest];
-	self.webView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.height, self.view.frame.size.width);
-	void(^animationBlock)(void) = ^{
-		self.webView.frame = self.view.bounds;
-	};
-	void(^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
-		if (isFinished) {
-			[self.currentView removeFromSuperview];
-			self.currentView = self.webView;
-		}
-	};
-	[UIView animateWithDuration:0.5
-						  delay:0
-						options:UIViewAnimationCurveLinear
-					 animations:animationBlock
-					 completion:completionBlock];
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Actions
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)didClickSignIn {
+	SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
+	[view.activityIndicatorView startAnimating];
 	if ([self.delegate respondsToSelector:@selector(settingsViewControllerDidClickSignInButton:)]) {
 		[self.delegate settingsViewControllerDidClickSignInButton:self];
 	}

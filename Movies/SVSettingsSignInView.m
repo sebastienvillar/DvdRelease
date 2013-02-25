@@ -14,12 +14,15 @@ static const int kExplanationLeft = 10;
 //////////////////////////////////////////////////////////////////////
 
 @implementation SVSettingsSignInView
-@synthesize signInButton = _signInButton;
+@synthesize signInButton = _signInButton,
+	activityIndicatorView = _activityIndicatorView;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
+		_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+		[self addSubview:_activityIndicatorView];
 		_signInButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40) resizingMode:UIImageResizingModeTile];
 		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
@@ -73,8 +76,9 @@ static const int kExplanationLeft = 10;
 			break;
 	}
 	
-
 	float width = self.frame.size.width;
+	self.activityIndicatorView.frame = CGRectMake(width/2 - 25, self.signInButton.frame.origin.y - offset - 50 - 5, 50, 50);
+	
 	[[UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000] set];
 	[explanation drawInRect:CGRectMake(kExplanationLeft, self.signInButton.frame.origin.y - offset, width - 2 * kExplanationLeft, 100)
 				   withFont:[UIFont systemFontOfSize:15]

@@ -15,6 +15,7 @@
 		4D77EF3816BC208600E1ADC3 /* SVSettingsSignInView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF3716BC208600E1ADC3 /* SVSettingsSignInView.m */; };
 		4D96674316CFA5E70051C349 /* SVImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D96674216CFA5E70051C349 /* SVImageManager.m */; };
 		4DAE806116D79EA000DA09DC /* SVHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAE806016D79EA000DA09DC /* SVHelper.m */; };
+		4DBE79E216DB9C4C00BF1DF3 /* SVWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBE79E116DB9C4C00BF1DF3 /* SVWebViewController.m */; };
 		4DD4630616B97FE10038FA89 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630516B97FE10038FA89 /* UIKit.framework */; };
 		4DD4630816B97FE10038FA89 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630716B97FE10038FA89 /* Foundation.framework */; };
 		4DD4630A16B97FE10038FA89 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630916B97FE10038FA89 /* CoreGraphics.framework */; };
@@ -61,6 +62,8 @@
 		4D96674216CFA5E70051C349 /* SVImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVImageManager.m; sourceTree = "<group>"; };
 		4DAE805F16D79EA000DA09DC /* SVHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVHelper.h; sourceTree = "<group>"; };
 		4DAE806016D79EA000DA09DC /* SVHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVHelper.m; sourceTree = "<group>"; };
+		4DBE79E016DB9C4C00BF1DF3 /* SVWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVWebViewController.h; sourceTree = "<group>"; };
+		4DBE79E116DB9C4C00BF1DF3 /* SVWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVWebViewController.m; sourceTree = "<group>"; };
 		4DD4630116B97FE10038FA89 /* Movies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Movies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DD4630516B97FE10038FA89 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4DD4630716B97FE10038FA89 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -196,6 +199,8 @@
 				4DD4632316B981A10038FA89 /* SVRootViewController.m */,
 				4DD4632516B981B00038FA89 /* SVSettingsViewController.h */,
 				4DD4632616B981B00038FA89 /* SVSettingsViewController.m */,
+				4DBE79E016DB9C4C00BF1DF3 /* SVWebViewController.h */,
+				4DBE79E116DB9C4C00BF1DF3 /* SVWebViewController.m */,
 				4DD4632816B981BD0038FA89 /* SVMoviesViewController.h */,
 				4DD4632916B981BD0038FA89 /* SVMoviesViewController.m */,
 				4D0BEA3B16DA4CCA0070DA53 /* SVMoviesTableViewController.h */,
@@ -379,6 +384,7 @@
 				4D2FD4E216D66CEF00765DD9 /* SVSettingsLogOutView.m in Sources */,
 				4DAE806116D79EA000DA09DC /* SVHelper.m in Sources */,
 				4D0BEA3D16DA4CCA0070DA53 /* SVMoviesTableViewController.m in Sources */,
+				4DBE79E216DB9C4C00BF1DF3 /* SVWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
