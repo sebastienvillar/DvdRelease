@@ -14,7 +14,4 @@
 + (SVImageManager*)sharedImageManager;
 - (UIImage*)imageForMovie:(SVMovie*)movie;
 - (void)addImage:(UIImage*)image forMovie:(SVMovie*)movie;
-- (UIImage*)smallImageForMovie:(SVMovie*)movie;
-- (void)addSmallImage:(UIImage*)image forMovie:(SVMovie*)movie;
-
 @end

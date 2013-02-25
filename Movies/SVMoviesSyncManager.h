@@ -24,6 +24,7 @@
 
 @interface SVMoviesSyncManager : NSObject <SVDatabaseSenderProtocol, UIWebViewDelegate, SVTmdbWatchListRequestDelegate, SVRTDvdReleaseDateRequestDelegate, NSURLConnectionDelegate>
 @property (strong, readwrite) NSString* service;
+@property (readonly) BOOL isSyncing;
 @property (weak, readwrite) NSObject<SVMoviesSyncManagerDelegate>* delegate;
 
 + (SVMoviesSyncManager*)sharedMoviesSyncManager;

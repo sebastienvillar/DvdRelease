@@ -8,10 +8,9 @@
 
 #import "SVMoviesViewController.h"
 #import "SVMoviesLoadingView.h"
-#import "SVMoviesTopView.h"
+#import "SVMoviesErrorViewCell.h"
 #import "SVMoviesTableViewController.h"
 
-static int const kTopViewHeight = 43;
 static int const kSettingsButtonBottom = 7;
 static int const kSettingsButtonRight = 7;
 
@@ -42,7 +41,6 @@ static int const kSettingsButtonRight = 7;
 		_notificationCenter = [NSNotificationCenter defaultCenter];
 		_currentView = nil;
 		SVMoviesLoadingView* loadingView = [[SVMoviesLoadingView alloc] initWithFrame:self.view.bounds];
-		SVMoviesTopView* topView = [[SVMoviesTopView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, kTopViewHeight)];
 		_settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		UIImage* settingsButtonImage = [UIImage imageNamed:@"settings_button.png"];
 		[_settingsButton setBackgroundImage:settingsButtonImage forState:UIControlStateNormal];
@@ -51,14 +49,14 @@ static int const kSettingsButtonRight = 7;
 		[_settingsButton addTarget:self action:@selector(didClickSettingsButton) forControlEvents:UIControlEventTouchDown];
 		_tableViewController = [[SVMoviesTableViewController alloc] init];
 		UIView* moviesView = [[UIView alloc] initWithFrame:self.view.bounds];
-		[moviesView addSubview:_tableViewController.view];
+		_tableViewController.tableView.frame = _tableViewController.view.bounds;
+		[moviesView addSubview:_tableViewController.tableView];
 		[moviesView addSubview:_settingsButton];
-		_views = [[NSDictionary alloc] initWithObjectsAndKeys:loadingView, @"loadingView", topView, @"topView", moviesView, @"moviesView", nil];
+		_views = [[NSDictionary alloc] initWithObjectsAndKeys:loadingView, @"loadingView", moviesView, @"moviesView", nil];
 		[_notificationCenter addObserver:self selector:@selector(connectionDidFail) name:@"moviesSyncManagerConnectionDidFailNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didStartSyncing) name:@"moviesSyncManagerDidStartSyncingNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didFinishSyncing) name:@"moviesSyncManagerDidFinishSyncingNotification" object:nil];
-		[_notificationCenter addObserver:self selector:@selector(didFailSyncing) name:@"moviesSyncManagerDidFailSyncingNotification" object:nil];
-    }
+		[_notificationCenter addObserver:self selector:@selector(didFailSyncing) name:@"moviesSyncManagerDidFailSyncingNotification" object:nil];    }
     return self;
 }
 
@@ -89,7 +87,7 @@ static int const kSettingsButtonRight = 7;
 		UIView* moviesView = [self.views objectForKey:@"moviesView"];
 		[self displayView:moviesView];
 	}
-	else if (state == SVMoviesViewErrorState) {
+	/*else if (state == SVMoviesViewErrorState) {
 		UITableView* tableView = self.tableViewController.tableView;
 		UIView* view = [[UIView alloc] initWithFrame:self.view.bounds];
 		SVMoviesTopView* topView = [self.views objectForKey:@"topView"];
@@ -121,7 +119,7 @@ static int const kSettingsButtonRight = 7;
 							 animations:animationBlock completion:NULL];
 		}
 		[self displayView:view];
-	}
+	}*/
 	self.currentState = state;
 }
 
@@ -140,32 +138,23 @@ static int const kSettingsButtonRight = 7;
 
 - (void)didStartSyncing {
 	if (self.currentState == SVMoviesViewDisplayState) {
-		if (!self.tableViewController.refreshControl.isRefreshing) {
-			[self.tableViewController.refreshControl beginRefreshing];
-		}
+		[self.tableViewController beginRefreshing];
 	}
 }
 
 - (void)didFinishSyncing {
-	if (self.tableViewController.refreshControl.isRefreshing) {
-		[self.tableViewController.refreshControl endRefreshing];
-	}
-	[self.tableViewController loadData];
+	[self.tableViewController endRefreshing];
+	[self.tableViewController hideError];
 }
 
 - (void)didFailSyncing {
-	[self displayViewForState:SVMoviesViewErrorState];
-	if (self.tableViewController.refreshControl.isRefreshing) {
-		[self.tableViewController.refreshControl removeFromSuperview];
-		[self.tableViewController.refreshControl endRefreshing];
-	}
+	[self.tableViewController endRefreshing];
+	[self.tableViewController displayError];
 }
 
 - (void)connectionDidFail {
-	[self displayViewForState:SVMoviesViewErrorState];
-	if (self.tableViewController.refreshControl.isRefreshing) {
-		[self.tableViewController.refreshControl endRefreshing];
-	}
+	[self.tableViewController endRefreshing];
+	[self.tableViewController displayError];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////

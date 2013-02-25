@@ -16,7 +16,7 @@ static const int kTitleTop = 14;
 static const int kReleaseDateHeight = 19;
 static const int kReleaseDateLeft = kTitleLeft;
 static const int kImageWidth = 121;
-static const int kImageHeight = kCellHeight;
+static const int kImageHeight = kMovieCellHeight;
 static const int kImageLeft = 0;
 static const int kImageTop = 0;
 static NSCache* imagesCache = nil;
@@ -110,8 +110,12 @@ static NSCache* imagesCache = nil;
 	
 	//Image
 	UIImage* image = [imagesCache objectForKey:self.movie.imageUrl];
-	if (image)
-		[image drawInRect:CGRectMake(kImageLeft, kImageTop, kImageWidth, kImageHeight)];
+	if (image) {
+		CGRect rect = CGRectMake(kImageLeft, kImageTop, kImageWidth, kImageHeight);
+		[image drawInRect:rect];
+		UIImage* overlayImage = [UIImage imageNamed:@"dvd_overlay.png"];
+		[overlayImage drawInRect:rect];
+	}
 	else
 		[self cacheImage];
 }
@@ -119,7 +123,7 @@ static NSCache* imagesCache = nil;
 - (void)cacheImage {
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        UIImage *image = [self.imageManager smallImageForMovie:self.movie];
+        UIImage *image = [self.imageManager imageForMovie:self.movie];
 		if (image) {
 			[imagesCache setObject:image forKey:self.movie.imageUrl];
 		}
@@ -135,7 +139,7 @@ static NSCache* imagesCache = nil;
 			}
 			image = [self generateSmallImage:image];
 			[imagesCache setObject:image forKey:self.movie.imageUrl];
-			[self.imageManager addSmallImage:image forMovie:self.movie];
+			[self.imageManager addImage:image forMovie:self.movie];
 		}
 		dispatch_async(dispatch_get_main_queue(), ^{
 			NSIndexPath *indexPath = [self.tableViewParent indexPathForCell:self];

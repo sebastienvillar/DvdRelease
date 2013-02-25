@@ -10,4 +10,8 @@
 
 @interface SVMoviesTableViewController : UITableViewController
 - (void)loadData;
+- (void)displayError;
+- (void)hideError;
+- (void)beginRefreshing;
+- (void)endRefreshing;
 @end

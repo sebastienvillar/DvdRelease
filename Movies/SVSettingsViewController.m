@@ -66,11 +66,35 @@
 }
 
 - (void)displayViewForState:(SVSettingsViewState)state {
-	if (state == SVSettingsViewSignInState) {
-		[self displayView:[self.views objectForKey:@"signInView"]];
-	}
-	else if (state == SVSettingsViewLogOutState) {
-		[self displayView:[self.views objectForKey:@"logOutView"]];		
+	switch (state) {
+		case SVSettingsViewLoggedOutState: {
+			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
+			view.state = SVSettingsSignInViewNormalState;
+			[self displayView:view];
+			break;
+		}
+			
+		case SVSettingsViewSignedInState: {
+			SVSettingsLogOutView* view = [self.views objectForKey:@"logOutView"];
+			[self displayView:view];
+			break;
+		}
+			
+		case SVSettingsViewLoggedOutErrorState: {
+			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
+			view.state = SVSettingsSignInViewErrorState;
+			[self displayView:view];
+			break;
+		}
+			
+		case SVSettingsViewLoggedOutUserDeniedState: {
+			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
+			view.state = SVSettingsSignInViewUserDeniedState;
+			[self displayView:view];
+			break;
+		}
+		default:
+			break;
 	}
 	self.currentState = state;
 }
@@ -80,6 +104,7 @@
 		[self.currentView removeFromSuperview];
 	}
 	self.currentView = view;
+	[self.currentView setNeedsDisplay];
 	[self.view addSubview:self.currentView];
 }
 

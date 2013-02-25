@@ -10,5 +10,12 @@
 
 
 @interface SVSettingsSignInView : UIView
+enum {
+	SVSettingsSignInViewNormalState = 0,
+	SVSettingsSignInViewErrorState = 1,
+	SVSettingsSignInViewUserDeniedState = 2,
+};
+typedef int SVSettingsSignInViewState;
 @property (strong, readonly) UIButton* signInButton;
+@property (readwrite) SVSettingsSignInViewState state;
 @end

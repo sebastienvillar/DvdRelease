@@ -11,14 +11,18 @@
 #import "SVDatabase.h"
 #import "SVHelper.h"
 #import "SVMoviesSyncManager.h"
+#import "SVMoviesErrorViewCell.h"
 
-static NSString* kCellIdentifier = @"movieCell";
+#define kMovieCellIdentifier @"movieCell"
+#define kErrorCellIdentifier @"errorCell"
+
+static int const kErrorViewCellHeight = 43;
 
 @interface SVMoviesTableViewController ()
 @property (strong, readonly) SVDatabase* database;
 @property (strong, readwrite) SVQuery* moviesQuery;
 @property (strong, readwrite) NSMutableArray* movies;
-@property (strong, readonly) UIRefreshControl* refresher;
+@property (readwrite, getter = isErrorDisplayed) BOOL errorDisplayed;
 @end
 
 //////////////////////////////////////////////////////////////////////
@@ -27,21 +31,22 @@ static NSString* kCellIdentifier = @"movieCell";
 @implementation SVMoviesTableViewController
 @synthesize database = _database,
 			movies = _movies,
-			refresher = _refresher,
+			errorDisplayed = _errorDisplayed,
 			moviesQuery = _moviesQuery;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
-		_refresher = [[UIRefreshControl alloc] init];
-		self.refreshControl = _refresher;
+		self.refreshControl = [[UIRefreshControl alloc] init];
 		SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
 		[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
 		self.refreshControl.tintColor = [UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000];
 		_moviesQuery = nil;
+		_errorDisplayed = NO;
 		_database = [SVDatabase sharedDatabase];
 		_movies = [[NSMutableArray alloc] init];
+		
     }
     return self;
 }
@@ -49,7 +54,8 @@ static NSString* kCellIdentifier = @"movieCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	[self.tableView registerClass:[SVMovieTableViewCell class] forCellReuseIdentifier:kCellIdentifier];
+	[self.tableView registerClass:[SVMovieTableViewCell class] forCellReuseIdentifier:kMovieCellIdentifier];
+	[self.tableView registerClass:[SVMoviesErrorViewCell class] forCellReuseIdentifier:kErrorCellIdentifier];
 	self.tableView.separatorColor = [UIColor colorWithRed:0.2431 green:0.2431 blue:0.2431 alpha:1.0000];
 	self.tableView.backgroundColor = [UIColor blackColor];
 }
@@ -59,13 +65,31 @@ static NSString* kCellIdentifier = @"movieCell";
     [super didReceiveMemoryWarning];
 }
 
-- (void)setRefreshControlEnabled:(BOOL)boolean {
-	if (boolean) {
-		[self.view addSubview:self.refresher];
-		self.refreshControl = self.refresher;
+- (void)displayError {
+	if (!self.isErrorDisplayed) {
+		self.errorDisplayed = YES;
+		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:0];
+		[self.tableView insertSections:indexSet withRowAnimation:UITableViewRowAnimationBottom];
 	}
-	else {
-		
+}
+
+- (void)hideError {
+	if (self.isErrorDisplayed) {
+		self.errorDisplayed = NO;
+		NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:0];
+		[self.tableView deleteSections:indexSet withRowAnimation:UITableViewRowAnimationTop];
+	}
+}
+
+- (void)beginRefreshing {
+	if (!self.refreshControl.isRefreshing) {
+		[self.refreshControl beginRefreshing];
+	}
+}
+
+- (void)endRefreshing {
+	if (self.refreshControl.isRefreshing) {
+		[self.refreshControl endRefreshing];
 	}
 }
 
@@ -90,7 +114,6 @@ static NSString* kCellIdentifier = @"movieCell";
 			movie.yearOfRelease = [movieArray objectAtIndex:3];
 			movie.imageUrl = [NSURL URLWithString:[movieArray objectAtIndex:4]];
 			movie.imageFileName = [movieArray objectAtIndex:5];
-			movie.smallImageFileName = [movieArray objectAtIndex:6];
 			[self.movies addObject:movie];
 		}
 	}
@@ -102,7 +125,18 @@ static NSString* kCellIdentifier = @"movieCell";
 //////////////////////////////////////////////////////////////////////
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	CGFloat height = kCellHeight;
+	CGFloat height = 0;
+	if (!self.isErrorDisplayed) {
+		height = kMovieCellHeight;
+	}
+	else {
+		if (indexPath.section == 0) {
+			height = kErrorViewCellHeight;
+		}
+		else if (indexPath.section == 1) {
+			height = kMovieCellHeight;
+		}
+	}
 	return height;
 }
 
@@ -114,18 +148,49 @@ static NSString* kCellIdentifier = @"movieCell";
 //////////////////////////////////////////////////////////////////////
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	SVMovieTableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
-	cell.movie = [self.movies objectAtIndex:indexPath.row];
-	cell.tableViewParent = tableView;
-	[cell setNeedsDisplay];
+	UITableViewCell* cell = nil;
+	if (!self.isErrorDisplayed) {
+		cell = [tableView dequeueReusableCellWithIdentifier:kMovieCellIdentifier forIndexPath:indexPath];
+		SVMovieTableViewCell* moviesCell = (SVMovieTableViewCell*)cell;
+		moviesCell.movie = [self.movies objectAtIndex:indexPath.row];
+		moviesCell.tableViewParent = tableView;
+		[moviesCell setNeedsDisplay];
+	}
+	
+	else {
+		if (indexPath.section == 0) {
+			cell = [tableView dequeueReusableCellWithIdentifier:kErrorCellIdentifier forIndexPath:indexPath];
+		}
+		else if (indexPath.section == 1) {
+			cell = [tableView dequeueReusableCellWithIdentifier:kMovieCellIdentifier forIndexPath:indexPath];
+			SVMovieTableViewCell* moviesCell = (SVMovieTableViewCell*)cell;
+			moviesCell.movie = [self.movies objectAtIndex:indexPath.row];
+			moviesCell.tableViewParent = tableView;
+			[moviesCell setNeedsDisplay];
+		}
+	}
 	return cell;
 }
 
 - (int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return self.movies.count;
+	if (!self.isErrorDisplayed) {
+		return self.movies.count;
+	}
+	else {
+		if (section == 0) {
+			return 1;
+		}
+		else if (section == 1) {
+			return self.movies.count;
+		}
+	}
+	return 0;
 }
 
 - (int)numberOfSectionsInTableView:(UITableView *)tableView {
+	if (self.isErrorDisplayed) {
+		return 2;
+	}
 	return 1;
 }
 

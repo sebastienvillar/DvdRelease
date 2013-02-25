@@ -9,7 +9,6 @@
 #import "SVMoviesSyncManager.h"
 #import "SVJsonRequest.h"
 #import "SVAppDelegate.h"
-#import "SVImageManager.h"
 #import "SVHelper.h"
 
 #define kTmdbConfigureUrl @"configuration?api_key="
@@ -72,7 +71,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		_errorAlreadyReported = NO;
 		_movies = nil;
 		_moviesActions = [[NSMutableDictionary alloc] init];
-		_tmdbInfo = [[NSMutableDictionary alloc] init];
+		_tmdbInfo = nil;
 		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isLastWebPage"];
 		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isTokenAccepted"];
 	}
@@ -81,6 +80,14 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 - (void)connect {
 	if ([self.service isEqualToString:@"tmdb"]) {
+		if (self.isSyncing) {
+			NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
+			[userInfo setObject:[NSString stringWithFormat:@"Already syncing"] forKey:NSLocalizedDescriptionKey];
+			NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
+			[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
+			return;
+		}
+		self.tmdbInfo = [[NSMutableDictionary alloc] init];
 		self.moviesQuerySemaphore = dispatch_semaphore_create(0);
 		NSString* sqlQuery = @"SELECT * FROM movie";
 		self.moviesQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
@@ -91,6 +98,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 - (void)sync {
 	if (self.isSyncing) {
+		NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
+		[userInfo setObject:[NSString stringWithFormat:@"Already syncing"] forKey:NSLocalizedDescriptionKey];
+		NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
+		[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
 		return;
 	}
 	self.syncing = YES;
@@ -123,7 +134,6 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 				movie.yearOfRelease = [row objectAtIndex:3];
 				movie.imageUrl = [NSURL URLWithString:[row objectAtIndex:4]];
 				movie.imageFileName = [row objectAtIndex:5];
-				movie.smallImageFileName = [row objectAtIndex:6];
 				[self.movies addObject:movie];
 			}
 		}
@@ -145,14 +155,15 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 - (void)database:(SVDatabase *)database didFinishTransaction:(SVTransaction *)transaction withSuccess:(BOOL)success {
 	if (success) {
 		if (transaction == self.moviesTransaction) {
-			[self.delegate moviesSyncManagerDidFinishSyncing:self];
 			self.syncing = NO;
+			[self.delegate moviesSyncManagerDidFinishSyncing:self];
 		}
 	}
 	else {
 		NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
 		[userInfo setObject:[NSString stringWithFormat:@"Transaction %@ failed", transaction] forKey:NSLocalizedDescriptionKey];
 		NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
+		self.syncing = NO;
 		[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
 	}
 }
@@ -187,6 +198,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		NSMutableSet* toUpdateMovies = [[NSMutableSet alloc] initWithSet:self.movies];
 		[toUpdateMovies filterUsingPredicate:predicate];
 		
+		[self.moviesActions removeAllObjects];
+		
 		for (SVMovie* movie in toRemoveMovies) {
 			NSString* sqlStatement = [NSString stringWithFormat:@"DELETE FROM movie WHERE id = %@;", movie.identifier];
 			[self.moviesTransaction addStatement:sqlStatement];
@@ -214,8 +227,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 				[self.database executeTransaction:self.moviesTransaction];
 			}
 			else {
-				[self.delegate moviesSyncManagerDidFinishSyncing:self];
 				self.syncing = NO;
+				[self.delegate moviesSyncManagerDidFinishSyncing:self];
 			}
 		}
 	});
@@ -239,6 +252,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	void (^callbackBlock) (NSObject* json) = ^(NSObject* json){
 		dispatch_async(dispatch_get_main_queue(), ^{
 			if (!json) {
+				self.syncing = NO;
 				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
 				[userInfo setObject:[NSString stringWithFormat:@"Configure failed"] forKey:NSLocalizedDescriptionKey];
 				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
@@ -265,6 +279,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	void (^callbackBlock) (NSObject* json) = ^(NSObject* json) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			if (!json) {
+				self.syncing = NO;
 				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
 				[userInfo setObject:[NSString stringWithFormat:@"FetchToken failed"] forKey:NSLocalizedDescriptionKey];
 				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
@@ -283,6 +298,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 				[self.delegate moviesSyncManagerNeedsApproval:self withUrl:callbackUrl];
 			}
 			else {
+				self.syncing = NO;
 				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
 				[userInfo setObject:[NSString stringWithFormat:@"Callback url not found"] forKey:NSLocalizedDescriptionKey];
 				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
@@ -299,6 +315,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	void (^callbackBlock) (NSObject* json) = ^(NSObject* json) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			if (!json) {
+				self.syncing = NO;
 				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
 				[userInfo setObject:[NSString stringWithFormat:@"FetchSessionId failed"] forKey:NSLocalizedDescriptionKey];
 				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
@@ -316,6 +333,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 				[self.delegate moviesSyncManagerDidConnect:self];
 			}
 			else {
+				self.syncing = NO;
 				NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
 				[userInfo setObject:[NSString stringWithFormat:@"FetchSessionId denied"] forKey:NSLocalizedDescriptionKey];
 				NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
@@ -375,6 +393,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	[userInfo setObject:@"DvdReleaseDateRequest failed" forKey:NSLocalizedDescriptionKey];
 	NSError* error = [[NSError alloc] initWithDomain:@"MovieSyncManager" code:0 userInfo:userInfo];
 	if (!self.isErrorAlreadyReported) {
+		self.syncing = NO;
 		[self.delegate moviesSyncManagerDidFailSyncing:self withError:error];
 	}
 	[self.moviesActions removeObjectForKey:request.movie.uuid];
@@ -413,12 +432,14 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			[self fetchSessionId];
         }
         else {
+			self.syncing = NO;
 			[self.delegate moviesSyncManagerUserDeniedConnection:self];
         }
     }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+	self.syncing = NO;
     [self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
 }
 

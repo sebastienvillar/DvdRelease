@@ -1,5 +1,5 @@
 //
-//  SVMoviesTopView.h
+//  SVMoviesErrorViewCell.h
 //  Movies
 //
 //  Created by Sébastien Villar on 30/01/13.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SVMoviesTopView : UIView
+@interface SVMoviesErrorViewCell : UITableViewCell
 
 @end

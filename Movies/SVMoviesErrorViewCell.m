@@ -6,23 +6,23 @@
 //  Copyright (c) 2013 Sébastien Villar. All rights reserved.
 //
 
-#import "SVMoviesTopView.h"
+#import "SVMoviesErrorViewCell.h"
 
 static const int triangleTop = 3;
 static const int explanationTop = triangleTop + 2;
 static const int explanationHeight = 14;
 
-@interface SVMoviesTopView ()
+@interface SVMoviesErrorViewCell ()
 @end
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-@implementation SVMoviesTopView
+@implementation SVMoviesErrorViewCell
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
     }
     return self;

@@ -35,7 +35,7 @@
 		4DD4634916B983610038FA89 /* SVFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4634816B983610038FA89 /* SVFileManager.m */; };
 		4DD4634C16B9836E0038FA89 /* SVMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4634B16B9836E0038FA89 /* SVMovie.m */; };
 		4DD4635516B9839F0038FA89 /* SVMoviesLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635416B9839F0038FA89 /* SVMoviesLoadingView.m */; };
-		4DD4635816B983AA0038FA89 /* SVMoviesTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */; };
+		4DD4635816B983AA0038FA89 /* SVMoviesErrorViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635716B983AA0038FA89 /* SVMoviesErrorViewCell.m */; };
 		4DD4635B16B983C90038FA89 /* SVMovieTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */; };
 		4DDA2FFC16D54DD5006CE8C8 /* button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF616D54DD5006CE8C8 /* button@2x.png */; };
 		4DDA2FFD16D54DD5006CE8C8 /* dvd_overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DDA2FF716D54DD5006CE8C8 /* dvd_overlay@2x.png */; };
@@ -96,8 +96,8 @@
 		4DD4634B16B9836E0038FA89 /* SVMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMovie.m; sourceTree = "<group>"; };
 		4DD4635316B9839F0038FA89 /* SVMoviesLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesLoadingView.h; sourceTree = "<group>"; };
 		4DD4635416B9839F0038FA89 /* SVMoviesLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesLoadingView.m; sourceTree = "<group>"; };
-		4DD4635616B983AA0038FA89 /* SVMoviesTopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesTopView.h; sourceTree = "<group>"; };
-		4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesTopView.m; sourceTree = "<group>"; };
+		4DD4635616B983AA0038FA89 /* SVMoviesErrorViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMoviesErrorViewCell.h; sourceTree = "<group>"; };
+		4DD4635716B983AA0038FA89 /* SVMoviesErrorViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMoviesErrorViewCell.m; sourceTree = "<group>"; };
 		4DD4635916B983C80038FA89 /* SVMovieTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMovieTableViewCell.h; sourceTree = "<group>"; };
 		4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMovieTableViewCell.m; sourceTree = "<group>"; };
 		4DDA2FF616D54DD5006CE8C8 /* button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button@2x.png"; sourceTree = "<group>"; };
@@ -209,8 +209,8 @@
 			children = (
 				4DD4635316B9839F0038FA89 /* SVMoviesLoadingView.h */,
 				4DD4635416B9839F0038FA89 /* SVMoviesLoadingView.m */,
-				4DD4635616B983AA0038FA89 /* SVMoviesTopView.h */,
-				4DD4635716B983AA0038FA89 /* SVMoviesTopView.m */,
+				4DD4635616B983AA0038FA89 /* SVMoviesErrorViewCell.h */,
+				4DD4635716B983AA0038FA89 /* SVMoviesErrorViewCell.m */,
 				4DD4635916B983C80038FA89 /* SVMovieTableViewCell.h */,
 				4DD4635A16B983C80038FA89 /* SVMovieTableViewCell.m */,
 				4D77EF3616BC208600E1ADC3 /* SVSettingsSignInView.h */,
@@ -370,7 +370,7 @@
 				4DD4634916B983610038FA89 /* SVFileManager.m in Sources */,
 				4DD4634C16B9836E0038FA89 /* SVMovie.m in Sources */,
 				4DD4635516B9839F0038FA89 /* SVMoviesLoadingView.m in Sources */,
-				4DD4635816B983AA0038FA89 /* SVMoviesTopView.m in Sources */,
+				4DD4635816B983AA0038FA89 /* SVMoviesErrorViewCell.m in Sources */,
 				4DD4635B16B983C90038FA89 /* SVMovieTableViewCell.m in Sources */,
 				4D77EF2316BBF73D00E1ADC3 /* SVTransaction.m in Sources */,
 				4D77EF2716BBFEFC00E1ADC3 /* SVQuery.m in Sources */,

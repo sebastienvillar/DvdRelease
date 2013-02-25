@@ -12,9 +12,11 @@
 @class SVMoviesViewController;
 
 typedef int SVMoviesViewState;
-static const int SVMoviesViewLoadingState = 0;
-static const int SVMoviesViewDisplayState = 1;
-static const int SVMoviesViewErrorState = 2;
+enum {
+	SVMoviesViewLoadingState = 0,
+	SVMoviesViewDisplayState = 1,
+	//SVMoviesViewErrorState = 2,
+};
 
 @protocol SVMoviesViewControllerDelegate <NSObject>
 - (void)moviesViewControllerDidClickSettingsButton:(SVMoviesViewController*)moviesViewController;

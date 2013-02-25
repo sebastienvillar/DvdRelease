@@ -46,8 +46,7 @@ static SVDatabase* sharedDatabase = nil;
 			"dvd_release_date DATE, "
 			"year_of_release INTEGER,"
 			"image_url TEXT,"
-			"image_file_name TEXT,"
-			"small_image_file_name TEXT);";
+			"image_file_name TEXT);";
 			
 			[self open];
 			NSArray* statements = [[NSArray alloc] initWithObjects:createServiceStatement, createMovieStatement, nil];

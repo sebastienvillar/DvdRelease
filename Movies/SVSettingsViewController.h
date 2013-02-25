@@ -11,8 +11,12 @@
 @class SVSettingsViewController;
 
 typedef int SVSettingsViewState;
-static const int SVSettingsViewSignInState = 0;
-static const int SVSettingsViewLogOutState = 1;
+enum {
+	SVSettingsViewSignedInState = 0,
+	SVSettingsViewLoggedOutState = 1,
+	SVSettingsViewLoggedOutUserDeniedState = 2,
+	SVSettingsViewLoggedOutErrorState = 3,
+};
 
 @protocol SVSettingsViewControllerDelegate <NSObject>
 - (void)settingsViewControllerDidClickHomeButton:(SVSettingsViewController*)settingsViewController;
