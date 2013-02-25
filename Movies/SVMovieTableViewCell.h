@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SVMovie.h"
 
-static const int kMovieCellHeight = 176;
+#define kMovieCellHeight 176
 @interface SVMovieTableViewCell : UITableViewCell
 @property (strong, readwrite) SVMovie* movie;
 @property (weak, readwrite) UITableView* tableViewParent;

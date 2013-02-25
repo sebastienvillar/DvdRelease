@@ -8,11 +8,9 @@
 
 #import "SVSettingsLogOutView.h"
 
-static const int  kHomeButtonBottom = 7;
-static const int kHomeButtonRight = 7;
-static const int kThanksBottom = 17;
-static const int kThanksLeft = 23;
-static const int kExplanationLeft = 20;
+#define kHomeButtonBottom 7
+#define kHomeButtonRight 7
+#define kThanksBottom 17
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -57,9 +55,9 @@ static const int kExplanationLeft = 20;
 
 - (void)drawRect:(CGRect)rect
 {
-	NSString* explanation = @"You are currently signed in to Tmdb";
+	NSString* explanation = @"You are currently signed in to TMDB";
 	[[UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(kExplanationLeft, self.logoutButton.frame.origin.y - 30, self.frame.size.width - 2 * kExplanationLeft, 30)
+	[explanation drawInRect:CGRectMake(0, self.logoutButton.frame.origin.y - 30, self.frame.size.width, 30)
 					withFont:[UIFont systemFontOfSize:15]
 			   lineBreakMode:nil
 				   alignment:NSTextAlignmentCenter];
@@ -67,7 +65,7 @@ static const int kExplanationLeft = 20;
 	NSString* thanks = @"Thanks to RottenTomatoes";
 	float width = self.frame.size.width;
 	[[UIColor colorWithRed:0.4667 green:0.4902 blue:0.4902 alpha:1.0000] set];
-	[thanks drawInRect:CGRectMake(kThanksLeft, self.frame.size.height - kThanksBottom - 20, width - 2 * kThanksLeft, 20)
+	[thanks drawInRect:CGRectMake(0, self.frame.size.height - kThanksBottom - 20, width, 20)
 				   withFont:[UIFont systemFontOfSize:14]
 			  lineBreakMode:nil
 				  alignment:NSTextAlignmentCenter];

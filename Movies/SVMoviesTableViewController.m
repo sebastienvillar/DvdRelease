@@ -15,8 +15,7 @@
 
 #define kMovieCellIdentifier @"movieCell"
 #define kErrorCellIdentifier @"errorCell"
-
-static int const kErrorViewCellHeight = 43;
+#define kErrorViewCellHeight 43
 
 @interface SVMoviesTableViewController ()
 @property (strong, readonly) SVDatabase* database;

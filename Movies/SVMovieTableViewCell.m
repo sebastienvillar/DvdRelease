@@ -9,16 +9,17 @@
 #import "SVMovieTableViewCell.h"
 #import "SVImageManager.h"
 
-static const int kTitleMaxWidth = 150;
-static const int kTitleMaxHeight = 50;
-static const int kTitleLeft = 133;
-static const int kTitleTop = 14;
-static const int kReleaseDateHeight = 19;
-static const int kReleaseDateLeft = kTitleLeft;
-static const int kImageWidth = 121;
-static const int kImageHeight = kMovieCellHeight;
-static const int kImageLeft = 0;
-static const int kImageTop = 0;
+#define kTitleMaxWidth 150
+#define kTitleMaxHeight 50
+#define kTitleLeft 133
+#define kTitleTop 14
+#define kReleaseDateHeight 19
+#define kReleaseDateLeft 133
+#define kImageWidth 121
+#define kImageHeight 43
+#define kImageLeft 0
+#define kImageTop 0
+
 static NSCache* imagesCache = nil;
 
 @interface SVMovieTableViewCell ()

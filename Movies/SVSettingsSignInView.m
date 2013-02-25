@@ -8,8 +8,6 @@
 
 #import "SVSettingsSignInView.h"
 
-static const int kExplanationLeft = 10;
-
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
@@ -27,6 +25,7 @@ static const int kExplanationLeft = 10;
 		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40) resizingMode:UIImageResizingModeTile];
 		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
 		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateHighlighted];
+		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateDisabled];
 
 		[self addSubview:_signInButton];
 		float buttonWidth = 130;
@@ -34,11 +33,14 @@ static const int kExplanationLeft = 10;
 		_signInButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, self.frame.size.height/2 - buttonHeight/2, buttonWidth, buttonHeight);
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateNormal];
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateHighlighted];
+		[_signInButton setTitle:@"Sign in" forState:UIControlStateDisabled];
 		[_signInButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 		[_signInButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
+		[_signInButton setTitleColor:[UIColor blackColor] forState:UIControlStateDisabled];
 		_signInButton.titleLabel.font = [UIFont boldSystemFontOfSize:18];
 		[_signInButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
 		[_signInButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+		[_signInButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateDisabled];
 		_signInButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
     }
 	return self;
@@ -55,21 +57,21 @@ static const int kExplanationLeft = 10;
 	[backgroundImage drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:0.2];
 	
 	NSString* explanation = nil;
-	int offset = 0;
+	int bottomOffset = 0;
 	switch (self.state) {
 		case SVSettingsSignInViewNormalState: {
-			explanation = @"This application uses TMDB to\n synchronize your movie watchlist and\n display DVD release dates";
-			offset = 70;
+			explanation = @"This application uses TMDB to\nsynchronize your movie watchlist and\ndisplay DVD release dates";
+			bottomOffset = 70;
 			break;
 		}
 		case SVSettingsSignInViewErrorState: {
-			explanation = @"An error occured while\n connecting to TMDB\n Please try again";
-			offset = 70;
+			explanation = @"An error occured while connecting\nto TMDB. Please try again";
+			bottomOffset = 50;
 			break;
 		}
 		case SVSettingsSignInViewUserDeniedState: {
-			explanation = @"You must accept the token or\n we can't access your watchlist";
-			offset = 50;
+			explanation = @"You must accept the token\nso that we can access your watchlist";
+			bottomOffset = 50;
 			break;
 		}
 		default:
@@ -77,10 +79,10 @@ static const int kExplanationLeft = 10;
 	}
 	
 	float width = self.frame.size.width;
-	self.activityIndicatorView.frame = CGRectMake(width/2 - 25, self.signInButton.frame.origin.y - offset - 50 - 5, 50, 50);
+	self.activityIndicatorView.frame = CGRectMake(width/2 - 25, self.signInButton.frame.origin.y - bottomOffset - 50 - 5, 50, 50);
 	
 	[[UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(kExplanationLeft, self.signInButton.frame.origin.y - offset, width - 2 * kExplanationLeft, 100)
+	[explanation drawInRect:CGRectMake(0, self.signInButton.frame.origin.y - bottomOffset, width, 100)
 				   withFont:[UIFont systemFontOfSize:15]
 			  lineBreakMode:nil
 				  alignment:NSTextAlignmentCenter];

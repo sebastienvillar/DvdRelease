@@ -36,8 +36,6 @@ enum {
 @property (strong, readwrite) SVQuery* currentServiceQuery;
 @property (strong, readonly) NSDictionary* viewControllers;
 @property (strong, readonly) NSNotificationCenter* notificationCenter;
-@property (strong, readwrite) UIViewController* myPresentedViewController;
-@property (readwrite, getter = isDataAvailable) BOOL dataAvailable;
 @property (readwrite, getter = isFirstConnection) BOOL firstConnection;
 @property (strong, readwrite) SVTransaction* logOutTransaction;
 @property (readwrite) int nbOfSyncTries;
@@ -55,8 +53,6 @@ enum {
 			viewControllers = _viewControllers,
 			notificationCenter = _notificationCenter,
 			currentViewController = _currentViewController,
-			myPresentedViewController = _myPresentedViewController,
-			dataAvailable = _databaseAvailable,
 			logOutTransaction = _logOutTransaction,
 			nbOfSyncTries = _nbOfSyncTries,
 			ignoreFlagEnabled = _ignoreFlagEnabled,
@@ -77,7 +73,6 @@ enum {
 		webViewController.delegate = self;
 		_viewControllers = [[NSDictionary alloc] initWithObjectsAndKeys:settingsViewController, @"settingsViewController", moviesViewController, @"moviesViewController", webViewController, @"webViewController", nil];
 		_currentViewController = nil;
-		_databaseAvailable = NO;
 		_firstConnection = NO;
 		_logOutTransaction = nil;
 		_nbOfSyncTries = 0;
@@ -338,7 +333,12 @@ enum {
 										   object:self];
 
 	if (self.isFirstConnection) {
-		[self layoutControllerWithState:SVLayoutLoggedOutErrorState];
+		if (self.isIgnoreFlagEnabled) {
+			[aManager performSelector:@selector(connect) withObject:nil afterDelay:1];
+		}
+		else {
+			[self layoutControllerWithState:SVLayoutLoggedOutErrorState];
+		}
 	}
 	NSLog(@"Error: %@, description: %@", error.domain, error.localizedDescription);
 }

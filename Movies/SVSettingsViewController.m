@@ -70,6 +70,7 @@
 		case SVSettingsViewLoggedOutState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
 			view.state = SVSettingsSignInViewNormalState;
+			view.signInButton.enabled = YES;
 			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
 			break;
@@ -84,6 +85,7 @@
 		case SVSettingsViewLoggedOutErrorState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
 			view.state = SVSettingsSignInViewErrorState;
+			view.signInButton.enabled = YES;
 			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
 			break;
@@ -92,6 +94,7 @@
 		case SVSettingsViewLoggedOutUserDeniedState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
 			view.state = SVSettingsSignInViewUserDeniedState;
+			view.signInButton.enabled = YES;
 			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
 			break;
@@ -118,6 +121,7 @@
 - (void)didClickSignIn {
 	SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
 	[view.activityIndicatorView startAnimating];
+	view.signInButton.enabled = NO;
 	if ([self.delegate respondsToSelector:@selector(settingsViewControllerDidClickSignInButton:)]) {
 		[self.delegate settingsViewControllerDidClickSignInButton:self];
 	}

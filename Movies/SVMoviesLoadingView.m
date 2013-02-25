@@ -40,11 +40,11 @@
 	CGRect imageRect = CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height);
 	[backgroundImage drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:0.2];
 	
-	NSString* explanation = @"Please wait while we \nsynchronize your watchlist";
+	NSString* explanation = @"Please wait while we\nsynchronize your watchlist";
 	float height = self.frame.size.height;
 	float width = self.frame.size.width;
 	[[UIColor colorWithRed:0.7333 green:0.7843 blue:0.7961 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(20, height/2 - 62, width - 40, 100)
+	[explanation drawInRect:CGRectMake(0, height/2 - 67, width, 100)
 				   withFont:[UIFont systemFontOfSize:15]
 			  lineBreakMode:nil
 				  alignment:NSTextAlignmentCenter];

@@ -11,8 +11,8 @@
 #import "SVMoviesErrorViewCell.h"
 #import "SVMoviesTableViewController.h"
 
-static int const kSettingsButtonBottom = 7;
-static int const kSettingsButtonRight = 7;
+#define kSettingsButtonBottom 7
+#define kSettingsButtonRight 7
 
 @interface SVMoviesViewController ()
 @property (strong, readonly) NSNotificationCenter* notificationCenter;

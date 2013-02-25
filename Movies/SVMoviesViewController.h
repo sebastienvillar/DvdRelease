@@ -15,7 +15,6 @@ typedef int SVMoviesViewState;
 enum {
 	SVMoviesViewLoadingState = 0,
 	SVMoviesViewDisplayState = 1,
-	//SVMoviesViewErrorState = 2,
 };
 
 @protocol SVMoviesViewControllerDelegate <NSObject>

@@ -10,17 +10,17 @@
 #import "SVAppDelegate.h"
 #import "SVFileManager.h"
 
+#define kImagePath @"/Images/"
+
 static SVImageManager* sharedImageManager = nil;
 
 @interface SVImageManager ()
-@property (strong, readwrite) NSString* imagePath;
 @property (strong, readwrite) SVDatabase* database;
 @property (strong, readonly) SVFileManager* fileManager;
 @end
 
 @implementation SVImageManager
-@synthesize imagePath = _imagePath,
-			fileManager = _fileManager,
+@synthesize fileManager = _fileManager,
 			database = _database;
 
 + (SVImageManager*)sharedImageManager {
@@ -34,7 +34,6 @@ static SVImageManager* sharedImageManager = nil;
 	self = [super init];
 	if (self) {
 		_database = [SVDatabase sharedDatabase];
-		_imagePath = [NSString stringWithFormat:@"/Images/"];
 		_fileManager = [SVFileManager sharedFileManager];
 	}
 	return self;
@@ -44,7 +43,7 @@ static SVImageManager* sharedImageManager = nil;
 	if (!movie.imageFileName) {
 		return nil;
 	}
-	NSString* path = [NSString stringWithFormat:@"%@/%@", self.imagePath, movie.imageFileName];
+	NSString* path = [NSString stringWithFormat:@"%@/%@", kImagePath, movie.imageFileName];
 	NSData* imageData = [self.fileManager dataFromCache:path];
 	return [UIImage imageWithData:imageData scale:2.0];
 }
@@ -52,7 +51,7 @@ static SVImageManager* sharedImageManager = nil;
 - (void)addImage:(UIImage*)image forMovie:(SVMovie*)movie {
 	NSString* uuid = [SVAppDelegate uuid];
 	movie.imageFileName = uuid;
-	NSString* path = [NSString stringWithFormat:@"%@/%@", self.imagePath, movie.imageFileName];
+	NSString* path = [NSString stringWithFormat:@"%@/%@", kImagePath, movie.imageFileName];
 	BOOL success = [self.fileManager writeDataToCache:UIImagePNGRepresentation(image)
 											 withPath:path];
 	if (!success) {
