@@ -86,17 +86,17 @@ static NSCache* imagesCache = nil;
 				   lineBreakMode:NSLineBreakByTruncatingMiddle];
 	
 	//Release date
+	NSDate *today = [NSDate date];
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	NSDateComponents *dateComponents = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:today];
+	dateComponents.timeZone = [NSTimeZone localTimeZone];
+	dateComponents.hour = 0;
+	dateComponents.minute = 0;
+	dateComponents.second = 0;
+	today = [calendar dateFromComponents:dateComponents];
 	NSString* releaseText = nil;
 	if (self.movie.dvdReleaseDate) {
 		NSDate* releaseDate = self.movie.dvdReleaseDate;
-		NSDate *today = [NSDate date];
-		NSCalendar *calendar = [NSCalendar currentCalendar];
-		NSDateComponents *dateComponents = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:today];
-		dateComponents.timeZone = [NSTimeZone localTimeZone];
-		dateComponents.hour = 0;
-		dateComponents.minute = 0;
-		dateComponents.second = 0;
-		today = [calendar dateFromComponents:dateComponents];
 		NSComparisonResult comparisonResult = [releaseDate compare:today];
 		if (comparisonResult == NSOrderedAscending || comparisonResult == NSOrderedSame) {
 			[[UIColor colorWithRed:0.3216 green:0.8549 blue:0.0000 alpha:1.0000] set];
@@ -113,8 +113,15 @@ static NSCache* imagesCache = nil;
 		}
 	}
 	else {
-		[[UIColor colorWithRed:0.9072 green:0.2488 blue:0.2532 alpha:1.0000] set];
-		releaseText = @"Unknown";
+		int yearOfRelease = self.movie.yearOfRelease.intValue;
+		if (yearOfRelease > 1970 && yearOfRelease - 2 > dateComponents.year) {
+			[[UIColor colorWithRed:0.3216 green:0.8549 blue:0.0000 alpha:1.0000] set];
+			releaseText = @"Available";
+		}
+		else {
+			[[UIColor colorWithRed:0.9072 green:0.2488 blue:0.2532 alpha:1.0000] set];
+			releaseText = @"Unknown";
+		}
 	}
 	
 	CGSize releaseDateSize = [releaseText sizeWithFont:[UIFont boldSystemFontOfSize:12]];
