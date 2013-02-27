@@ -138,7 +138,7 @@ static NSCache* imagesCache = nil;
 	CGRect imageRect = CGRectMake(kImageLeft, imageTop, kImageWidth, kImageHeight);
 	if (image) {
 		[image drawInRect:imageRect];
-		CGRect overlayRect = CGRectMake(kImageLeft, 0, kOverlayWidth, kOverlayHeight);
+		CGRect overlayRect = CGRectMake(kImageLeft, imageTop, kOverlayWidth, kOverlayHeight);
 		UIImage* overlayImage = [UIImage imageNamed:@"dvd_overlay.png"];
 		[overlayImage drawInRect:overlayRect];
 	}
