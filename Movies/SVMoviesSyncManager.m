@@ -29,6 +29,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 @property (strong, readwrite) NSMutableSet* movies;
 @property (strong, readwrite) SVTmdbWatchListRequest* tmdbWatchListRequest;
 @property (readwrite, getter = isErrorAlreadyReported) BOOL errorAlreadyReported;
+@property (getter = isWebViewClickable) BOOL webViewClickable;
+@property (strong, readwrite) NSURLRequest* lastWebViewRequest;
 
 @property (readwrite, getter = isSyncing) BOOL syncing;
 @end
@@ -47,6 +49,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			moviesTransaction = _moviesTransaction,
 			moviesQuerySemaphore = _moviesQuerySemaphore,
 			errorAlreadyReported = _errorAlreadyReported,
+			webViewClickable = _webViewClickable,
+			lastWebViewRequest = _lastWebViewRequest,
 			tmdbInfo = _tmdbInfo;
 
 + (SVMoviesSyncManager*)sharedMoviesSyncManager {
@@ -72,6 +76,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		_movies = nil;
 		_moviesActions = [[NSMutableDictionary alloc] init];
 		_tmdbInfo = nil;
+		_webViewClickable = YES;
+		_lastWebViewRequest = nil;
 		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isLastWebPage"];
 		[_tmdbInfo setObject:[NSNumber numberWithBool:NO] forKey:@"isTokenAccepted"];
 	}
@@ -87,6 +93,8 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
 			return;
 		}
+		self.lastWebViewRequest = nil;
+		self.webViewClickable = YES;
 		self.tmdbInfo = [[NSMutableDictionary alloc] init];
 		self.moviesQuerySemaphore = dispatch_semaphore_create(0);
 		NSString* sqlQuery = @"SELECT * FROM movie";
@@ -408,6 +416,10 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 
 
 - (BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
+	if (!self.isWebViewClickable && self.lastWebViewRequest && [self.lastWebViewRequest.URL isEqual:request.URL])
+		return NO;
+	self.webViewClickable = NO;
+	self.lastWebViewRequest = request;
     NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"/(allow|deny)$" options:0 error:nil];
     NSArray *matches = [regex matchesInString:request.URL.description options:NSMatchingReportCompletion range:NSRangeFromString([NSString stringWithFormat:@"0,%d", request.URL.description.length])];
     NSString *matchString = nil;
@@ -425,6 +437,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+	self.webViewClickable = YES;
     if (((NSNumber*)[self.tmdbInfo objectForKey:@"isLastWebPage"]).boolValue) {
 		[self.tmdbInfo setObject:[[NSNumber alloc] initWithBool:NO] forKey:@"isLastWebPage"];
         if (((NSNumber*)[self.tmdbInfo objectForKey:@"isTokenAccepted"]).boolValue) {

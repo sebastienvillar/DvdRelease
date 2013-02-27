@@ -53,10 +53,10 @@
 		[moviesView addSubview:_tableViewController.tableView];
 		[moviesView addSubview:_settingsButton];
 		_views = [[NSDictionary alloc] initWithObjectsAndKeys:loadingView, @"loadingView", moviesView, @"moviesView", nil];
-		[_notificationCenter addObserver:self selector:@selector(connectionDidFail) name:@"moviesSyncManagerConnectionDidFailNotification" object:nil];
-		[_notificationCenter addObserver:self selector:@selector(didStartSyncing) name:@"moviesSyncManagerDidStartSyncingNotification" object:nil];
-		[_notificationCenter addObserver:self selector:@selector(didFinishSyncing) name:@"moviesSyncManagerDidFinishSyncingNotification" object:nil];
-		[_notificationCenter addObserver:self selector:@selector(didFailSyncing) name:@"moviesSyncManagerDidFailSyncingNotification" object:nil];    }
+		[_notificationCenter addObserver:self selector:@selector(connectionDidFail:) name:@"moviesSyncManagerConnectionDidFailNotification" object:nil];
+		[_notificationCenter addObserver:self selector:@selector(didStartSyncing:) name:@"moviesSyncManagerDidStartSyncingNotification" object:nil];
+		[_notificationCenter addObserver:self selector:@selector(didFinishSyncing:) name:@"moviesSyncManagerDidFinishSyncingNotification" object:nil];
+		[_notificationCenter addObserver:self selector:@selector(didFailSyncing:) name:@"moviesSyncManagerDidFailSyncingNotification" object:nil];    }
     return self;
 }
 
@@ -103,23 +103,22 @@
 #pragma mark - Notification actions
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)didStartSyncing {
-	if (self.currentState == SVMoviesViewDisplayState) {
-		[self.tableViewController beginRefreshing];
-	}
+- (void)didStartSyncing:(NSNotification*)notification {
+	[self.tableViewController beginRefreshing];
 }
 
-- (void)didFinishSyncing {
+- (void)didFinishSyncing:(NSNotification*)notification {
+	[self.tableViewController loadData];
 	[self.tableViewController endRefreshing];
-	[self.tableViewController hideError];
+	[self.tableViewController performSelector:@selector(hideError) withObject:nil afterDelay:0.5];
 }
 
-- (void)didFailSyncing {
+- (void)didFailSyncing:(NSNotification*)notification {
 	[self.tableViewController endRefreshing];
 	[self.tableViewController displayError];
 }
 
-- (void)connectionDidFail {
+- (void)connectionDidFail:(NSNotification*)notification {
 	[self.tableViewController endRefreshing];
 	[self.tableViewController displayError];
 }

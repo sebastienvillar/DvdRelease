@@ -15,10 +15,11 @@
 #define kTitleTop 14
 #define kReleaseDateHeight 19
 #define kReleaseDateLeft 133
-#define kImageWidth 121
-#define kImageHeight 176
+#define kImageWidth 120
+#define kImageHeight 175
 #define kImageLeft 0
-#define kImageTop 0
+#define kOverlayHeight 79
+#define kOverlayWidth 120
 
 static NSCache* imagesCache = nil;
 
@@ -32,6 +33,7 @@ static NSCache* imagesCache = nil;
 @implementation SVMovieTableViewCell
 @synthesize movie = _movie,
 			tableViewParent = _tableViewParent,
+			needTopLine = _needTopLine,
 			imageManager = _imageManager;
 
 + (void)initialize {
@@ -46,6 +48,7 @@ static NSCache* imagesCache = nil;
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		_imageManager = [SVImageManager sharedImageManager];
 		_tableViewParent = nil;
+		_needTopLine = NO;
     }
     return self;
 }
@@ -57,10 +60,23 @@ static NSCache* imagesCache = nil;
 }
 
 - (void)drawRect:(CGRect)rect {
+	CGContextRef context = UIGraphicsGetCurrentContext();
 	//Background
 	[[UIColor blackColor] set];
 	[[UIBezierPath bezierPathWithRect:self.bounds] fill];
+	int imageTop = 0;
 	
+	if (self.needTopLine) {
+		imageTop = 1;
+		CGContextSetLineCap(context, kCGLineCapSquare);
+		CGContextSetLineWidth(context, 1.0);
+		CGContextSetRGBStrokeColor(context, 0.2431, 0.2431, 0.2431, 1.0);
+		CGContextBeginPath(context);
+		CGContextMoveToPoint(context, 0, 0);
+		CGContextAddLineToPoint(context, self.frame.size.width, 0);
+		CGContextClosePath(context);
+		CGContextStrokePath(context);
+	}
 	//Title
 	NSString* title = self.movie.title;
 	CGSize titleSize = [title sizeWithFont:[UIFont boldSystemFontOfSize:18] constrainedToSize:CGSizeMake(kTitleMaxWidth, kTitleMaxHeight)];
@@ -111,36 +127,41 @@ static NSCache* imagesCache = nil;
 	
 	//Image
 	UIImage* image = [imagesCache objectForKey:self.movie.imageUrl];
+	CGRect imageRect = CGRectMake(kImageLeft, imageTop, kImageWidth, kImageHeight);
 	if (image) {
-		CGRect rect = CGRectMake(kImageLeft, kImageTop, kImageWidth, kImageHeight);
-		[image drawInRect:rect];
+		[image drawInRect:imageRect];
+		CGRect overlayRect = CGRectMake(kImageLeft, 0, kOverlayWidth, kOverlayHeight);
 		UIImage* overlayImage = [UIImage imageNamed:@"dvd_overlay.png"];
-		[overlayImage drawInRect:rect];
+		[overlayImage drawInRect:overlayRect];
 	}
-	else
+	else {
+		UIImage* notCoverImage = [UIImage imageNamed:@"no_cover.png"];
+		[notCoverImage drawInRect:imageRect];
 		[self cacheImage];
+	}
 }
 
 - (void)cacheImage {
+	SVMovie* movie = self.movie;
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        UIImage *image = [self.imageManager imageForMovie:self.movie];
+        UIImage *image = [self.imageManager imageForMovie:movie];
 		if (image) {
-			[imagesCache setObject:image forKey:self.movie.imageUrl];
+			[imagesCache setObject:image forKey:movie.imageUrl];
 		}
 		else {
 			NSError *error;
-			NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:self.movie.imageUrl] returningResponse:nil error:&error];
+			NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:movie.imageUrl] returningResponse:nil error:&error];
 			if (!error) {
 				image = [UIImage imageWithData:data];
-				[self.imageManager addImage:image forMovie:self.movie];
+				[self.imageManager addImage:image forMovie:movie];
 			}
 			else {
 				return;
 			}
 			image = [self generateSmallImage:image];
-			[imagesCache setObject:image forKey:self.movie.imageUrl];
-			[self.imageManager addImage:image forMovie:self.movie];
+			[imagesCache setObject:image forKey:movie.imageUrl];
+			[self.imageManager addImage:image forMovie:movie];
 		}
 		dispatch_async(dispatch_get_main_queue(), ^{
 			NSIndexPath *indexPath = [self.tableViewParent indexPathForCell:self];
@@ -157,28 +178,24 @@ static NSCache* imagesCache = nil;
 	float xOffset = 0;
 	float yOffset = 0;
 	float ratio = 0;
-	float finalWidth = width;
-	float finalHeight = height;
+	float finalWidth = kImageWidth;
+	float finalHeight = kImageHeight;
 	if (width / kImageWidth <= height / kImageHeight) {
 		ratio = width / kImageWidth;
 		finalHeight = height / ratio;
-		xOffset = -(finalHeight - kImageHeight) / 2;
+		yOffset = -(finalHeight - kImageHeight) / 2;
 	}
 	else {
 		ratio = height / kImageHeight;
 		finalWidth = width / ratio;
-		yOffset = -(finalWidth - kImageWidth) / 2;
+		xOffset = -(finalWidth - kImageWidth) / 2;
 	}
 	
-	CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(xOffset, yOffset, finalWidth, finalHeight));
-	UIImage* smallImage = [UIImage imageWithCGImage:imageRef];
-	
 	UIGraphicsBeginImageContextWithOptions(CGSizeMake(kImageWidth, kImageHeight), NO, 0.0);
-	[image drawInRect:CGRectMake(0, 0, kImageWidth, kImageHeight)];
-	smallImage = UIGraphicsGetImageFromCurrentImageContext();
+	[image drawInRect:CGRectMake(xOffset, yOffset, finalWidth, finalHeight)];
+	UIImage* smallImage = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();
 	return smallImage;
 }
-
 
 @end

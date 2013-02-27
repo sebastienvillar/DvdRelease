@@ -13,5 +13,5 @@
 @interface SVMovieTableViewCell : UITableViewCell
 @property (strong, readwrite) SVMovie* movie;
 @property (weak, readwrite) UITableView* tableViewParent;
-
+@property (readwrite) BOOL needTopLine;
 @end

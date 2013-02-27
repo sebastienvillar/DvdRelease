@@ -37,10 +37,6 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-		self.refreshControl = [[UIRefreshControl alloc] init];
-		SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
-		[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
-		self.refreshControl.tintColor = [UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000];
 		_moviesQuery = nil;
 		_errorDisplayed = NO;
 		_database = [SVDatabase sharedDatabase];
@@ -55,7 +51,7 @@
     [super viewDidLoad];
 	[self.tableView registerClass:[SVMovieTableViewCell class] forCellReuseIdentifier:kMovieCellIdentifier];
 	[self.tableView registerClass:[SVMoviesErrorViewCell class] forCellReuseIdentifier:kErrorCellIdentifier];
-	self.tableView.separatorColor = [UIColor colorWithRed:0.2431 green:0.2431 blue:0.2431 alpha:1.0000];
+	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.tableView.backgroundColor = [UIColor blackColor];
 }
 
@@ -81,6 +77,12 @@
 }
 
 - (void)beginRefreshing {
+	if (!self.refreshControl) {
+		self.refreshControl = [[UIRefreshControl alloc] init];
+		SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
+		[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
+		self.refreshControl.tintColor = [UIColor colorWithWhite:0.5 alpha:1];
+	}
 	if (!self.refreshControl.isRefreshing) {
 		[self.refreshControl beginRefreshing];
 	}
@@ -151,6 +153,11 @@
 	if (!self.isErrorDisplayed) {
 		cell = [tableView dequeueReusableCellWithIdentifier:kMovieCellIdentifier forIndexPath:indexPath];
 		SVMovieTableViewCell* moviesCell = (SVMovieTableViewCell*)cell;
+		if (indexPath.row == 0)
+			moviesCell.needTopLine = NO;
+		else
+			moviesCell.needTopLine = YES;
+		
 		moviesCell.movie = [self.movies objectAtIndex:indexPath.row];
 		moviesCell.tableViewParent = tableView;
 		[moviesCell setNeedsDisplay];
@@ -163,6 +170,10 @@
 		else if (indexPath.section == 1) {
 			cell = [tableView dequeueReusableCellWithIdentifier:kMovieCellIdentifier forIndexPath:indexPath];
 			SVMovieTableViewCell* moviesCell = (SVMovieTableViewCell*)cell;
+			if (indexPath.row == 0)
+				moviesCell.needTopLine = NO;
+			else
+				moviesCell.needTopLine = YES;
 			moviesCell.movie = [self.movies objectAtIndex:indexPath.row];
 			moviesCell.tableViewParent = tableView;
 			[moviesCell setNeedsDisplay];

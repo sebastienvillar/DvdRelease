@@ -9,6 +9,8 @@
 #import "SVWebViewController.h"
 #import "SVMoviesSyncManager.h"
 
+#define kUINavigationBarHeight 44
+
 @interface SVWebViewController ()
 @property (strong, readonly) UIWebView* webView;
 @end
@@ -23,9 +25,6 @@
 		UINavigationItem* navigationItem = [[UINavigationItem alloc] init];
 		navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(didClickCancel)];
 		[navigationBar pushNavigationItem:navigationItem animated:NO];
-		_webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, navigationBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - navigationBar.frame.size.height)];
-		_webView.delegate = [SVMoviesSyncManager sharedMoviesSyncManager];
-		[self.view addSubview:_webView];
 		[self.view addSubview:navigationBar];
 	}
 	return self;
@@ -48,6 +47,11 @@
 }
 
 - (void)loadUrl:(NSURL*)url {
+	if (self.view.subviews.count > 1)
+		[[self.view.subviews objectAtIndex:1] removeFromSuperview];		
+	UIWebView* webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, kUINavigationBarHeight, self.view.frame.size.width, self.view.frame.size.height - kUINavigationBarHeight)];
+	webView.delegate = [SVMoviesSyncManager sharedMoviesSyncManager];
+	[self.view addSubview:webView];
 	NSHTTPCookie *cookie;
 	NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 	for (cookie in [storage cookies]) {
@@ -56,7 +60,7 @@
 		}
 	}
 	NSURLRequest* urlRequest = [NSURLRequest requestWithURL:url];	
-	[self.webView loadRequest:urlRequest];
+	[webView loadRequest:urlRequest];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
