@@ -7,6 +7,7 @@
 //
 
 #import "SVRootViewController.h"
+#import "SVHelper.h"
 
 typedef int SVAnimationStyle;
 enum {
@@ -42,6 +43,7 @@ enum {
 @property (readwrite) SVLayoutState currentLayoutState;
 @property (readwrite, getter = isIgnoreFlagEnabled) BOOL ignoreFlagEnabled;
 @property (readwrite, getter = isAnimationFinished) BOOL animationFinished;
+@property (strong, readwrite) SVQuery* scheduleLocalNotificationsQuery;
 
 @end
 
@@ -59,6 +61,7 @@ enum {
 			ignoreFlagEnabled = _ignoreFlagEnabled,
 			moviesSyncManager = _moviesSyncManager,
 			animationFinished = _animationFinished,
+			scheduleLocalNotificationsQuery = _scheduleLocalNotificationsQuery,
 			currentLayoutState =_currentLayoutState;
 
 - (id)init {
@@ -81,6 +84,7 @@ enum {
 		_ignoreFlagEnabled = NO;
 		_currentLayoutState = -1;
 		_animationFinished = YES;
+		_scheduleLocalNotificationsQuery = nil;
 		_notificationCenter = [NSNotificationCenter defaultCenter];
 	}
 	return self;
@@ -91,8 +95,8 @@ enum {
 	[super viewDidLoad];
 	self.view.backgroundColor = [UIColor blackColor];
 	NSString* sqlQuery = @"SELECT name FROM watchlist_service;";
-	_currentServiceQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
-	[_database executeQuery:_currentServiceQuery];
+	self.currentServiceQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
+	[self.database executeQuery:self.currentServiceQuery];
 }
 
 - (void)loadView {
@@ -102,6 +106,16 @@ enum {
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)scheduleLocalNotifications {
+	NSDate *now= [NSDate date];
+	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"yyyy-MM-dd"];
+	NSString* dateString = [dateFormatter stringFromDate:now];
+	NSString* sqlQuery = [NSString stringWithFormat:@"SELECT title, dvd_release_date FROM movie WHERE dvd_release_date > '%@' ORDER BY dvd_release_date ASC;", dateString];
+	self.scheduleLocalNotificationsQuery = [[SVQuery alloc] initWithQuery:sqlQuery andSender:self];
+	[self.database executeQuery:self.scheduleLocalNotificationsQuery];
 }
 
 - (void)layoutControllerWithState:(SVLayoutState)state {
@@ -320,6 +334,27 @@ enum {
 		}
 		[self.moviesSyncManager connect];
 	}
+	if (query == self.scheduleLocalNotificationsQuery) {
+		if (result && result.copy != 0) {
+			NSMutableArray* notifications = [[NSMutableArray alloc] init];
+			for (NSArray* movie in result) {
+				NSString* title = [movie objectAtIndex:0];
+				NSString* dateString = [movie objectAtIndex:1];
+				NSDate* date = [SVHelper dateFromString:dateString];
+				NSCalendar *calendar = [NSCalendar currentCalendar];
+				NSDateComponents *dateComponents = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:date];
+				dateComponents.timeZone = [NSTimeZone localTimeZone];
+				dateComponents.hour = 16;
+				date = [calendar dateFromComponents:dateComponents];
+				UILocalNotification* notification = [[UILocalNotification alloc] init];
+				notification.fireDate = date;
+				notification.alertAction = @"Open";
+				notification.alertBody = [NSString stringWithFormat:@"%@ is now available", title];
+				[notifications addObject:notification];
+			}
+			[UIApplication sharedApplication].scheduledLocalNotifications = notifications;
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -341,6 +376,7 @@ enum {
 			self.firstConnection = NO;
 			[self layoutControllerWithState:SVLayoutDisplayState];
 		}
+		[self scheduleLocalNotifications];
 	}
 	else {
 		self.ignoreFlagEnabled = NO;	
@@ -430,6 +466,7 @@ enum {
 }
 
 - (void)settingsViewControllerDidClickLogOutButton:(SVSettingsViewController *)settingsViewController {
+	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	if (self.moviesSyncManager.isSyncing) {
 		self.ignoreFlagEnabled = YES;
 	}
