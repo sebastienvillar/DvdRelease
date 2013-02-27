@@ -33,12 +33,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-	//Background
-	[[UIColor blackColor] set];
-	[[UIBezierPath bezierPathWithRect:self.bounds] fill];
-	UIImage* backgroundImage = [UIImage imageNamed:@"background.png"];
-	CGRect imageRect = CGRectMake(0, 0, backgroundImage.size.width, backgroundImage.size.height);
-	[backgroundImage drawInRect:imageRect blendMode:kCGBlendModeNormal alpha:0.2];
+	[super drawRect:rect];
 	
 	NSString* explanation = @"Please wait while we\nsynchronize your watchlist";
 	float height = self.frame.size.height;

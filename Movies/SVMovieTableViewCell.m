@@ -88,7 +88,6 @@ static NSCache* imagesCache = nil;
 	//Release date
 	NSString* releaseText = nil;
 	if (self.movie.dvdReleaseDate) {
-		[[UIColor colorWithRed:0.3216 green:0.8549 blue:0.0000 alpha:1.0000] set];
 		NSDate* releaseDate = self.movie.dvdReleaseDate;
 		NSDate *today = [NSDate date];
 		NSCalendar *calendar = [NSCalendar currentCalendar];
@@ -100,9 +99,11 @@ static NSCache* imagesCache = nil;
 		today = [calendar dateFromComponents:dateComponents];
 		NSComparisonResult comparisonResult = [releaseDate compare:today];
 		if (comparisonResult == NSOrderedAscending || comparisonResult == NSOrderedSame) {
-			releaseText = @"Released";
+			[[UIColor colorWithRed:0.3216 green:0.8549 blue:0.0000 alpha:1.0000] set];
+			releaseText = @"Available";
 		}
 		else {
+			[[UIColor colorWithRed:1.0000 green:0.7294 blue:0.0000 alpha:1.0000] set];
 			NSTimeInterval timeInterval = [releaseDate timeIntervalSinceDate:today];
 			int numberOfDays = ceil(timeInterval / (3600 * 24));
 			if (numberOfDays <= 1)
@@ -112,7 +113,7 @@ static NSCache* imagesCache = nil;
 		}
 	}
 	else {
-		[[UIColor colorWithRed:1.0000 green:0.7294 blue:0.0000 alpha:1.0000] set];
+		[[UIColor colorWithRed:0.9072 green:0.2488 blue:0.2532 alpha:1.0000] set];
 		releaseText = @"Unknown";
 	}
 	

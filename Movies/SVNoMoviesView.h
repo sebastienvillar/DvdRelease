@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SVBackgroundView.h"
 
-@interface SVNoMoviesView : UIView
-
+@interface SVNoMoviesView : SVBackgroundView
+@property (strong, readonly) UIActivityIndicatorView* activityIndicatorView;
+@property (strong, readonly) UIButton* refreshButton;
 @end

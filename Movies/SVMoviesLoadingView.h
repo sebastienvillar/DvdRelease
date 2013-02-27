@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SVBackgroundView.h"
 
-@interface SVMoviesLoadingView : UIView
+@interface SVMoviesLoadingView : SVBackgroundView
 @property (strong, readonly) UIActivityIndicatorView* activityIndicatorView;
 @end

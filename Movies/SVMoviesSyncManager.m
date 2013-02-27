@@ -369,7 +369,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 	if (date) {
 		NSCalendar* calendar = [NSCalendar currentCalendar];
 		NSDateComponents* components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit fromDate:date];
-		dvdReleaseDate = [NSString stringWithFormat:@"'%d-%d-%d'", components.year, components.month, components.day];
+		dvdReleaseDate = [NSString stringWithFormat:@"'%d-%02d-%02d'", components.year, components.month, components.day];
 		if ([((NSString*)[self.moviesActions objectForKey:movie.uuid]) isEqualToString:@"update"]) {
 			NSString* statement = [NSString stringWithFormat:@"UPDATE movie SET dvd_release_date = %@ WHERE id = %@;",
 								   dvdReleaseDate,

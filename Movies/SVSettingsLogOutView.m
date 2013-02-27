@@ -37,8 +37,8 @@
 		float buttonWidth = 130;
 		float buttonHeight = buttonImage.size.height;
 		_logoutButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, self.frame.size.height/2 - buttonHeight/2, buttonWidth, buttonHeight);
-		[_logoutButton setTitle:@"Log out" forState:UIControlStateNormal];
-		[_logoutButton setTitle:@"Log out" forState:UIControlStateHighlighted];
+		[_logoutButton setTitle:@"Sign out" forState:UIControlStateNormal];
+		[_logoutButton setTitle:@"Sign out" forState:UIControlStateHighlighted];
 		[_logoutButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 		[_logoutButton setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
 		_logoutButton.titleLabel.font = [UIFont boldSystemFontOfSize:18];

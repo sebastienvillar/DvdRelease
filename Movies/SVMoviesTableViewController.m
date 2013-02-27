@@ -22,7 +22,8 @@
 @property (strong, readonly) SVDatabase* database;
 @property (strong, readwrite) SVQuery* moviesQuery;
 @property (strong, readwrite) NSMutableArray* movies;
-@property (strong, readonly) SVNoMoviesView* noMoviesBackground;
+@property (strong, readwrite) SVNoMoviesView* noMoviesBackground;
+@property (strong, readwrite) UIView* currentView;
 @property (readwrite, getter = isErrorDisplayed) BOOL errorDisplayed;
 @end
 
@@ -34,6 +35,7 @@
 			movies = _movies,
 			errorDisplayed = _errorDisplayed,
 			noMoviesBackground = _noMoviesBackground,
+			currentView = _currentView,
 			moviesQuery = _moviesQuery;
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -42,11 +44,11 @@
     if (self) {
 		_moviesQuery = nil;
 		_errorDisplayed = NO;
-		_noMoviesBackground = [[SVNoMoviesView alloc] init];
 		_database = [SVDatabase sharedDatabase];
 		_movies = [[NSMutableArray alloc] init];
-		
-    }
+		_noMoviesBackground = nil;
+		_currentView = nil;
+	}
     return self;
 }
 
@@ -57,7 +59,12 @@
 	[self.tableView registerClass:[SVMoviesErrorViewCell class] forCellReuseIdentifier:kErrorCellIdentifier];
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.tableView.backgroundColor = [UIColor blackColor];
-	self.noMoviesBackground.frame = self.view.bounds;
+	self.noMoviesBackground = [[SVNoMoviesView alloc] initWithFrame:self.view.bounds];
+	[self.noMoviesBackground.refreshButton addTarget:[SVMoviesSyncManager sharedMoviesSyncManager]
+										  action:@selector(sync)
+								forControlEvents:UIControlEventTouchDown];
+	self.currentView = self.tableView;
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -82,25 +89,35 @@
 }
 
 - (void)beginRefreshing {
-	if (!self.refreshControl) {
-		self.refreshControl = [[UIRefreshControl alloc] init];
-		SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
-		[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
-		self.refreshControl.tintColor = [UIColor colorWithWhite:0.5 alpha:1];
+	if (self.currentView == self.noMoviesBackground) {
+		[self.noMoviesBackground.activityIndicatorView startAnimating];
 	}
-	if (!self.refreshControl.isRefreshing) {
-		[self.refreshControl beginRefreshing];
+	else {
+		if (!self.refreshControl) {
+			self.refreshControl = [[UIRefreshControl alloc] init];
+			SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
+			[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
+			self.refreshControl.tintColor = [UIColor colorWithWhite:0.5 alpha:1];
+		}
+		if (!self.refreshControl.isRefreshing) {
+			[self.refreshControl beginRefreshing];
+		}
 	}
 }
 
 - (void)endRefreshing {
-	if (self.refreshControl.isRefreshing) {
-		[self.refreshControl endRefreshing];
+	if (self.currentView == self.noMoviesBackground) {
+		[self.noMoviesBackground.activityIndicatorView stopAnimating];
+	}
+	else {
+		if (self.refreshControl.isRefreshing) {
+			[self.refreshControl endRefreshing];
+		}
 	}
 }
 
 - (void)loadData {
-	NSString* sqlStatement = @"SELECT * FROM movie ORDER BY CASE WHEN dvd_release_date IS NULL THEN 0 ELSE 1 END, dvd_release_date DESC;";
+	NSString* sqlStatement = @"SELECT * FROM movie ORDER BY dvd_release_date DESC;";
 	self.moviesQuery =  [[SVQuery alloc] initWithQuery:sqlStatement andSender:self];
 	[self.database executeQuery:self.moviesQuery];
 }
@@ -108,7 +125,6 @@
 - (void)database:(SVDatabase *)database didFinishQuery:(SVQuery *)query {
 	NSArray* result = query.result;
 	for (NSArray* movie in result ){
-		//NSLog(@"\nmovie: %@\n date: %@", [movie objectAtIndex:1], [movie objectAtIndex:2]);
 	}
 	if (query == self.moviesQuery) {
 		[self.movies removeAllObjects];
@@ -123,13 +139,20 @@
 			[self.movies addObject:movie];
 		}
 	}
-	if (result.count == 0 && !self.noMoviesBackground.superview)
-		[self.view addSubview:self.noMoviesBackground];
-	if (result.count != 0) {
-		if (self.noMoviesBackground.superview)
-			[self.noMoviesBackground removeFromSuperview];
-		[self.tableView reloadData];
+	if (result.count == 0) {
+		if (self.currentView == self.tableView)
+			[self.view addSubview:self.noMoviesBackground];
+		self.currentView = self.noMoviesBackground;
 	}
+		
+	else {
+		if (self.currentView == self.noMoviesBackground) {
+			[self.noMoviesBackground removeFromSuperview];
+		}
+		self.currentView = self.tableView;
+	}
+	
+	[self.tableView reloadData];
 }
 
 //////////////////////////////////////////////////////////////////////

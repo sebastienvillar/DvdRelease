@@ -109,8 +109,8 @@
 }
 
 - (void)didFinishSyncing:(NSNotification*)notification {
-	[self.tableViewController loadData];
 	[self.tableViewController endRefreshing];
+	[self.tableViewController loadData];
 	[self.tableViewController performSelector:@selector(hideError) withObject:nil afterDelay:0.5];
 }
 

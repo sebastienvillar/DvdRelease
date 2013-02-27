@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SVBackgroundView.h"
 
 
-@interface SVSettingsSignInView : UIView
+@interface SVSettingsSignInView : SVBackgroundView
 enum {
 	SVSettingsSignInViewNormalState = 0,
 	SVSettingsSignInViewErrorState = 1,
