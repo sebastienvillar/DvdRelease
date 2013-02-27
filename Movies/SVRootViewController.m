@@ -41,6 +41,7 @@ enum {
 @property (readwrite) int nbOfSyncTries;
 @property (readwrite) SVLayoutState currentLayoutState;
 @property (readwrite, getter = isIgnoreFlagEnabled) BOOL ignoreFlagEnabled;
+@property (readwrite, getter = isAnimationFinished) BOOL animationFinished;
 
 @end
 
@@ -57,6 +58,7 @@ enum {
 			nbOfSyncTries = _nbOfSyncTries,
 			ignoreFlagEnabled = _ignoreFlagEnabled,
 			moviesSyncManager = _moviesSyncManager,
+			animationFinished = _animationFinished,
 			currentLayoutState =_currentLayoutState;
 
 - (id)init {
@@ -78,6 +80,7 @@ enum {
 		_nbOfSyncTries = 0;
 		_ignoreFlagEnabled = NO;
 		_currentLayoutState = -1;
+		_animationFinished = YES;
 		_notificationCenter = [NSNotificationCenter defaultCenter];
 	}
 	return self;
@@ -179,6 +182,10 @@ enum {
 }
 
 - (void)loadController:(UIViewController*)viewController withAnimation:(SVAnimationStyle)animationStyle {
+	int delay = 0;
+	if (!self.animationFinished) {
+		delay = 0.3;
+	}
 	switch (animationStyle) {
 		case SVAnimationStyleNone: {
 			if (self.view.subviews) {
@@ -186,14 +193,27 @@ enum {
 					[view removeFromSuperview];
 				}
 			}
-			CGRect rect = viewController.view.frame;
-			rect.origin.y = 0;
-			viewController.view.frame = rect;
-			[self.view addSubview:viewController.view];
+			
+			void (^animationBlock)(void) = ^{
+				CGRect rect = viewController.view.frame;
+				rect.origin.y = 0;
+				viewController.view.frame = rect;
+				[self.view addSubview:viewController.view];
+			};
+			void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
+				if (isFinished) {
+					self.animationFinished = YES;
+				}
+			};
+			[UIView animateWithDuration:0
+								  delay:delay
+								options:UIViewAnimationCurveLinear
+							 animations:animationBlock completion:completionBlock];
 			break;
 		}
 		
 		case SVAnimationStyleSlideDown: {
+			self.animationFinished = NO;
 			[self.view insertSubview:viewController.view belowSubview:self.currentViewController.view];
 			UIViewController* currentViewController = self.currentViewController;
 			void (^animationBlock)(void) = ^{
@@ -203,11 +223,12 @@ enum {
 			};
 			void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
 				if (isFinished) {
+					self.animationFinished = YES;
 					[currentViewController.view removeFromSuperview];
 				}
 			};
 			[UIView animateWithDuration:0.5
-								  delay:0
+								  delay:delay
 								options:UIViewAnimationCurveLinear
 							 animations:animationBlock completion:completionBlock];
 			break;
@@ -226,11 +247,12 @@ enum {
 			};
 			void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
 				if (isFinished) {
+					self.animationFinished = YES;
 					[currentViewController.view removeFromSuperview];
 				}
 			};
 			[UIView animateWithDuration:0.5
-								  delay:0
+								  delay:delay
 								options:UIViewAnimationCurveLinear
 							 animations:animationBlock completion:completionBlock];
 			break;
@@ -243,11 +265,16 @@ enum {
 			void (^animationBlock)(void) = ^{
 				viewController.view.alpha = 1;
 			};
+			void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
+				if (isFinished) {
+					self.animationFinished = YES;
+				}
+			};
 			[UIView animateWithDuration:0.3
-								  delay:0
+								  delay:delay
 								options:UIViewAnimationCurveLinear
 							 animations:animationBlock
-							 completion:NULL];
+							 completion:completionBlock];
 			break;
 		}
 			
@@ -258,11 +285,12 @@ enum {
 			};
 			void (^completionBlock)(BOOL isFinished) = ^(BOOL isFinished){
 				if (isFinished) {
+					self.animationFinished = YES;
 					[currentViewController.view removeFromSuperview];
 				}
 			};
 			[UIView animateWithDuration:0.3
-								  delay:0
+								  delay:delay
 								options:UIViewAnimationCurveLinear
 							 animations:animationBlock completion:completionBlock];
 			break;

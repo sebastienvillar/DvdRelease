@@ -22,9 +22,14 @@
 		_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 		[self addSubview:_activityIndicatorView];
 		_signInButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40) resizingMode:UIImageResizingModeTile];
+		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"]
+								resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40)
+								resizingMode:UIImageResizingModeTile];
+		UIImage* activeButtonImage = [[UIImage imageNamed:@"button_active.png"]
+									  resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40)
+									  resizingMode:UIImageResizingModeTile];
 		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
-		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateHighlighted];
+		[_signInButton setBackgroundImage:activeButtonImage forState:UIControlStateHighlighted];
 		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateDisabled];
 
 		[self addSubview:_signInButton];

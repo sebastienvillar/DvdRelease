@@ -15,6 +15,7 @@
 		4D77EF3816BC208600E1ADC3 /* SVSettingsSignInView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D77EF3716BC208600E1ADC3 /* SVSettingsSignInView.m */; };
 		4D96674316CFA5E70051C349 /* SVImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D96674216CFA5E70051C349 /* SVImageManager.m */; };
 		4DAE806116D79EA000DA09DC /* SVHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAE806016D79EA000DA09DC /* SVHelper.m */; };
+		4DB6203916DE424100E37E4C /* SVNoMoviesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB6203816DE424100E37E4C /* SVNoMoviesView.m */; };
 		4DBE79E216DB9C4C00BF1DF3 /* SVWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBE79E116DB9C4C00BF1DF3 /* SVWebViewController.m */; };
 		4DC5B8C316DD61DD00221D3E /* button_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8B816DD61DD00221D3E /* button_active@2x.png */; };
 		4DC5B8C416DD61DD00221D3E /* button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8B916DD61DD00221D3E /* button@2x.png */; };
@@ -24,7 +25,7 @@
 		4DC5B8C816DD61DD00221D3E /* home_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8BD16DD61DD00221D3E /* home_button@2x.png */; };
 		4DC5B8C916DD61DD00221D3E /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8BE16DD61DD00221D3E /* icon.png */; };
 		4DC5B8CA16DD61DD00221D3E /* no_cover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8BF16DD61DD00221D3E /* no_cover@2x.png */; };
-		4DC5B8CB16DD61DD00221D3E /* settings_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8C016DD61DD00221D3E /* settings_background@2x.png */; };
+		4DC5B8CB16DD61DD00221D3E /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8C016DD61DD00221D3E /* background@2x.png */; };
 		4DC5B8CC16DD61DD00221D3E /* settings_button_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8C116DD61DD00221D3E /* settings_button_active@2x.png */; };
 		4DC5B8CD16DD61DD00221D3E /* settings_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8C216DD61DD00221D3E /* settings_button@2x.png */; };
 		4DD4630616B97FE10038FA89 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630516B97FE10038FA89 /* UIKit.framework */; };
@@ -67,6 +68,8 @@
 		4D96674216CFA5E70051C349 /* SVImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVImageManager.m; sourceTree = "<group>"; };
 		4DAE805F16D79EA000DA09DC /* SVHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVHelper.h; sourceTree = "<group>"; };
 		4DAE806016D79EA000DA09DC /* SVHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVHelper.m; sourceTree = "<group>"; };
+		4DB6203716DE424100E37E4C /* SVNoMoviesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVNoMoviesView.h; sourceTree = "<group>"; };
+		4DB6203816DE424100E37E4C /* SVNoMoviesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVNoMoviesView.m; sourceTree = "<group>"; };
 		4DBE79E016DB9C4C00BF1DF3 /* SVWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVWebViewController.h; sourceTree = "<group>"; };
 		4DBE79E116DB9C4C00BF1DF3 /* SVWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVWebViewController.m; sourceTree = "<group>"; };
 		4DC5B8B816DD61DD00221D3E /* button_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button_active@2x.png"; sourceTree = "<group>"; };
@@ -77,7 +80,7 @@
 		4DC5B8BD16DD61DD00221D3E /* home_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "home_button@2x.png"; sourceTree = "<group>"; };
 		4DC5B8BE16DD61DD00221D3E /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		4DC5B8BF16DD61DD00221D3E /* no_cover@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "no_cover@2x.png"; sourceTree = "<group>"; };
-		4DC5B8C016DD61DD00221D3E /* settings_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_background@2x.png"; sourceTree = "<group>"; };
+		4DC5B8C016DD61DD00221D3E /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
 		4DC5B8C116DD61DD00221D3E /* settings_button_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_button_active@2x.png"; sourceTree = "<group>"; };
 		4DC5B8C216DD61DD00221D3E /* settings_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_button@2x.png"; sourceTree = "<group>"; };
 		4DD4630116B97FE10038FA89 /* Movies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Movies.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -232,6 +235,8 @@
 				4D77EF3716BC208600E1ADC3 /* SVSettingsSignInView.m */,
 				4D2FD4E016D66CEF00765DD9 /* SVSettingsLogOutView.h */,
 				4D2FD4E116D66CEF00765DD9 /* SVSettingsLogOutView.m */,
+				4DB6203716DE424100E37E4C /* SVNoMoviesView.h */,
+				4DB6203816DE424100E37E4C /* SVNoMoviesView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -298,7 +303,7 @@
 				4DC5B8BD16DD61DD00221D3E /* home_button@2x.png */,
 				4DC5B8BE16DD61DD00221D3E /* icon.png */,
 				4DC5B8BF16DD61DD00221D3E /* no_cover@2x.png */,
-				4DC5B8C016DD61DD00221D3E /* settings_background@2x.png */,
+				4DC5B8C016DD61DD00221D3E /* background@2x.png */,
 				4DC5B8C116DD61DD00221D3E /* settings_button_active@2x.png */,
 				4DC5B8C216DD61DD00221D3E /* settings_button@2x.png */,
 			);
@@ -369,7 +374,7 @@
 				4DC5B8C816DD61DD00221D3E /* home_button@2x.png in Resources */,
 				4DC5B8C916DD61DD00221D3E /* icon.png in Resources */,
 				4DC5B8CA16DD61DD00221D3E /* no_cover@2x.png in Resources */,
-				4DC5B8CB16DD61DD00221D3E /* settings_background@2x.png in Resources */,
+				4DC5B8CB16DD61DD00221D3E /* background@2x.png in Resources */,
 				4DC5B8CC16DD61DD00221D3E /* settings_button_active@2x.png in Resources */,
 				4DC5B8CD16DD61DD00221D3E /* settings_button@2x.png in Resources */,
 			);
@@ -405,6 +410,7 @@
 				4DAE806116D79EA000DA09DC /* SVHelper.m in Sources */,
 				4D0BEA3D16DA4CCA0070DA53 /* SVMoviesTableViewController.m in Sources */,
 				4DBE79E216DB9C4C00BF1DF3 /* SVWebViewController.m in Sources */,
+				4DB6203916DE424100E37E4C /* SVNoMoviesView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

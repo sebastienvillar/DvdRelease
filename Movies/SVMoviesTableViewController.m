@@ -11,6 +11,7 @@
 #import "SVDatabase.h"
 #import "SVHelper.h"
 #import "SVMoviesSyncManager.h"
+#import "SVNoMoviesView.h"
 #import "SVMoviesErrorViewCell.h"
 
 #define kMovieCellIdentifier @"movieCell"
@@ -21,6 +22,7 @@
 @property (strong, readonly) SVDatabase* database;
 @property (strong, readwrite) SVQuery* moviesQuery;
 @property (strong, readwrite) NSMutableArray* movies;
+@property (strong, readonly) SVNoMoviesView* noMoviesBackground;
 @property (readwrite, getter = isErrorDisplayed) BOOL errorDisplayed;
 @end
 
@@ -31,6 +33,7 @@
 @synthesize database = _database,
 			movies = _movies,
 			errorDisplayed = _errorDisplayed,
+			noMoviesBackground = _noMoviesBackground,
 			moviesQuery = _moviesQuery;
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -39,6 +42,7 @@
     if (self) {
 		_moviesQuery = nil;
 		_errorDisplayed = NO;
+		_noMoviesBackground = [[SVNoMoviesView alloc] init];
 		_database = [SVDatabase sharedDatabase];
 		_movies = [[NSMutableArray alloc] init];
 		
@@ -53,6 +57,7 @@
 	[self.tableView registerClass:[SVMoviesErrorViewCell class] forCellReuseIdentifier:kErrorCellIdentifier];
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.tableView.backgroundColor = [UIColor blackColor];
+	self.noMoviesBackground.frame = self.view.bounds;
 }
 
 - (void)didReceiveMemoryWarning
@@ -118,7 +123,13 @@
 			[self.movies addObject:movie];
 		}
 	}
-	[self.tableView reloadData];
+	if (result.count == 0 && !self.noMoviesBackground.superview)
+		[self.view addSubview:self.noMoviesBackground];
+	if (result.count != 0) {
+		if (self.noMoviesBackground.superview)
+			[self.noMoviesBackground removeFromSuperview];
+		[self.tableView reloadData];
+	}
 }
 
 //////////////////////////////////////////////////////////////////////

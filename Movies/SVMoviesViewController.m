@@ -43,8 +43,9 @@
 		SVMoviesLoadingView* loadingView = [[SVMoviesLoadingView alloc] initWithFrame:self.view.bounds];
 		_settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		UIImage* settingsButtonImage = [UIImage imageNamed:@"settings_button.png"];
+		UIImage* activeSettingsButtonImage = [UIImage imageNamed:@"settings_button_active.png"];
 		[_settingsButton setBackgroundImage:settingsButtonImage forState:UIControlStateNormal];
-		[_settingsButton setBackgroundImage:settingsButtonImage forState:UIControlStateHighlighted];
+		[_settingsButton setBackgroundImage:activeSettingsButtonImage forState:UIControlStateHighlighted];
 		_settingsButton.frame = CGRectMake(self.view.frame.size.width - settingsButtonImage.size.width - kSettingsButtonRight, self.view.frame.size.height - settingsButtonImage.size.height - kSettingsButtonBottom, settingsButtonImage.size.width, settingsButtonImage.size.height);
 		[_settingsButton addTarget:self action:@selector(didClickSettingsButton) forControlEvents:UIControlEventTouchDown];
 		_tableViewController = [[SVMoviesTableViewController alloc] init];

@@ -24,9 +24,14 @@
     self = [super initWithFrame:frame];
     if (self) {
 		_logoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40) resizingMode:UIImageResizingModeTile];
+		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"]
+								resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40)
+												resizingMode:UIImageResizingModeTile];
+		UIImage* activeButtonImage = [[UIImage imageNamed:@"button_active.png"]
+								resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40)
+								resizingMode:UIImageResizingModeTile];
 		[_logoutButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
-		[_logoutButton setBackgroundImage:buttonImage forState:UIControlStateHighlighted];
+		[_logoutButton setBackgroundImage:activeButtonImage forState:UIControlStateHighlighted];
 		
 		[self addSubview:_logoutButton];
 		float buttonWidth = 130;
@@ -43,8 +48,9 @@
 		
 		_homeButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		UIImage* homeButtonImage = [UIImage imageNamed:@"home_button.png"];
+		UIImage* activeHomeButtonImage = [UIImage imageNamed:@"home_button_active.png"];
 		[_homeButton setBackgroundImage:homeButtonImage forState:UIControlStateNormal];
-		[_homeButton setBackgroundImage:homeButtonImage forState:UIControlStateHighlighted];
+		[_homeButton setBackgroundImage:activeHomeButtonImage forState:UIControlStateHighlighted];
 		_homeButton.frame = CGRectMake(self.frame.size.width - homeButtonImage.size.width - kHomeButtonRight, self.frame.size.height - homeButtonImage.size.height - kHomeButtonRight, homeButtonImage.size.width, homeButtonImage.size.height);
 		self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
 		[self addSubview:_homeButton];
