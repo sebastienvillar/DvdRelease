@@ -162,7 +162,6 @@ static NSCache* imagesCache = nil;
 			NSData *data = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:movie.imageUrl] returningResponse:nil error:&error];
 			if (!error) {
 				image = [UIImage imageWithData:data];
-				[self.imageManager addImage:image forMovie:movie];
 			}
 			else {
 				return;
