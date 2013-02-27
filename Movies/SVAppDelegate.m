@@ -24,7 +24,9 @@
     CFUUIDRef uuidRef = CFUUIDCreate(NULL);
     CFStringRef uuidStringRef = CFUUIDCreateString(NULL, uuidRef);
     CFRelease(uuidRef);
-    return (__bridge NSString *)uuidStringRef;
+	NSString* uuidString = (__bridge NSString *)uuidStringRef;
+	CFRelease(uuidStringRef);
+    return uuidString;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
