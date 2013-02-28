@@ -34,7 +34,7 @@
     if (self) {
 		_webView = nil;
 		SVSettingsSignInView* signInView = [[SVSettingsSignInView alloc] initWithFrame:self.view.bounds];
-		signInView.autoresizingMask = UIViewAutoresizingNone;
+		signInView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 		[signInView.signInButton addTarget:self action:@selector(didClickSignIn) forControlEvents:UIControlEventTouchDown];
 		SVSettingsLogOutView* logOutView = [[SVSettingsLogOutView alloc] initWithFrame:self.view.bounds];
 		logOutView.autoresizingMask = UIViewAutoresizingFlexibleHeight;

@@ -23,8 +23,10 @@
     self = [super initWithFrame:frame];
     if (self) {
 		SVBackgroundView* backgroundView = [[SVBackgroundView alloc] initWithFrame:frame];
+		backgroundView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:backgroundView];
         _activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+		_activityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		float width = self.frame.size.width;
 		float height = self.frame.size.height;
 		UILabel* explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, frame.size.height/2 - 69, frame.size.width, 40)];
@@ -34,6 +36,7 @@
 		explanationLabel.font = [UIFont systemFontOfSize:15];
 		explanationLabel.textAlignment = NSTextAlignmentCenter;
 		explanationLabel.numberOfLines = 2;
+		explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:explanationLabel];
 		_activityIndicatorView.frame = CGRectMake(width/2 - 25, height/2 - 25, 50, 50);
 		[self addSubview:_activityIndicatorView];

@@ -23,10 +23,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-		
 		_logoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		_logoutButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin |
-										 UIViewAutoresizingFlexibleBottomMargin;
+		_logoutButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"]
 								resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40)
 												resizingMode:UIImageResizingModeTile];
@@ -65,6 +63,7 @@
 		explanationLabel.font = [UIFont systemFontOfSize:15];
 		explanationLabel.textAlignment = NSTextAlignmentCenter;
 		explanationLabel.numberOfLines = 1;
+		explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:explanationLabel];
 		UILabel* thanksLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, frame.size.height - kThanksBottom, frame.size.width, 20)];
 		thanksLabel.backgroundColor = [UIColor clearColor];
@@ -73,6 +72,7 @@
 		thanksLabel.font = [UIFont systemFontOfSize:13];
 		thanksLabel.textAlignment = NSTextAlignmentCenter;
 		thanksLabel.numberOfLines = 2;
+		thanksLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:thanksLabel];
     }
 	return self;

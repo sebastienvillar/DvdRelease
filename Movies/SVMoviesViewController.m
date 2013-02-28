@@ -41,6 +41,7 @@
 		_notificationCenter = [NSNotificationCenter defaultCenter];
 		_currentView = nil;
 		SVMoviesLoadingView* loadingView = [[SVMoviesLoadingView alloc] initWithFrame:self.view.bounds];
+		loadingView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 		_settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		UIImage* settingsButtonImage = [UIImage imageNamed:@"settings_button.png"];
 		UIImage* activeSettingsButtonImage = [UIImage imageNamed:@"settings_button_active.png"];

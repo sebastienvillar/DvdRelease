@@ -59,11 +59,13 @@
 	[self.tableView registerClass:[SVMoviesErrorViewCell class] forCellReuseIdentifier:kErrorCellIdentifier];
 	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.tableView.backgroundColor = [UIColor blackColor];
+	self.tableView.frame = self.view.bounds;
 	self.noMoviesBackground = [[SVNoMoviesView alloc] initWithFrame:self.view.bounds];
 	[self.noMoviesBackground.refreshButton addTarget:[SVMoviesSyncManager sharedMoviesSyncManager]
 										  action:@selector(sync)
 								forControlEvents:UIControlEventTouchDown];
 	self.currentView = self.tableView;
+	self.noMoviesBackground.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 
 }
 

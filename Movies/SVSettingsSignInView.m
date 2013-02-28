@@ -22,6 +22,7 @@
     self = [super initWithFrame:frame];
     if (self) {
 		SVBackgroundView* backgroundView = [[SVBackgroundView alloc] initWithFrame:frame];
+		backgroundView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:backgroundView];
 		_signInButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"]
@@ -33,7 +34,7 @@
 		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
 		[_signInButton setBackgroundImage:activeButtonImage forState:UIControlStateHighlighted];
 		[_signInButton setBackgroundImage:buttonImage forState:UIControlStateDisabled];
-
+		_signInButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:_signInButton];
 		float buttonWidth = 130;
 		float buttonHeight = buttonImage.size.height;
@@ -55,10 +56,11 @@
 		_explanationLabel.font = [UIFont systemFontOfSize:15];
 		_explanationLabel.textAlignment = NSTextAlignmentCenter;
 		_explanationLabel.numberOfLines = 3;
+		_explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:_explanationLabel];
 		_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-		_activityIndicatorView.frame = CGRectMake(frame.size.width/2 - 25, _signInButton.frame.origin.y - 120, 50, 50);
-		
+		_activityIndicatorView.frame = CGRectMake(frame.size.width/2 - 25, 136, 50, 50);
+		_activityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:_activityIndicatorView];
     }
 	return self;
@@ -69,6 +71,7 @@
 	self.explanationLabel.numberOfLines = nbOfLineBreak;
 	self.explanationLabel.text = labelText;
 	self.explanationLabel.frame = CGRectMake(0, 246 - nbOfLineBreak * 20, self.frame.size.width, nbOfLineBreak * 60 / 3);
+	self.activityIndicatorView.frame = CGRectMake(self.frame.size.width/2 - 25, 196 - nbOfLineBreak * 20, 50, 50);
 }
 
 @end

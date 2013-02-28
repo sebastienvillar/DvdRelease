@@ -19,8 +19,10 @@
     self = [super initWithFrame:frame];
     if (self) {
 		SVBackgroundView* backgroundView = [[SVBackgroundView alloc] initWithFrame:frame];
+		backgroundView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:backgroundView];
 		_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+		_activityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		CGRect indicatorRect = _activityIndicatorView.frame;
 		float width = frame.size.width;
 		float height = frame.size.height;
@@ -37,7 +39,7 @@
 									  resizingMode:UIImageResizingModeTile];
 		[_refreshButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
 		[_refreshButton setBackgroundImage:activeButtonImage forState:UIControlStateHighlighted];
-		
+		_refreshButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:_refreshButton];
 		float buttonWidth = 130;
 		float buttonHeight = buttonImage.size.height;
@@ -57,6 +59,7 @@
 		explanationLabel.font = [UIFont systemFontOfSize:15];
 		explanationLabel.textAlignment = NSTextAlignmentCenter;
 		explanationLabel.numberOfLines = 2;
+		explanationLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[self addSubview:explanationLabel];
     }
     return self;
