@@ -70,8 +70,8 @@
 	int nbOfLineBreak = [labelText componentsSeparatedByString:@"\n"].count;
 	self.explanationLabel.numberOfLines = nbOfLineBreak;
 	self.explanationLabel.text = labelText;
-	self.explanationLabel.frame = CGRectMake(0, 246 - nbOfLineBreak * 20, self.frame.size.width, nbOfLineBreak * 60 / 3);
-	self.activityIndicatorView.frame = CGRectMake(self.frame.size.width/2 - 25, 196 - nbOfLineBreak * 20, 50, 50);
+	self.explanationLabel.frame = CGRectMake(0, self.frame.size.height/2 - 29 - nbOfLineBreak * 20, self.frame.size.width, nbOfLineBreak * 60 / 3);
+	self.activityIndicatorView.frame = CGRectMake(self.frame.size.width/2 - 25, self.frame.size.height/2 - 75 - nbOfLineBreak * 20, 50, 50);
 }
 
 @end
