@@ -86,7 +86,6 @@ static SVFileManager* sharedFileManager = nil;
 																  attributes:nil
 																	   error:&error];
 		if (!success) {
-			NSLog(@"RLImageManager: Couldn't create cache directory : %@", error.description);
 			return nil;
 		}
 	}

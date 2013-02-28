@@ -112,7 +112,6 @@ static SVDatabase* sharedDatabase = nil;
 																  attributes:nil
 																	   error:&error];
 		if (!success) {
-			NSLog(@"RLDatabase: Couldn't create application support directory : %@", error.description);
 			return nil;
 		}
 	}
@@ -122,7 +121,6 @@ static SVDatabase* sharedDatabase = nil;
 - (BOOL)executeSQLStatement:(NSString*)statement {
 	char* error;
 	if (sqlite3_exec(self.database, [statement UTF8String], NULL, NULL, &error) != SQLITE_OK) {
-		NSLog(@"RLDatabase: Failed to execute the statement : %@\n%s", statement, error);
 		return NO;
 	}
 	return YES;
@@ -150,10 +148,6 @@ static SVDatabase* sharedDatabase = nil;
 				
 				else if (type == SQLITE_NULL) {
 					[row addObject:@"NULL"];
-				}
-				
-				else {
-					NSLog(@"RLDatabase: not supposed to get this datatype from the query");
 				}
 			}
 			[result addObject:row];

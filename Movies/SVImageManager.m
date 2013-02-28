@@ -54,13 +54,12 @@ static SVImageManager* sharedImageManager = nil;
 	NSString* path = [NSString stringWithFormat:@"%@/%@", kImagePath, movie.imageFileName];
 	BOOL success = [self.fileManager writeDataToCache:UIImagePNGRepresentation(image)
 											 withPath:path];
-	if (!success) {
-		NSLog(@"could't write image to file");
+	if (success) {
+		NSString* sqlStatement = [NSString stringWithFormat:@"UPDATE movie SET image_file_name = '%@' WHERE id = %@;", movie.imageFileName, movie.identifier];
+		SVTransaction* transaction = [[SVTransaction alloc] initWithStatements:[[NSArray alloc] initWithObjects:sqlStatement, nil]
+																	 andSender:self];
+		[self.database executeTransaction:transaction];
 	}
-	NSString* sqlStatement = [NSString stringWithFormat:@"UPDATE movie SET image_file_name = '%@' WHERE id = %@;", movie.imageFileName, movie.identifier];
-	SVTransaction* transaction = [[SVTransaction alloc] initWithStatements:[[NSArray alloc] initWithObjects:sqlStatement, nil]
-																 andSender:self];
-	[self.database executeTransaction:transaction];
 }
 
 @end

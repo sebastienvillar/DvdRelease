@@ -405,7 +405,6 @@ enum {
 			[self layoutControllerWithState:SVLayoutLoggedOutErrorState];
 		}
 	}
-	NSLog(@"Error: %@, description: %@", error.domain, error.localizedDescription);
 }
 
 - (void)moviesSyncManagerUserDeniedConnection:(SVMoviesSyncManager *)aManager {
@@ -430,7 +429,6 @@ enum {
 			self.firstConnection = NO;
 			[self layoutControllerWithState:SVLayoutLoggedOutErrorState];
 		}
-		NSLog(@"Error: %@, description: %@", error.domain, error.localizedDescription);
 	}
 	else {
 		self.ignoreFlagEnabled = NO;
