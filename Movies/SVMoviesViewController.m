@@ -50,14 +50,18 @@
 		[_settingsButton addTarget:self action:@selector(didClickSettingsButton) forControlEvents:UIControlEventTouchDown];
 		_tableViewController = [[SVMoviesTableViewController alloc] init];
 		UIView* moviesView = [[UIView alloc] initWithFrame:self.view.bounds];
+		moviesView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 		_tableViewController.tableView.frame = _tableViewController.view.bounds;
+		_tableViewController.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 		[moviesView addSubview:_tableViewController.tableView];
+		_settingsButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		[moviesView addSubview:_settingsButton];
 		_views = [[NSDictionary alloc] initWithObjectsAndKeys:loadingView, @"loadingView", moviesView, @"moviesView", nil];
 		[_notificationCenter addObserver:self selector:@selector(connectionDidFail:) name:@"moviesSyncManagerConnectionDidFailNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didStartSyncing:) name:@"moviesSyncManagerDidStartSyncingNotification" object:nil];
 		[_notificationCenter addObserver:self selector:@selector(didFinishSyncing:) name:@"moviesSyncManagerDidFinishSyncingNotification" object:nil];
-		[_notificationCenter addObserver:self selector:@selector(didFailSyncing:) name:@"moviesSyncManagerDidFailSyncingNotification" object:nil];    }
+		[_notificationCenter addObserver:self selector:@selector(didFailSyncing:) name:@"moviesSyncManagerDidFailSyncingNotification" object:nil];
+	}
     return self;
 }
 
@@ -75,6 +79,7 @@
 	CGRect rect = [UIScreen mainScreen].applicationFrame;
 	rect.origin.y = 0;
 	self.view = [[UIView alloc] initWithFrame:rect];
+	self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 }
 
 - (void)displayViewForState:(SVMoviesViewState)state {

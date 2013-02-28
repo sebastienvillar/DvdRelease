@@ -10,7 +10,7 @@
 
 #define kHomeButtonBottom 7
 #define kHomeButtonRight 7
-#define kThanksBottom 17
+#define kThanksBottom 37
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -23,7 +23,10 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+		
 		_logoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		_logoutButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin |
+										 UIViewAutoresizingFlexibleBottomMargin;
 		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"]
 								resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40)
 												resizingMode:UIImageResizingModeTile];
@@ -47,37 +50,32 @@
 		_logoutButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
 		
 		_homeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		_homeButton.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
 		UIImage* homeButtonImage = [UIImage imageNamed:@"home_button.png"];
 		UIImage* activeHomeButtonImage = [UIImage imageNamed:@"home_button_active.png"];
 		[_homeButton setBackgroundImage:homeButtonImage forState:UIControlStateNormal];
 		[_homeButton setBackgroundImage:activeHomeButtonImage forState:UIControlStateHighlighted];
-		_homeButton.frame = CGRectMake(self.frame.size.width - homeButtonImage.size.width - kHomeButtonRight, self.frame.size.height - homeButtonImage.size.height - kHomeButtonRight, homeButtonImage.size.width, homeButtonImage.size.height);
+		_homeButton.frame = CGRectMake(self.frame.size.width - homeButtonImage.size.width - kHomeButtonRight, frame.size.height - homeButtonImage.size.height - kHomeButtonRight, homeButtonImage.size.width, homeButtonImage.size.height);
 		self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
 		[self addSubview:_homeButton];
+		UILabel* explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _logoutButton.frame.origin.y - 30, frame.size.width, 20)];
+		explanationLabel.backgroundColor = [UIColor clearColor];
+		explanationLabel.text = @"You are currently signed in to TMDB";
+		explanationLabel.textColor = [UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000];
+		explanationLabel.font = [UIFont systemFontOfSize:15];
+		explanationLabel.textAlignment = NSTextAlignmentCenter;
+		explanationLabel.numberOfLines = 1;
+		[self addSubview:explanationLabel];
+		UILabel* thanksLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, frame.size.height - kThanksBottom, frame.size.width, 20)];
+		thanksLabel.backgroundColor = [UIColor clearColor];
+		thanksLabel.text = @"Thanks to RottenTomatoes";
+		thanksLabel.textColor = [UIColor colorWithRed:0.4667 green:0.4902 blue:0.4902 alpha:1.0000];
+		thanksLabel.font = [UIFont systemFontOfSize:13];
+		thanksLabel.textAlignment = NSTextAlignmentCenter;
+		thanksLabel.numberOfLines = 2;
+		[self addSubview:thanksLabel];
     }
 	return self;
 }
-
-
-- (void)drawRect:(CGRect)rect
-{
-	NSString* explanation = @"You are currently signed in to TMDB";
-	[[UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(0, self.logoutButton.frame.origin.y - 30, self.frame.size.width, 30)
-					withFont:[UIFont systemFontOfSize:15]
-			   lineBreakMode:nil
-				   alignment:NSTextAlignmentCenter];
-
-	NSString* thanks = @"Thanks to RottenTomatoes";
-	float width = self.frame.size.width;
-	[[UIColor colorWithRed:0.4667 green:0.4902 blue:0.4902 alpha:1.0000] set];
-	[thanks drawInRect:CGRectMake(0, self.frame.size.height - kThanksBottom - 20, width, 20)
-				   withFont:[UIFont systemFontOfSize:14]
-			  lineBreakMode:nil
-				  alignment:NSTextAlignmentCenter];
-
-}
-
-
 
 @end

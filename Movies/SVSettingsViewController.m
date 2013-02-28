@@ -15,7 +15,6 @@
 @property (strong, readwrite) UIWebView* webView;
 @property (strong, readonly) NSDictionary* views;
 @property (strong, readwrite) UIView* currentView;
-@property (readwrite) SVSettingsViewState currentState;
 @property (strong, readwrite) SVMoviesSyncManager* moviesSyncManager;
 @end
 
@@ -25,7 +24,6 @@
 @implementation SVSettingsViewController
 @synthesize webView = _webView,
 			views = _views,
-			currentState = _currentState,
 			currentView = _currentView,
 			delegate = _delegate,
 			moviesSyncManager = _moviesSyncManager;
@@ -36,8 +34,10 @@
     if (self) {
 		_webView = nil;
 		SVSettingsSignInView* signInView = [[SVSettingsSignInView alloc] initWithFrame:self.view.bounds];
+		signInView.autoresizingMask = UIViewAutoresizingNone;
 		[signInView.signInButton addTarget:self action:@selector(didClickSignIn) forControlEvents:UIControlEventTouchDown];
 		SVSettingsLogOutView* logOutView = [[SVSettingsLogOutView alloc] initWithFrame:self.view.bounds];
+		logOutView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 		[logOutView.logoutButton addTarget:self action:@selector(didClickSignOut) forControlEvents:UIControlEventTouchDown];
 		[logOutView.homeButton addTarget:self action:@selector(didClickHome) forControlEvents:UIControlEventTouchDown];
 		_views = [[NSDictionary alloc] initWithObjectsAndKeys:signInView, @"signInView", logOutView, @"logOutView", nil];
@@ -63,13 +63,15 @@
 	CGRect rect = [UIScreen mainScreen].applicationFrame;
 	rect.origin.y = 0;
 	self.view = [[UIView alloc] initWithFrame:rect];
+	self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 }
 
 - (void)displayViewForState:(SVSettingsViewState)state {
+
 	switch (state) {
 		case SVSettingsViewLoggedOutState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
-			view.state = SVSettingsSignInViewNormalState;
+			[view setTextLabel:@"This application uses TMDB to\nsynchronize your movie watchlist and\ndisplay DVD release dates"];
 			view.signInButton.enabled = YES;
 			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
@@ -84,7 +86,7 @@
 			
 		case SVSettingsViewLoggedOutErrorState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
-			view.state = SVSettingsSignInViewErrorState;
+			[view setTextLabel:@"An error occured while connecting\nto TMDB. Please try again"];
 			view.signInButton.enabled = YES;
 			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
@@ -93,7 +95,7 @@
 			
 		case SVSettingsViewLoggedOutUserDeniedState: {
 			SVSettingsSignInView* view = [self.views objectForKey:@"signInView"];
-			view.state = SVSettingsSignInViewUserDeniedState;
+			[view setTextLabel:@"You must accept the token\nso that we can access your watchlist"];
 			view.signInButton.enabled = YES;
 			[view.activityIndicatorView stopAnimating];
 			[self displayView:view];
@@ -102,7 +104,6 @@
 		default:
 			break;
 	}
-	self.currentState = state;
 }
 
 - (void)displayView:(UIView*)view {

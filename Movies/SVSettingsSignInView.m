@@ -7,20 +7,22 @@
 //
 
 #import "SVSettingsSignInView.h"
+#import "SVBackgroundView.h"
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
 @implementation SVSettingsSignInView
 @synthesize signInButton = _signInButton,
+			explanationLabel = _explanationLabel,
 	activityIndicatorView = _activityIndicatorView;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-		_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-		[self addSubview:_activityIndicatorView];
+		SVBackgroundView* backgroundView = [[SVBackgroundView alloc] initWithFrame:frame];
+		[self addSubview:backgroundView];
 		_signInButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		UIImage* buttonImage = [[UIImage imageNamed:@"button.png"]
 								resizableImageWithCapInsets:UIEdgeInsetsMake(0, 40, 0, 40)
@@ -35,7 +37,7 @@
 		[self addSubview:_signInButton];
 		float buttonWidth = 130;
 		float buttonHeight = buttonImage.size.height;
-		_signInButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, self.frame.size.height/2 - buttonHeight/2, buttonWidth, buttonHeight);
+		_signInButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, frame.size.height/2 - buttonHeight/2, buttonWidth, buttonHeight);
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateNormal];
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateHighlighted];
 		[_signInButton setTitle:@"Sign in" forState:UIControlStateDisabled];
@@ -47,46 +49,26 @@
 		[_signInButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
 		[_signInButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateDisabled];
 		_signInButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
+		_explanationLabel = [[UILabel alloc] init];
+		_explanationLabel.backgroundColor = [UIColor clearColor];
+		_explanationLabel.textColor = [UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000];
+		_explanationLabel.font = [UIFont systemFontOfSize:15];
+		_explanationLabel.textAlignment = NSTextAlignmentCenter;
+		_explanationLabel.numberOfLines = 3;
+		[self addSubview:_explanationLabel];
+		_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+		_activityIndicatorView.frame = CGRectMake(frame.size.width/2 - 25, _signInButton.frame.origin.y - 120, 50, 50);
+		
+		[self addSubview:_activityIndicatorView];
     }
 	return self;
 }
 
-
-- (void)drawRect:(CGRect)rect
-{
-	[super drawRect:rect];
-	
-	NSString* explanation = nil;
-	int bottomOffset = 0;
-	switch (self.state) {
-		case SVSettingsSignInViewNormalState: {
-			explanation = @"This application uses TMDB to\nsynchronize your movie watchlist and\ndisplay DVD release dates";
-			bottomOffset = 70;
-			break;
-		}
-		case SVSettingsSignInViewErrorState: {
-			explanation = @"An error occured while connecting\nto TMDB. Please try again";
-			bottomOffset = 50;
-			break;
-		}
-		case SVSettingsSignInViewUserDeniedState: {
-			explanation = @"You must accept the token\nso that we can access your watchlist";
-			bottomOffset = 50;
-			break;
-		}
-		default:
-			break;
-	}
-	
-	float width = self.frame.size.width;
-	self.activityIndicatorView.frame = CGRectMake(width/2 - 25, self.signInButton.frame.origin.y - bottomOffset - 50 - 5, 50, 50);
-	
-	[[UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(0, self.signInButton.frame.origin.y - bottomOffset, width, 100)
-				   withFont:[UIFont systemFontOfSize:15]
-			  lineBreakMode:nil
-				  alignment:NSTextAlignmentCenter];
-
+- (void)setTextLabel:(NSString*)labelText {
+	int nbOfLineBreak = [labelText componentsSeparatedByString:@"\n"].count;
+	self.explanationLabel.numberOfLines = nbOfLineBreak;
+	self.explanationLabel.text = labelText;
+	self.explanationLabel.frame = CGRectMake(0, 246 - nbOfLineBreak * 20, self.frame.size.width, nbOfLineBreak * 60 / 3);
 }
 
 @end

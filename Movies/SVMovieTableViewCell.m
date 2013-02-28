@@ -64,12 +64,12 @@ static NSCache* imagesCache = nil;
 	//Background
 	[[UIColor blackColor] set];
 	[[UIBezierPath bezierPathWithRect:self.bounds] fill];
-	int imageTop = 0;
+	float imageTop = 0;
 	
 	if (self.needTopLine) {
-		imageTop = 1;
+		imageTop = 0.5;
 		CGContextSetLineCap(context, kCGLineCapSquare);
-		CGContextSetLineWidth(context, 1.0);
+		CGContextSetLineWidth(context, 0.5);
 		CGContextSetRGBStrokeColor(context, 0.2431, 0.2431, 0.2431, 1.0);
 		CGContextBeginPath(context);
 		CGContextMoveToPoint(context, 0, 0);
@@ -138,7 +138,7 @@ static NSCache* imagesCache = nil;
 	CGRect imageRect = CGRectMake(kImageLeft, imageTop, kImageWidth, kImageHeight);
 	if (image) {
 		[image drawInRect:imageRect];
-		CGRect overlayRect = CGRectMake(kImageLeft, imageTop, kOverlayWidth, kOverlayHeight);
+		CGRect overlayRect = CGRectMake(kImageLeft, 0.5-imageTop, kOverlayWidth, kOverlayHeight);
 		UIImage* overlayImage = [UIImage imageNamed:@"dvd_overlay.png"];
 		[overlayImage drawInRect:overlayRect];
 	}

@@ -7,6 +7,7 @@
 //
 
 #import "SVMoviesLoadingView.h"
+#import "SVBackgroundView.h"
 
 @interface SVMoviesLoadingView ()
 @end
@@ -21,29 +22,23 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+		SVBackgroundView* backgroundView = [[SVBackgroundView alloc] initWithFrame:frame];
+		[self addSubview:backgroundView];
         _activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 		float width = self.frame.size.width;
 		float height = self.frame.size.height;
+		UILabel* explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, frame.size.height/2 - 69, frame.size.width, 40)];
+		explanationLabel.backgroundColor = [UIColor clearColor];
+		explanationLabel.text = @"Please wait while we\nsynchronize your watchlist";
+		explanationLabel.textColor = [UIColor colorWithRed:0.7333 green:0.7843 blue:0.7961 alpha:1.0000];
+		explanationLabel.font = [UIFont systemFontOfSize:15];
+		explanationLabel.textAlignment = NSTextAlignmentCenter;
+		explanationLabel.numberOfLines = 2;
+		[self addSubview:explanationLabel];
 		_activityIndicatorView.frame = CGRectMake(width/2 - 25, height/2 - 25, 50, 50);
 		[self addSubview:_activityIndicatorView];
     }
     return self;
 }
-
-
-- (void)drawRect:(CGRect)rect
-{
-	[super drawRect:rect];
-	
-	NSString* explanation = @"Please wait while we\nsynchronize your watchlist";
-	float height = self.frame.size.height;
-	float width = self.frame.size.width;
-	[[UIColor colorWithRed:0.7333 green:0.7843 blue:0.7961 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(0, height/2 - 67, width, 100)
-				   withFont:[UIFont systemFontOfSize:15]
-			  lineBreakMode:nil
-				  alignment:NSTextAlignmentCenter];
-}
-
 
 @end

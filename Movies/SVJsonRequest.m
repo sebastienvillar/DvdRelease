@@ -55,6 +55,7 @@
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:self.url];
         [request setHTTPMethod:@"GET"];
         [request setAllHTTPHeaderFields:[NSDictionary dictionaryWithObjectsAndKeys:@"Accept", @"application/json", nil]];
+		[request setCachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData];
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         if (!connection) {
             callbackBlock(nil);

@@ -44,6 +44,7 @@
 	CGRect rect = [UIScreen mainScreen].applicationFrame;
 	rect.origin.y = 0;
 	self.view = [[UIView alloc] initWithFrame:rect];
+	self.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 }
 
 - (void)loadUrl:(NSURL*)url {
@@ -51,6 +52,7 @@
 		[[self.view.subviews objectAtIndex:1] removeFromSuperview];		
 	UIWebView* webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, kUINavigationBarHeight, self.view.frame.size.width, self.view.frame.size.height - kUINavigationBarHeight)];
 	webView.delegate = [SVMoviesSyncManager sharedMoviesSyncManager];
+	webView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 	[self.view addSubview:webView];
 	NSHTTPCookie *cookie;
 	NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];

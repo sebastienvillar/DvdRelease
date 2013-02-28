@@ -7,6 +7,8 @@
 //
 
 #import "SVNoMoviesView.h"
+#import "SVBackgroundView.h"
+
 
 @implementation SVNoMoviesView
 @synthesize activityIndicatorView = _activityIndicatorView,
@@ -16,6 +18,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+		SVBackgroundView* backgroundView = [[SVBackgroundView alloc] initWithFrame:frame];
+		[self addSubview:backgroundView];
 		_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 		CGRect indicatorRect = _activityIndicatorView.frame;
 		float width = frame.size.width;
@@ -37,7 +41,7 @@
 		[self addSubview:_refreshButton];
 		float buttonWidth = 130;
 		float buttonHeight = buttonImage.size.height;
-		_refreshButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, self.frame.size.height/2 - buttonHeight/2, buttonWidth, buttonHeight);
+		_refreshButton.frame = CGRectMake(self.frame.size.width/2 - buttonWidth/2, frame.size.height/2 - buttonHeight/2, buttonWidth, buttonHeight);
 		[_refreshButton setTitle:@"Refresh" forState:UIControlStateNormal];
 		[_refreshButton setTitle:@"Refresh" forState:UIControlStateHighlighted];
 		[_refreshButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -46,22 +50,16 @@
 		[_refreshButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
 		[_refreshButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
 		_refreshButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
+		UILabel* explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _refreshButton.frame.origin.y - 49, frame.size.width, 40)];
+		explanationLabel.backgroundColor = [UIColor clearColor];
+		explanationLabel.text = @"Your watchlist is empty\nVisit TMDB and add some movies !";
+		explanationLabel.textColor = [UIColor colorWithRed:0.7961 green:0.7922 blue:0.7490 alpha:1.0000];
+		explanationLabel.font = [UIFont systemFontOfSize:15];
+		explanationLabel.textAlignment = NSTextAlignmentCenter;
+		explanationLabel.numberOfLines = 2;
+		[self addSubview:explanationLabel];
     }
     return self;
-}
-
-- (void)drawRect:(CGRect)rect
-{
-	[super drawRect:rect];
-	
-	NSString* explanation = @"Your watchlist is empty\nVisit TMDB and add some movies !";
-	float height = self.frame.size.height;
-	float width = self.frame.size.width;
-	[[UIColor colorWithRed:0.7333 green:0.7843 blue:0.7961 alpha:1.0000] set];
-	[explanation drawInRect:CGRectMake(0, height/2 - 67, width, 100)
-				   withFont:[UIFont systemFontOfSize:15]
-			  lineBreakMode:nil
-				  alignment:NSTextAlignmentCenter];
 }
 
 @end

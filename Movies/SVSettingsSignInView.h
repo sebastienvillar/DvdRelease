@@ -7,17 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SVBackgroundView.h"
 
-
-@interface SVSettingsSignInView : SVBackgroundView
-enum {
-	SVSettingsSignInViewNormalState = 0,
-	SVSettingsSignInViewErrorState = 1,
-	SVSettingsSignInViewUserDeniedState = 2,
-};
-typedef int SVSettingsSignInViewState;
+@interface SVSettingsSignInView : UIView
 @property (strong, readonly) UIButton* signInButton;
-@property (readwrite) SVSettingsSignInViewState state;
 @property (strong, readwrite) UIActivityIndicatorView* activityIndicatorView;
+@property (strong, readonly) UILabel* explanationLabel;
+- (void)setTextLabel:(NSString*)labelString;
 @end
