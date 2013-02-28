@@ -209,7 +209,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		[self.moviesActions removeAllObjects];
 		
 		for (SVMovie* movie in toRemoveMovies) {
-			NSString* sqlStatement = [NSString stringWithFormat:@"DELETE FROM movie WHERE id = %@;", movie.identifier];
+			NSString* sqlStatement = [NSString stringWithFormat:@"DELETE FROM movie WHERE title = '%@';", movie.title];
 			[self.moviesTransaction addStatement:sqlStatement];
 		}
 		
@@ -218,6 +218,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		}
 		
 		for (SVMovie* movie in toAddMovies) {
+			[self.movies addObject:movie];
 			movie.uuid = [SVAppDelegate uuid];
 			[self.moviesActions setObject:@"add" forKey:movie.uuid];
 		}
@@ -231,7 +232,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 			[dvdReleaseDateRequest fetch];
 		}
 		if (toFetchMovies.count == 0) {
-			if (toRemoveMovies) {
+			if (toRemoveMovies.count != 0) {
 				[self.database executeTransaction:self.moviesTransaction];
 			}
 			else {
