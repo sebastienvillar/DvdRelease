@@ -17,7 +17,6 @@
 		4DAE806116D79EA000DA09DC /* SVHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAE806016D79EA000DA09DC /* SVHelper.m */; };
 		4DB6203916DE424100E37E4C /* SVNoMoviesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB6203816DE424100E37E4C /* SVNoMoviesView.m */; };
 		4DB6203C16DE51D300E37E4C /* SVBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB6203B16DE51D200E37E4C /* SVBackgroundView.m */; };
-		4DB6203E16DE623900E37E4C /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB6203D16DE623900E37E4C /* icon@2x.png */; };
 		4DBE79E216DB9C4C00BF1DF3 /* SVWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBE79E116DB9C4C00BF1DF3 /* SVWebViewController.m */; };
 		4DC5B8C316DD61DD00221D3E /* button_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8B816DD61DD00221D3E /* button_active@2x.png */; };
 		4DC5B8C416DD61DD00221D3E /* button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8B916DD61DD00221D3E /* button@2x.png */; };
@@ -28,7 +27,8 @@
 		4DC5B8CB16DD61DD00221D3E /* background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8C016DD61DD00221D3E /* background@2x.png */; };
 		4DC5B8CC16DD61DD00221D3E /* settings_button_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8C116DD61DD00221D3E /* settings_button_active@2x.png */; };
 		4DC5B8CD16DD61DD00221D3E /* settings_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC5B8C216DD61DD00221D3E /* settings_button@2x.png */; };
-		4DC85A2716DFEC4000518AAB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC85A2616DFEC4000518AAB /* icon.png */; };
+		4DC634E516F0DFDF00392ADF /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC634E316F0DFDF00392ADF /* icon.png */; };
+		4DC634E616F0DFDF00392ADF /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC634E416F0DFDF00392ADF /* icon@2x.png */; };
 		4DD4630616B97FE10038FA89 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630516B97FE10038FA89 /* UIKit.framework */; };
 		4DD4630816B97FE10038FA89 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630716B97FE10038FA89 /* Foundation.framework */; };
 		4DD4630A16B97FE10038FA89 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD4630916B97FE10038FA89 /* CoreGraphics.framework */; };
@@ -74,7 +74,6 @@
 		4DB6203816DE424100E37E4C /* SVNoMoviesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVNoMoviesView.m; sourceTree = "<group>"; };
 		4DB6203A16DE51D200E37E4C /* SVBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVBackgroundView.h; sourceTree = "<group>"; };
 		4DB6203B16DE51D200E37E4C /* SVBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVBackgroundView.m; sourceTree = "<group>"; };
-		4DB6203D16DE623900E37E4C /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon@2x.png"; path = "../icon@2x.png"; sourceTree = "<group>"; };
 		4DBE79E016DB9C4C00BF1DF3 /* SVWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVWebViewController.h; sourceTree = "<group>"; };
 		4DBE79E116DB9C4C00BF1DF3 /* SVWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVWebViewController.m; sourceTree = "<group>"; };
 		4DC5B8B816DD61DD00221D3E /* button_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button_active@2x.png"; sourceTree = "<group>"; };
@@ -86,7 +85,8 @@
 		4DC5B8C016DD61DD00221D3E /* background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x.png"; sourceTree = "<group>"; };
 		4DC5B8C116DD61DD00221D3E /* settings_button_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_button_active@2x.png"; sourceTree = "<group>"; };
 		4DC5B8C216DD61DD00221D3E /* settings_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_button@2x.png"; sourceTree = "<group>"; };
-		4DC85A2616DFEC4000518AAB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
+		4DC634E316F0DFDF00392ADF /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		4DC634E416F0DFDF00392ADF /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
 		4DD4630116B97FE10038FA89 /* Dvd Release.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dvd Release.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DD4630516B97FE10038FA89 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4DD4630716B97FE10038FA89 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -302,8 +302,8 @@
 		4DDA2FF516D54DC8006CE8C8 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				4DC85A2616DFEC4000518AAB /* icon.png */,
-				4DB6203D16DE623900E37E4C /* icon@2x.png */,
+				4DC634E316F0DFDF00392ADF /* icon.png */,
+				4DC634E416F0DFDF00392ADF /* icon@2x.png */,
 				4DF48A3C16DEAC450054F79B /* no_cover@2x.png */,
 				4DC5B8B816DD61DD00221D3E /* button_active@2x.png */,
 				4DC5B8B916DD61DD00221D3E /* button@2x.png */,
@@ -383,9 +383,9 @@
 				4DC5B8CB16DD61DD00221D3E /* background@2x.png in Resources */,
 				4DC5B8CC16DD61DD00221D3E /* settings_button_active@2x.png in Resources */,
 				4DC5B8CD16DD61DD00221D3E /* settings_button@2x.png in Resources */,
-				4DB6203E16DE623900E37E4C /* icon@2x.png in Resources */,
 				4DF48A3D16DEAC450054F79B /* no_cover@2x.png in Resources */,
-				4DC85A2716DFEC4000518AAB /* icon.png in Resources */,
+				4DC634E516F0DFDF00392ADF /* icon.png in Resources */,
+				4DC634E616F0DFDF00392ADF /* icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
