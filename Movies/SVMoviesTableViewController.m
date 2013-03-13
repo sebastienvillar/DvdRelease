@@ -141,6 +141,7 @@
 			[self.movies addObject:movie];
 		}
 	}
+	NSLog(@"result.count : %d", result.count);
 	if (result.count == 0) {
 		if (self.currentView == self.tableView)
 			[self.view addSubview:self.noMoviesBackground];

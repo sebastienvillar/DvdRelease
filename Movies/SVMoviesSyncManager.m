@@ -163,6 +163,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 - (void)database:(SVDatabase *)database didFinishTransaction:(SVTransaction *)transaction withSuccess:(BOOL)success {
 	if (success) {
 		if (transaction == self.moviesTransaction) {
+			NSLog(@"in");
 			self.syncing = NO;
 			[self.delegate moviesSyncManagerDidFinishSyncing:self];
 		}

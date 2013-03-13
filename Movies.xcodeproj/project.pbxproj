@@ -87,7 +87,7 @@
 		4DC5B8C116DD61DD00221D3E /* settings_button_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_button_active@2x.png"; sourceTree = "<group>"; };
 		4DC5B8C216DD61DD00221D3E /* settings_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_button@2x.png"; sourceTree = "<group>"; };
 		4DC85A2616DFEC4000518AAB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
-		4DD4630116B97FE10038FA89 /* Dvd Releases.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dvd Releases.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DD4630116B97FE10038FA89 /* Dvd Release.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dvd Release.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DD4630516B97FE10038FA89 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4DD4630716B97FE10038FA89 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4DD4630916B97FE10038FA89 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -156,7 +156,7 @@
 		4DD4630216B97FE10038FA89 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4DD4630116B97FE10038FA89 /* Dvd Releases.app */,
+				4DD4630116B97FE10038FA89 /* Dvd Release.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -335,7 +335,7 @@
 			);
 			name = Movies;
 			productName = Movies;
-			productReference = 4DD4630116B97FE10038FA89 /* Dvd Releases.app */;
+			productReference = 4DD4630116B97FE10038FA89 /* Dvd Release.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
