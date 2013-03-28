@@ -201,6 +201,7 @@ enum {
 	if (!self.animationFinished) {
 		delay = 0.3;
 	}
+	self.animationFinished = NO;
 	switch (animationStyle) {
 		case SVAnimationStyleNone: {
 			if (self.view.subviews) {
@@ -228,7 +229,6 @@ enum {
 		}
 		
 		case SVAnimationStyleSlideDown: {
-			self.animationFinished = NO;
 			[self.view insertSubview:viewController.view belowSubview:self.currentViewController.view];
 			UIViewController* currentViewController = self.currentViewController;
 			void (^animationBlock)(void) = ^{
@@ -336,7 +336,7 @@ enum {
 		[self.moviesSyncManager connect];
 	}
 	if (query == self.scheduleLocalNotificationsQuery) {
-		if (result && result.copy != 0) {
+		if (result && result.count != 0) {
 			NSMutableArray* notifications = [[NSMutableArray alloc] init];
 			for (NSArray* movie in result) {
 				NSString* title = [movie objectAtIndex:0];
@@ -363,12 +363,14 @@ enum {
 //////////////////////////////////////////////////////////////////////
 
 - (void)moviesSyncManagerDidStartSyncing:(SVMoviesSyncManager *)aManager {
+	NSLog(@"did start syncing");
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidStartSyncingNotification"
 										   object:self];
 	self.nbOfSyncTries++;
 }
 
 - (void)moviesSyncManagerDidFinishSyncing:(SVMoviesSyncManager *)aManager {
+	NSLog(@"did finish syncing");
 	if (!self.isIgnoreFlagEnabled) {
 		[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFinishSyncingNotification"
 											   object:self];
@@ -385,6 +387,7 @@ enum {
 }
 
 - (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager *)aManager {
+	NSLog(@"did connect");
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidConnectNotification"
 										   object:self];
 	[aManager sync];
@@ -394,6 +397,8 @@ enum {
 }
 
 - (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager *)aManager withError:(NSError *)error{
+	NSLog(@"error : %@", error);
+
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerConnectionDidFailNotification"
 										   object:self];
 
@@ -414,6 +419,7 @@ enum {
 }
 
 - (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager *)aManager withError:(NSError *)error {
+	NSLog(@"error : %@", error);
 	if (!self.isIgnoreFlagEnabled) {
 		if (self.nbOfSyncTries < 4) {
 			[aManager sync];

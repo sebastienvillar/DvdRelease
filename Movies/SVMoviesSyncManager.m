@@ -163,7 +163,7 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 - (void)database:(SVDatabase *)database didFinishTransaction:(SVTransaction *)transaction withSuccess:(BOOL)success {
 	if (success) {
 		if (transaction == self.moviesTransaction) {
-			NSLog(@"in");
+			NSLog(@"finished transaction");
 			self.syncing = NO;
 			[self.delegate moviesSyncManagerDidFinishSyncing:self];
 		}
@@ -422,12 +422,12 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		return NO;
 	self.webViewClickable = NO;
 	self.lastWebViewRequest = request;
-    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"/(allow|deny)$" options:0 error:nil];
-    NSArray *matches = [regex matchesInString:request.URL.description options:NSMatchingReportCompletion range:NSRangeFromString([NSString stringWithFormat:@"0,%d", request.URL.description.length])];
+    NSRegularExpression *regex = [[NSRegularExpression alloc] initWithPattern:@"^https?://www.themoviedb.org/authenticate/.*/(allow|deny).*$" options:NSRegularExpressionAnchorsMatchLines error:nil];
+    NSArray *matches = [regex matchesInString:request.URL.relativeString options:NSMatchingReportCompletion range:NSRangeFromString([NSString stringWithFormat:@"0,%d", request.URL.relativeString.length])];
     NSString *matchString = nil;
     for (NSTextCheckingResult *match in matches) {
         NSRange matchRange = [match rangeAtIndex:1];
-        matchString = [request.URL.description substringWithRange:matchRange];
+        matchString = [request.URL.relativeString substringWithRange:matchRange];
     }
     if (matchString) {
         if ([matchString isEqualToString:@"allow"]) {
