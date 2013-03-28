@@ -363,14 +363,12 @@ enum {
 //////////////////////////////////////////////////////////////////////
 
 - (void)moviesSyncManagerDidStartSyncing:(SVMoviesSyncManager *)aManager {
-	NSLog(@"did start syncing");
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidStartSyncingNotification"
 										   object:self];
 	self.nbOfSyncTries++;
 }
 
 - (void)moviesSyncManagerDidFinishSyncing:(SVMoviesSyncManager *)aManager {
-	NSLog(@"did finish syncing");
 	if (!self.isIgnoreFlagEnabled) {
 		[self.notificationCenter postNotificationName:@"moviesSyncManagerDidFinishSyncingNotification"
 											   object:self];
@@ -387,7 +385,6 @@ enum {
 }
 
 - (void)moviesSyncManagerDidConnect:(SVMoviesSyncManager *)aManager {
-	NSLog(@"did connect");
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerDidConnectNotification"
 										   object:self];
 	[aManager sync];
@@ -397,8 +394,6 @@ enum {
 }
 
 - (void)moviesSyncManagerConnectionDidFail:(SVMoviesSyncManager *)aManager withError:(NSError *)error{
-	NSLog(@"error : %@", error);
-
 	[self.notificationCenter postNotificationName:@"moviesSyncManagerConnectionDidFailNotification"
 										   object:self];
 
@@ -419,7 +414,6 @@ enum {
 }
 
 - (void)moviesSyncManagerDidFailSyncing:(SVMoviesSyncManager *)aManager withError:(NSError *)error {
-	NSLog(@"error : %@", error);
 	if (!self.isIgnoreFlagEnabled) {
 		if (self.nbOfSyncTries < 4) {
 			[aManager sync];

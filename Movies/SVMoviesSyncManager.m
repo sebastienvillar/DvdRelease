@@ -112,8 +112,12 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 		[self.delegate moviesSyncManagerConnectionDidFail:self withError:error];
 		return;
 	}
-	self.syncing = YES;
 	if ([self.service isEqualToString:@"tmdb"]) {
+		if (![self.tmdbInfo objectForKey:@"sessionId"]) {
+			[self configure];
+			return;
+		}
+		self.syncing = YES;
 		self.tmdbWatchListRequest = [[SVTmdbWatchListRequest alloc] initWithSessionId:[self.tmdbInfo objectForKey:(@"sessionId")]
 																		  andImageUrl:[self.tmdbInfo objectForKey:(@"imageUrl")]];
 		self.tmdbWatchListRequest.delegate = self;
@@ -163,7 +167,6 @@ static SVMoviesSyncManager* sharedMoviesSyncManager;
 - (void)database:(SVDatabase *)database didFinishTransaction:(SVTransaction *)transaction withSuccess:(BOOL)success {
 	if (success) {
 		if (transaction == self.moviesTransaction) {
-			NSLog(@"finished transaction");
 			self.syncing = NO;
 			[self.delegate moviesSyncManagerDidFinishSyncing:self];
 		}

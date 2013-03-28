@@ -95,12 +95,6 @@
 		[self.noMoviesBackground.activityIndicatorView startAnimating];
 	}
 	else {
-		if (!self.refreshControl) {
-			self.refreshControl = [[UIRefreshControl alloc] init];
-			SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
-			[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
-			self.refreshControl.tintColor = [UIColor colorWithWhite:0.5 alpha:1];
-		}
 		if (!self.refreshControl.isRefreshing) {
 			[self.refreshControl beginRefreshing];
 		}
@@ -143,14 +137,25 @@
 	}
 
 	if (result.count == 0) {
-		if (self.currentView == self.tableView)
+		if (self.currentView == self.tableView) {
 			[self.view addSubview:self.noMoviesBackground];
+			if (self.refreshControl) {
+				[self.refreshControl endRefreshing];
+				self.refreshControl = nil;
+			}
+		}
 		self.currentView = self.noMoviesBackground;
 	}
 		
 	else {
 		if (self.currentView == self.noMoviesBackground) {
 			[self.noMoviesBackground removeFromSuperview];
+		}
+		if (!self.refreshControl) {
+			self.refreshControl = [[UIRefreshControl alloc] init];
+			SVMoviesSyncManager* syncManager = [SVMoviesSyncManager sharedMoviesSyncManager];
+			[self.refreshControl addTarget:syncManager action:@selector(sync) forControlEvents:UIControlEventValueChanged];
+			self.refreshControl.tintColor = [UIColor colorWithWhite:0.5 alpha:1];
 		}
 		self.currentView = self.tableView;
 	}
